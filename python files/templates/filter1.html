@@ -1,0 +1,160 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Recipes</title>
+</head>
+<body>
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/static/wooden-background.jpg'); /* Replace 'wooden-background.jpg' with the path to your image */
+            background-repeat: no-repeat;
+            background-size: auto; /* Set the background image to cover the entire body */
+            background-position: center; /* Center the background image */
+        }
+    </style>
+    <h1></h1>
+    <ul>
+        <!-- <video controls width="900px" height="900px" style="border: 5px solid white;">
+            <source src="{{recipe}}.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video> -->
+        <!-- {% for recipe in recipes %}
+            <li>
+                <h3>{{ recipe[0] }}</h3>
+                <p>Ingredients: {{ recipe[1] }}</p>
+                <p>Procedure: {{ recipe[2] }}</p>
+                <p>Prep Time: {{ recipe[3] }}</p>
+                <p>Cuisine: {{ recipe[4] }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html> --> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Recipes</title>
+</head>
+<body>
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/static/wooden-background.jpg');
+            background-repeat: no-repeat;
+            background-size: auto;
+            background-position: center;
+            color: white; /* Set text color to white */
+        }
+        .recipe-title {
+            font-weight: semibold; /* Set font weight to semibold */
+            font-size: 30px; /* Set font size to 30 pixels */
+            margin-bottom: 10px; /* Add bottom margin */
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        .recipe-info {
+            font-size: 20px;
+            font-weight: semibold;
+            margin-bottom: 10px;
+            margin-left: 20px;
+            margin-right: 20px;
+            display: block; /* Ensure info starts from a new line */
+        }
+        .recipe-title {
+    text-decoration: underline; /* Add underline */
+}
+    </style>
+    <nav class="bg-gray-800">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 items-center justify-between">
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <!-- Mobile menu button-->
+                    <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="absolute -inset-0.5"></span>
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Icon when menu is closed -->
+                        <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <!-- Icon when menu is open -->
+                        <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="flex flex-shrink-0 items-center">
+                        <img class="h-8 w-auto" src="/static/cheflogo.png" alt="CHEFME">
+                    </div>
+                    <div class="hidden sm:ml-6 sm:block">
+                        <div class="flex space-x-4">
+                            <a href="{{ url_for('categories1')}}" class="text-white px-3 py-2 text-sm font-medium">Home</a>
+                            <a href="{{ url_for('about')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                            <a href="{{ url_for('reach')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Reach Us</a>
+                            <a href="{{ url_for('categories1') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Categories</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden" id="mobile-menu">
+            <div class="space-y-1 px-2 pb-3 pt-2">
+                <a href="home.html" class="text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                <a href="reach.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Reach Us</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Categories</a>
+            </div>
+        </div>
+    </nav>
+    <h1></h1>
+    <ul>
+        {% for recipe in recipes %}
+            <li>
+                <!-- Clickable recipe title -->
+                <h3 class="recipe-title" onclick="showVideo('{{ recipe[0] }}')">{{ recipe[0] }}</h3>
+                <div style="display: flex; justify-content: center;">
+                    <video id="{{ recipe[0] }}Video" controls width="900px" height="900px" style="border: 5px solid white;">
+                        <!-- Update the source tag's src attribute to point to the correct video path -->
+                        <source src="{{ url_for('static', filename=recipe[0] + '.mp4') }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                
+                
+                <p class="recipe-info">Ingredients: {{ recipe[1] }}</p>
+                <p class="recipe-info">Procedure: {{ recipe[2] }}</p>
+                <p class="recipe-info">Prep Time: {{ recipe[3] }}</p>
+                <p class="recipe-info">Cuisine: {{ recipe[4] }}</p>
+                <style>
+                    .bookmark-form {
+                        display: flex;
+                        justify-content: center; /* Center horizontally */
+                        align-items: flex-end; /* Align to the bottom */
+                        margin-top: 20px; /* Add some space above the button */
+                    }
+                </style>
+                <form action="/bookmark" method="POST">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <input type="hidden" name="recipe_id" value="{{ id }}">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Bookmark
+                    </button>
+                </form>
+                 
+                
+            </li>
+        {% endfor %}
+    </ul>
+    
+</body>
+</html>
+
+

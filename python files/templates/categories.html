@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>categories</title>
+    <style>
+        /* Set background image for the div with class bg-gray-100 */
+        .bg-gray-100 {
+            background-image: url('/static/wooden-background.jpg'); /* Replace 'your_image.jpg' with the path to your image */
+            background-repeat: no-repeat;
+            /* background-size: 1599px 2600px; Set the background image to cover the entire div */
+            background-position: center; /* Center the background image */
+            background-size: auto;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <!--
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/aspect-ratio'),
+    ],
+  }
+  ```
+-->
+
+<nav class="bg-gray-800">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                <!-- Mobile menu button-->
+                <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="absolute -inset-0.5"></span>
+                    <span class="sr-only">Open main menu</span>
+                    <!-- Icon when menu is closed -->
+                    <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                    <!-- Icon when menu is open -->
+                    <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div class="flex flex-shrink-0 items-center">
+                    <img class="h-8 w-auto" src="/static/cheflogo.png" alt="CHEFME">
+                </div>
+                <div class="hidden sm:ml-6 sm:block">
+                    <div class="flex space-x-4">
+                        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                        <a href="{{url_for('home')}}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home </a>
+                            <a href="{{url_for('about')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                            <a href="{{url_for('reach')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">reach Us</a>
+                            <a href="{{url_for('categories')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="sm:hidden" id="mobile-menu">
+        <div class="space-y-1 px-2 pb-3 pt-2">
+            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+            <a href="home.html" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home </a>
+            <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+            <a href="reach.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">reachUs</a>
+            <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+        </div>
+    </div>
+</nav>
+<!-- End Navbar -->
+
+<div class="bg-gray-100">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
+        <h2 class="text-4xl font-bold text-white">Cuisines</h2>
+  
+        <div class="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0">
+          <form action="{{ url_for('type') }}" method="post">
+            <div class="group relative">
+              <div class="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
+                <img src="/static/mahafood.jpg" alt="Desk with leather desk pad, walnut desk organizer, wireless keyboard and mouse, and porcelain mug." class="h-full w-full object-cover object-center">
+              </div>
+              <h3 class="mt-6 text-lg text-bold text-white">
+                
+              </h3>
+              
+              <!-- Hidden input with the value "maharatrian" -->
+              <input type="hidden" name="food_type" value="maharashtrian">
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary"><p class="text-2xl font-bold text-white">Maharashtrian Food</p></button>
+            </div>
+          </form>
+          <form action="{{ url_for('type') }}" method="post">
+            <div class="group relative">
+              <div class="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
+                <img src="/static/northindi.jpeg" alt="Desk with leather desk pad, walnut desk organizer, wireless keyboard and mouse, and porcelain mug." class="h-full w-full object-cover object-center">
+              </div>
+              <h3 class="mt-6 text-lg text-bold text-white">
+                
+              </h3>
+              
+              <!-- Hidden input with the value "maharatrian" -->
+              <input type="hidden" name="food_type" value="north-indian">
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary"><p class="text-2xl font-bold text-white">North India Food</p></button>
+            </div>
+          </form>
+          <form action="{{ url_for('type') }}" method="post">
+            <div class="group relative">
+              <div class="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
+                <img src="/static/southindi.jpeg" alt="Desk with leather desk pad, walnut desk organizer, wireless keyboard and mouse, and porcelain mug." class="h-full w-full object-cover object-center">
+              </div>
+              <h3 class="mt-6 text-lg text-bold text-white">
+                
+              </h3>
+              
+              <!-- Hidden input with the value "maharatrian" -->
+              <input type="hidden" name="food_type" value="south-indian">
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary"><p class="text-2xl font-bold text-white">south indian Food</p></button>
+            </div>
+          </form>
+          
+          
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
