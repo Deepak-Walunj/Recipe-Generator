@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            background-image: url('/static/bgimage3.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: #ffffff; /* Set text color to white */
+            font-family: Arial, sans-serif; /* Set font family */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background color */
+            padding: 20px 0; /* Add padding to top and bottom */
+        }
+
+        header h1 {
+            text-align: center; /* Center align heading */
+            margin: 0; /* Remove margin */
+            font-size: 36px; /* Increase font size */
+        }
+
+        main {
+            padding: 20px; /* Add padding to main content */
+        }
+
+        .data-section {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background color */
+            padding: 20px; /* Add padding */
+            border-radius: 10px; /* Add border radius for rounded corners */
+        }
+
+        .data-section h2 {
+            text-align: center; /* Center align heading */
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .container ul {
+            list-style-type: none; /* Remove default list styles */
+            padding: 0;
+        }
+
+        .container ul li {
+            margin-bottom: 10px; /* Add spacing between list items */
+            background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background color */
+            padding: 10px 20px; /* Add padding to list items */
+            border-radius: 10px; /* Add border radius for rounded corners */
+            font-size: 18px; /* Increase font size */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add box shadow for depth */
+        }
+
+        .container ul li:hover {
+            background-color: rgba(255, 255, 255, 0.3); /* Lighten background color on hover */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+
+        footer {
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background color */
+            padding: 10px 0; /* Add padding to top and bottom */
+            text-align: center; /* Center align content */
+        }
+
+        footer p {
+            margin: 0; /* Remove margin */
+            font-size: 14px; /* Decrease font size */
+        }
+    </style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* CSS styles */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+    <main>
+        <section class="data-section">
+            <h2>Number of Bookmarks, Views, and Average Ratings per Recipe</h2>
+            <div class="container">
+                <ul>
+                    {% for item in data  %}
+                    <li>
+                        <strong>{{ item[0] }}</strong>: Views - {{ item[1] }}, Bookmarks - {{ item[2] }}, Average Rating - {{ item[3] }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Admin Dashboard. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+

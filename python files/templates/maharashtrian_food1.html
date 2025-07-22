@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Recipes</title>
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/static/wooden-background.jpg'); /* Replace 'wooden-background.jpg' with the path to your image */
+            background-repeat: no-repeat;
+            background-size: auto; /* Set the background image to cover the entire body */
+            background-position: center; /* Center the background image */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-gray-800">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 items-center justify-between">
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <!-- Mobile menu button-->
+                    <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="absolute -inset-0.5"></span>
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Icon when menu is closed -->
+                        <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <!-- Icon when menu is open -->
+                        <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="flex flex-shrink-0 items-center">
+                        <img class="h-8 w-auto" src="/static/cheflogo.png" alt="CHEFME">
+                    </div>
+                    <div class="hidden sm:ml-6 sm:block">
+                        <div class="flex space-x-4">
+                            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                            <a href="{{url_for('home')}}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home </a>
+                            <a href="{{url_for('about')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                            <a href="{{url_for('reach')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">reach Us</a>
+                            <a href="{{url_for('categories1')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden" id="mobile-menu">
+            <div class="space-y-1 px-2 pb-3 pt-2">
+                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" -->
+                <a href="home.html" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home </a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                <a href="reach.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">reachUs</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+            </div>
+        </div>
+    </nav>
+    <!--
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/aspect-ratio'),
+    ],
+  }
+  ```
+-->
+<div class="bg-auto">
+  <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+      <h2 class="sr-only">Products</h2>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+          {% for recipe in food %}
+          <div class="group">
+              <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg bg-gray-200">
+                  <img src="/static/{{ recipe[0] }}.jpg" alt="Recipe Image" class="object-cover object-center h-full w-full group-hover:opacity-75">
+              </div>
+              <form action="/filter1" method="POST">
+                  <input type="hidden" name="recipe_name" value="{{ recipe[0] }}">
+                  <button type="submit" class="mt-4 text-lg font-semibold text-white">{{ recipe[0] }}</button>
+              </form>
+               <form action="/submit_rating" method="post">
+                        <select id="rating{{ loop.index }}" name="rating">
+                            <option value="5" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Black_Star.svg/1024px-Black_Star.svg.png');">★★★★★</option>
+                            <option value="4" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Black_Star.svg/1024px-Black_Star.svg.png');">★★★★☆</option>
+                            <option value="3" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Black_Star.svg/1024px-Black_Star.svg.png');">★★★☆☆</option>
+                            <option value="2" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Black_Star.svg/1024px-Black_Star.svg.png');">★★☆☆☆</option>
+                            <option value="1" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Black_Star.svg/1024px-Black_Star.svg.png');">★☆☆☆☆</option>
+                        </select>
+                        <input type="hidden" name="recipe_name" value="{{ recipe[0] }}">
+                        <button type="submit" class="mt-4 text-lg font-semibold text-white">rate</button>
+                    </form>
+          </div>
+          {% endfor %}
+      </div>
+        <br>
+
+        <!-- <a href="varanbhat.html" class="group">
+          <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+            <img src="/static/varan bhat.jpeg" alt="Tall slender porcelain bottle with natural clay textured body and cork stopper." class="h-full w-full object-cover object-center group-hover:opacity-75">
+          </div>
+          <h3 class="mt-4 text-lg font-semibold text-white">Varan bhat</h3>
+          <p class="mt-1 text-lg font-medium text-gray-900">$48</p>
+        </a>
+        <a href="/recipe?recipe_id=1" class="group">Varan bhat</a> <!-- Add this line -->
+        <!-- <a href="misalpav.html" class="group">
+          <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+            <img src="/static/misalpav.jpg" alt="Olive drab green insulated bottle with flared screw lid and flat top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+          </div>
+          <h3 class="mt-4 text-lg  font-semibold text-white" >Misal Pav</h3> -->
+          <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+        <!-- </a>
+        <a href="/recipe?recipe_id=2" class="group">Misal Pav</a> <!-- Add this line -->
+        <!-- <a href="masalebhaat.html" class="group">
+          <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+            <img src="/static/Masale-Bhaat.jpg" alt="Person using a pen to cross a task off a productivity paper card." class="h-full w-full object-cover object-center group-hover:opacity-75">
+          </div>
+          <h3 class="mt-4 text-lg  font-semibold text-white">Masale-Bhaat</h3> --> 
+          <!-- <p class="mt-1 text-lg font-medium text-gray-900">$89</p> -->
+        <!-- </a>
+        <a href="/recipe?recipe_id=3" class="group">Masale-Bhaat</a> <!-- Add this line -->
+        <!-- <a href="zunkabhakkar.html" class="group">
+          <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+            <img src="/static/zunkabhakkar.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+          </div>
+          <h3 class="mt-4 text-lg  font-semibold text-white">Zunka Bhakkar</h3> --> -->
+          <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+        <!-- </a>
+        <a href="/recipe?recipe_id=4" class="group">Masale-Bhaat</a> <!-- Add this line -->
+        <!-- <a href="ukdichemodak.html" class="group">
+            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/Ukadiche-Modak.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white">Ukadiche-Modak</h3> --> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a> -->
+          <!-- <a href="/recipe?recipe_id=5" class="group">Masale-Bhaat</a> Add this line -->
+          <!-- <a href="tamdapandra.html" class="group"> -->
+            <!-- <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"> -->
+              <!-- <img src="/static/tambda-pandra.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75"> -->
+            <!-- </div> -->
+            <!-- <h3 class="mt-4 text-lg  font-semibold text-white">Tambda-Pandra Rassa </h3> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="puranpoli.html" class="group">
+            <a href="/recipe?recipe_id=6" class="group">Masale-Bhaat</a> <!-- Add this line -->
+            <!-- <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/puranpoli.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white">Puran Poli</h3> --> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="/recipe?recipe_id=7" class="group">Masale-Bhaat</a> 
+          <a href="kothimbirvadi.html" class="group">
+            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/Kothimbir-Vadi.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white">Kothimbir-Vadi</h3> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="/recipe?recipe_id=8" class="group">Masale-Bhaat</a>
+          <a href="thalipeeth.html" class="group">
+            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/Thalipeeth.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white">Thalipeeth</h3> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="/recipe?recipe_id=9" class="group">Masale-Bhaat</a> 
+          <a href="bharlivangi.html" class="group">
+            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/Bharli-Vangi.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white">Bharli-Vangi</h3> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="/recipe?recipe_id=10" class="group">Masale-Bhaat</a> Add this line -->
+          <!-- <a href="pavbhaji.html" class="group">
+            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/pav-bhaji.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white"> Pav-Bhaji</h3> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="/recipe?recipe_id=11" class="group">Masale-Bhaat</a> <!-- Add this line -->
+        <!-- </a><a href="malwanifishcurry.html" class="group">
+            <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              <img src="/static/malwanifishcurry.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
+            </div>
+            <h3 class="mt-4 text-lg  font-semibold text-white">malwanifishcurry</h3> --> -->
+            <!-- <p class="mt-1 text-lg font-medium text-gray-900">$35</p> -->
+          <!-- </a>
+          <a href="/recipe?recipe_id=12" class="group">Masale-Bhaat</a> Add this line -->
+        
+         
+          
+          
+          
+        
+        <!-- More products... -->
+      </div>
+    </div>
+  </div>
+</body>
+</html>

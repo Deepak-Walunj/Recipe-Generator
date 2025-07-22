@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Contact ChefMe</title>
+</head>
+<style>
+    /* Set background image for the body */
+    body {
+        background-image: url('/static/bgimage4.jpg');
+        background-repeat: no-repeat;
+        background-size: 1499px 785px; /* Set the width and height of the background image */
+    }
+</style>
+
+
+    <header class="text-gray-600 body-font">
+        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+            <a href="/" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+                <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="ml-3 text-xl">ChefMe</span>
+            </a> -->
+            <nav class="bg-gray-800">
+                <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                    <div class="relative flex h-16 items-center justify-between">
+                        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                            <!-- Mobile menu button-->
+                            <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                                <span class="absolute -inset-0.5"></span>
+                                <span class="sr-only">Open main menu</span>
+                                <!-- Icon when menu is closed -->
+                                <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                </svg>
+                                <!-- Icon when menu is open -->
+                                <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                            <div class="flex flex-shrink-0 items-center">
+                                <img class="h-8 w-auto" src="/static/cheflogo.png" alt="CHEFME">
+                            </div>
+                            <div class="hidden sm:ml-6 sm:block">
+                                <div class="flex space-x-4">
+                                    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                                    <a href="{{url_for('home')}}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home </a>
+                            <a href="{{url_for('about')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                            <a href="{{url_for('reach')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">reach Us</a>
+                            <a href="{{url_for('categories1')}}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Mobile menu, show/hide based on menu state. -->
+                <div class="sm:hidden" id="mobile-menu">
+                    <div class="space-y-1 px-2 pb-3 pt-2">
+                        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                        <a href="home.html" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home </a>
+                        <a href="about.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About Us</a>
+                        <a href="reach.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">reach us</a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mx-auto mt-8 p-8 bg-white bg-opacity-80 rounded shadow-lg">
+
+        <h1 class="text-3xl font-bold mb-6">Contact ChefMe</h1>
+
+        <p>We would love to hear from you! Whether you have a question, feedback, or just want to say hello, feel free to reach out to us. Your input is important to us as we strive to provide the best culinary experience for our ChefMe community.</p>
+
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-2">How to Reach Us:</h2>
+            <p class="text-gray-600">You can contact ChefMe through the following channels:</p>
+            <ul class="list-disc pl-6">
+                <li>Email: <a href="mailto:info@chefme.com" class="text-indigo-500">info@chefme.com</a></li>
+                <li>Phone: <span class="text-indigo-500">[xxxxxxxxxxxx]</span></li>
+            </ul>
+        </div>
+
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-2">Visit Us:</h2>
+            <p class="text-gray-600">Feel free to visit our office during business hours:</p>
+            <p class="text-gray-600">[Your Company Name]</p>
+            <p class="text-gray-600">[Office Add
+                ress]</p>
+        </div>
+
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-2">Connect With Us on Social Media:</h2>
+            <p class="text-gray-600">Stay updated on the latest recipes, cooking tips, and community highlights. Follow us on social media:</p>
+            <ul class="list-disc pl-6">
+                <li><a href="[ChefMe.fb]" class="text-indigo-500">Facebook</a></li>
+                <li><a href="[chefMe.x]" class="text-indigo-500">Twitter</a></li>
+                <li><a href="[chefMe.ig]" class="text-indigo-500">Instagram</a></li>
+            </ul>
+        </div>
+
+        <p class="mt-8">We appreciate your interest in ChefMe, and we look forward to assisting you on your culinary journey!</p>
+    </div>
+
+</body>
+</html>
