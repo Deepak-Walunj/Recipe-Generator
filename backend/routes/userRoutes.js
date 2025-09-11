@@ -18,7 +18,7 @@ router.post('/register', async (req, res, next) => {
     return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details));
   }
   const user = await userService.registerUser(value);
-  logger.info(`Registered new user: ${user}`);
+  logger.info(`Registered new user: ${JSON.stringify(user)}`);
   return res.json(new StandardResponse(true, 'User registered successfully', user))
 });
 
