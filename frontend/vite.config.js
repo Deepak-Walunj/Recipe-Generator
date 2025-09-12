@@ -9,7 +9,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
   },
-  assetsInclude: ['**/*.xlsx'],
+  assetsInclude: ['**/*.xlsx', '**/*.glb', '**/*.gltf'],
     build: {
       rollupOptions: {
         output: {
@@ -22,6 +22,7 @@ export default defineConfig({
     },
   resolve: {
     alias: {
+      '@': path.resolve(__dirname, './src'),
       '@assets': path.resolve(__dirname, './src/assets'),
       '@components': path.resolve(__dirname, './src/components'),
       '@utils': path.resolve(__dirname, './src/utils'),
