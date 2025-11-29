@@ -10,8 +10,10 @@ const UserService = require('../services/userService');
 const AdminService = require('../services/AdminService');
 const logger = getLogger("deps");
 const { createClient } = require("redis");
-const { func } = require('joi');
+const MySQLCollection = require("./mysqlCollection");
+
 setupLogging();
+
 logger.info('In deps.js');
 
 let dependencyStorage = null;
@@ -37,9 +39,8 @@ class DependencyStorage{
     constructor(db, cache){
         if (!db) logger.error('Database not initialized');
         this._cache = cache 
-        this.userRepo = new UserRepository(db.collection(collections.USERS));
-        this.authRepo = new AuthRepository(db.collection(collections.AUTH_USERS));
-        this.adminRepo = new AdminRepository(db.collection(collections.ADMINS));
+        this.userRepo = new UserRepository(new MySQLCollection(db, collections.USERS));
+        this.authRepo = new AuthRepository(new MySQLCollection(db, collections.AUTH_USERS));
         
         this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache });
         this.userService = new UserService({ userRepository: this.userRepo, auth_service: this.authService });
@@ -50,9 +51,6 @@ class DependencyStorage{
     }
     getUserRepository() {
         return this.userRepo;
-    }
-    getAdminRepository() {
-        return this.adminRepo;
     }
     getAuthService() {
         return this.authService;
@@ -93,10 +91,6 @@ function getUserRepository() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getUserRepository();
 }
-function getAdminRepository() {
-  if (!dependencyStorage) throw new Error('Dependencies not initialized');
-  return dependencyStorage.getAdminRepository();
-}
 function getAuthService() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getAuthService();
@@ -117,7 +111,6 @@ module.exports = {
   initializeDependencies,
   getAuthRepository,
   getUserRepository,
-  getAdminRepository,
   getAuthService,
   getUserService,
   getAdminService,

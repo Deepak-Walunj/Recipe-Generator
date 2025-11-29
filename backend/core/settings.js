@@ -5,13 +5,17 @@ module.exports = {
   	ENV: process.env.NODE_ENV || 'development',
   	DEBUG: process.env.DEBUG === 'true',
 
-    MONGODB_URL: process.env.MONGODB_URL,
-  	MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
+    SQL_HOST: process.env.SQL_HOST || 'localhost',
+	SQL_USER: process.env.SQL_USER || 'root',
+	SQL_PASSWORD: process.env.SQL_PASSWORD,
+	SQL_DATABASE: process.env.SQL_DATABASE,
+	SQL_PORT: process.env.SQL_PORT || 3306,
 
     SECRET_KEY: process.env.SECRET_KEY,
     ACCESS_TOKEN_EXPIRE_MINUTES: parseInt(process.env.ACCESS_TOKEN_EXPIRE_MINUTES || '30'),
   	REFRESH_TOKEN_EXPIRE_DAYS: parseInt(process.env.REFRESH_TOKEN_EXPIRE_DAYS || '7'),
   	ALGORITHM: process.env.ALGORITHM || 'HS256',
+	USE_DOCKER_REDIS: process.env.USE_DOCKER_REDIS === 'true',
 	CACHE: process.env.CACHE === 'true',
 
     ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:5173'],

@@ -1,5 +1,5 @@
-const {MongoClient} = require('mongodb')
-const { MONGODB_URL, MONGODB_DB_NAME } = require('./settings');
+const mysql = require('mysql2/promise');
+const { SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DATABASE, SQL_PORT } = require('./settings');
 const { initializeCollections, checkCollectionHealth } = require('./database_init');
 const { setupLogging, getLogger } = require('./logger');
 
@@ -11,15 +11,26 @@ logger.info('In database.js');
 
 async function connectDB(){
     try{
-        client = new MongoClient(MONGODB_URL)
-        await client.connect();
-        db = client.db(MONGODB_DB_NAME);
+        pool = mysql.createPool({
+            host: SQL_HOST,
+            user: SQL_USER,
+            password: SQL_PASSWORD,
+            database: SQL_DATABASE,
+            port: SQL_PORT,
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+        })
+        const connection = await pool.getConnection();
+        connection.ping();
+        connection.release();
+        db = pool;
 
         await initializeCollections(db)
         if (!(await checkCollectionHealth(db))){
             logger.error('Database health check failed');
         }
-        logger.info(`Connected to mongoDb: ${MONGODB_URL}`)
+        logger.info(`Connected to SQL: ${SQL_HOST}:${SQL_PORT}/${SQL_DATABASE}`);
     }catch(err){
         disconnectDB()
         logger.error(`DB connection failed ${err}`)

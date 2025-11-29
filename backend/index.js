@@ -23,7 +23,10 @@ const adminRouter = require('./routes/adminRoutes');
   logger.info('Starting Backend (Express)');
 
   try {
-    startRedis();
+    if (process.env.USE_DOCKER_REDIS === 'true'){
+      logger.info('Using Docker Redis for caching');
+      startRedis();
+    }
     // Connect DB & init dependencies
     await initializeDependencies();
     logger.info('Dependencies initialized successfully');
@@ -42,8 +45,6 @@ const adminRouter = require('./routes/adminRoutes');
     app.use(`/auth`, authRouter);
     app.use(`/user`, userRouter);
     app.use(`/admin`, adminRouter);
-    // app.use(`${API_PREFIX}/interview`, interviewRouter);
-    // app.use(`${API_PREFIX}/analytical-dashboard`, dashboardRouter);
 
     // Health check
     app.get('/health', (req, res) => {
