@@ -42,38 +42,24 @@ class UserRepository {
         return result
     }
 
-    async getAllUsers({ searchStr = null, page = 1, limit = 10 }){
-        const pipeline = []
-
-        if (searchStr) {
-            pipeline.push({
-                $match: {
-                    $or: [
-                        {[UserProfileFields.full_name]: { $regex: searchStr, $options: 'i' }},
-                        {[UserProfileFields.email]: { $regex: searchStr, $options: 'i' }},
-                    ]
-                }
-            })
+    async getAllUsers({ searchStr = null, page = 1, limit = 10 }) {
+        let query = `SELECT user_id, username, email FROM users`;
+        const params = [];
+        if (searchStr && searchStr.trim() !== "") {
+            query += ` WHERE username LIKE ? OR email LIKE ?`;
+            params.push(`%${searchStr}%`, `%${searchStr}%`);
         }
-        pipeline.push({$skip: (page-1)*limit})
-        pipeline.push({$limit: limit})
-        pipeline.push({
-            $project: {
-                _id: 0,
-                [UserProfileFields.userId]: 1,
-                [UserProfileFields.full_name]: 1,
-                [UserProfileFields.email]: 1,
-            }
-        })
-        try{
-            const cursor = this.collection.aggregate(pipeline);
-            const results = await cursor.toArray();
-            return results
-        }catch(err){
+        query += ` LIMIT ? OFFSET ?`;
+        params.push(Number(limit), Number((page - 1) * limit));
+        try {
+            const [rows] = await this.collection.db.query(query, params);
+            return rows;
+        } catch (err) {
             logger.error(`Error fetching users: ${err.message}`);
             throw err;
         }
     }
+
 }
 
 module.exports = UserRepository;

@@ -53,7 +53,7 @@ class AdminService {
     }
 
     async getAllUsers({searchStr = null, page = 1, limit = 10 }) {
-        const users = await this.user_service.getAllUsers({
+        const users = await this.userRepository.getAllUsers({
             searchStr, page, limit
         });
         return users
