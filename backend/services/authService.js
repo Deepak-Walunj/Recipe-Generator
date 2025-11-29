@@ -24,7 +24,7 @@ class AuthService {
         }
         let existingUser = null;
         try {
-            existingUser = await this.authRepository.findByEmail(value.email, value.entity_type);
+            existingUser = await this.authRepository.findByEmail(value.email);
         } catch (err) {
             if (err.name !== 'NotFoundError') throw err;
         }
@@ -40,7 +40,7 @@ class AuthService {
     }
     
     async loginEntity(data) {
-        const user = await this.authRepository.findByEmail(data.email, data.entity_type);
+        const user = await this.authRepository.findByEmail(data.email);
         logger.info(`User: ${user}`)
         if (!user){
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {email: data.email, entity_type: data.entity_type});
@@ -74,14 +74,14 @@ class AuthService {
         return { access_token, refresh_token  };
     }
 
-    async get_user_by_id(userId) {
-        let user = await this.cache.get(userId)
+    async get_user_by_email(email) {
+        let user = await this.cache.get(email)
         if (user) {
             return JSON.parse(user)
         }
-        user = await this.authRepository.findById(userId);
+        user = await this.authRepository.findByEmail(email);
         if (user) {
-            await this.cache.set(userId, JSON.stringify(user),{ EX: 60*5 }) // Cache for 1 hour
+            await this.cache.set(email, JSON.stringify(user),{ EX: 60*5 }) // Cache for 1 hour
         }
         return user;
     }

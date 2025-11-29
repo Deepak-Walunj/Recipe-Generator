@@ -26,15 +26,16 @@ function allowedEntities(entity_type=null){
                 return next();
             }
             const payload = jwt.verify(token, SECRET_KEY, { algorithms: [ALGORITHM] });
+            logger.info(`[Middleware] payload after token verification: ${JSON.stringify(payload)}`)
             const tokey_type = payload.token_type || payload.type;
             if (tokey_type !== 'access') {
                 return next(new UnauthorizedError("Invalid token type", 401, "INVALID_TOKEN_TYPE"));
             }
-            const userId = payload.userId;
-            if (!userId) {
+            const email = payload.email;
+            if (!email) {
                 return next(new UnauthorizedError("Invalid token payload", 401, "INVALID_TOKEN_PAYLOAD"));
             }
-            const user = await authService.get_user_by_id(userId)
+            const user = await authService.get_user_by_email(email)
             if (!user) {
                 return next(new UnauthorizedError("User not found", 401, "USER_NOT_FOUND", userId));
             }

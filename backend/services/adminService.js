@@ -42,8 +42,8 @@ class AdminService {
         return admin
     }
 
-    async getAdminProfile(adminId) {
-        const profile = await this.userRepository.findAdminByAdminId( adminId );
+    async getAdminProfile(email) {
+        const profile = await this.userRepository.findUserByEmail( email );
         return profile;
     }
 

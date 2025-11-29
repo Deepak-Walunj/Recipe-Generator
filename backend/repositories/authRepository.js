@@ -9,8 +9,8 @@ class AuthRepository {
         this.collection = collection;
     }
 
-    async findByEmail(email, entity_type) {
-        const result = this.collection.findOne({[AuthEntityFields.EMAIL]: email, [AuthEntityFields.ENTITY_TYPE]: entity_type});
+    async findByEmail(email) {
+        const result = this.collection.findOne({[AuthEntityFields.EMAIL]: email});
         return result;
     }
 
