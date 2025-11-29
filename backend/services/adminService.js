@@ -47,11 +47,9 @@ class AdminService {
         return profile;
     }
 
-    async deleteUser(adminId) {
-        const admin = await this.userRepository.findAdminByAdminId(adminId);
-        const result_authRepo = await this.auth_service.deleteEntityByEntityId(admin.adminId);
-        const result_adminRepo = await this.userRepository.deleteAdminByAdminId(admin.adminId);
-        return result_authRepo === result_adminRepo;
+    async deleteUser(email) {
+        const result = await this.auth_service.deleteEntityByEmail(email);
+        return await this.userRepository.deleteUserByemail(email);
     }
 
     async getAllUsers({searchStr = null, page = 1, limit = 10 }) {

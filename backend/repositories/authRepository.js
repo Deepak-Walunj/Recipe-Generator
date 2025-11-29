@@ -40,8 +40,8 @@ class AuthRepository {
         return result;
     }
 
-    async deleteByUserId(user_id) {
-        const result = await this.collection.deleteOne({ [AuthEntityFields.user_id]: user_id });
+    async deleteByEmail(email) {
+        const result = await this.collection.deleteOne({ [AuthEntityFields.EMAIL]: email });
         if (result.deletedCount === 0) {
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { user_id });
         }

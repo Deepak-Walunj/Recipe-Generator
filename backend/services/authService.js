@@ -86,9 +86,8 @@ class AuthService {
         return user;
     }
 
-    async deleteEntityByEntityId(entityId) {
-        const result = await this.authRepository.deleteByUserId(entityId);
-        return result;
+    async deleteEntityByEmail(email) {
+        return await this.authRepository.deleteByEmail(email);
     }
 }
 

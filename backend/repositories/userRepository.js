@@ -28,8 +28,8 @@ class UserRepository {
         return result
     }
 
-    async deleteUserByUserId(userId) {
-        const result = await this.collection.deleteOne({ [UserProfileFields.USER_ID]: userId });
+    async deleteUserByemail(email) {
+        const result = await this.collection.deleteOne({ [UserProfileFields.EMAIL]: email });
         if (result.deletedCount === 0) {
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { userId });
         }
