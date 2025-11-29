@@ -10,10 +10,7 @@ class AuthRepository {
     }
 
     async findByEmail(email, entity_type) {
-        const result = this.collection.findOne({[AuthEntityFields.email]: email, [AuthEntityFields.entity_type]: entity_type});
-        if (!result){
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {email, entity_type});
-        }
+        const result = this.collection.findOne({[AuthEntityFields.EMAIL]: email, [AuthEntityFields.ENTITY_TYPE]: entity_type});
         return result;
     }
 

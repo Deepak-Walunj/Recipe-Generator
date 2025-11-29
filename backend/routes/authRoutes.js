@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { setupLogging, getLogger } = require('../core/logger')
 const { getAuthService } = require('../core/deps');
-const { MissingRequiredFields, UnauthorizedError } = require('../core/exception')
+const { MissingRequiredFields } = require('../core/exception')
 const { LoginEntitySchema } = require('../schemas/authSchema');
 const { TokenResponse, TokenData } = require('../schemas/authSchema');
 
@@ -16,9 +16,6 @@ router.post('/login', async (req, res, next) => {
         return next(new MissingRequiredFields(error.message, 400, 'MISSING_FIELDS', error.details));
     }
     const user = await authService.loginEntity(value)
-    if(!user) {
-        return next(new UnauthorizedError('Incorrect email or password', 401, 'UNAUTHORIZED', value.email));
-    }
     const {access_token, refresh_token} = await authService.generateTokens(user)
     res.cookie('refresh_token', refresh_token,{
         httpOnly: true,

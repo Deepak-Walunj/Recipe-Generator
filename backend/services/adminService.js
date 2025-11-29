@@ -28,7 +28,7 @@ class AdminService {
         if (entity){
             throw new DuplicateRequestException("Duplicate entry", 409, "DUPLICATE_REQUEST", value.email)
         }
-        const profile = await this.userRepository.createUserProfile(entity);
+        const profile = await this.userRepository.createUserProfile(value);
         const userId = profile.user_id
         logger.info(`Created user profile with user_id=${userId}`);
         const authPayload = {

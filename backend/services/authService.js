@@ -1,8 +1,7 @@
-const {InvalidCredentialsError, DuplicateRequestException} = require('../core/exception');
+const {InvalidCredentialsError, UnauthorizedError, NotFoundError} = require('../core/exception');
 const { AuthRegisterSchema } = require('../schemas/authSchema');
 const { AuthEntitySchema } = require('../models/authModel');
 const { create_access_token, create_refresh_token, hash_password, verify_password } = require('../middleware/security');
-const { v4: uuidv4 } = require("uuid");
 const { setupLogging, getLogger } = require('../core/logger');
 const bcrypt = require('bcrypt');
 
@@ -29,11 +28,11 @@ class AuthService {
         } catch (err) {
             if (err.name !== 'NotFoundError') throw err;
         }
-        // const hashedPassword = await hash_password(value.password);
+        const password = await hash_password(value.password);
         const auth_user = AuthEntitySchema.validate({
             user_id: value.user_id,
             email: value.email,
-            password: value.password, 
+            password: password, 
             entity_type: value.entity_type
         }, { stripUnknown: true });
         const newUser = await this.authRepository.createAuthEntity(auth_user.value);
@@ -42,22 +41,21 @@ class AuthService {
     
     async loginEntity(data) {
         const user = await this.authRepository.findByEmail(data.email, data.entity_type);
-        if (!user) {
-            logger.info(`No user found for email: ${data.email}`);
-            return null;
-        }
-        // const isPasswordValid = await verify_password(data.password, user.hashed_password);
-        // if (!isPasswordValid) {
-        if (data.password !== user.hashed_password) {
-            logger.info(`Incorrect password for email: ${data.email}`);
-            return null;
+        logger.info(`User: ${user}`)
+        if (!user){
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {email: data.email, entity_type: data.entity_type});
         }
         if (user.entity_type !== data.entity_type) {
-            logger.info(
-                `Entity type mismatch for email: ${data.email}, expected: ${user.entity_type}, received: ${data.entity_type}`
-            );
-            return null;
+           throw new UnauthorizedError(`Invalid entity type, expected: ${user.entity_type}1`, 400, 'VALIDATION_ERROR', data.entity_type)
         }
+        const isPasswordValid = await verify_password(data.password, user.password);
+        if (!isPasswordValid) {
+            throw new InvalidCredentialsError("Incorrect Password! Ary Again", 400, 'VALIDATION_ERROR', data.password)
+        }
+        // if (data.password !== user.hashed_password) {
+        //     logger.info(`Incorrect password for email: ${data.email}`);
+        //     return null;
+        // }
         return user;
     }
 
