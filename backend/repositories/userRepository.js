@@ -9,13 +9,13 @@ class UserRepository {
         this.collection = collection;
     }
 
-    async createAdminProfile(adminData){
+    async createUserProfile(userData){
         // ensure column names match DB: username, email, password, user_type
         const payload = {
-            username: adminData.username,
-            email: adminData.email,
-            password: adminData.password,
-            users_type: adminData.users_type    // note: user_type (not users_type)
+            username: userData.username,
+            email: userData.email,
+            password: userData.password,
+            users_type: userData.users_type    // note: user_type (not users_type)
         };
         const result = await this.collection.insertOne(payload);
         // result.insertedId is the auto-increment user_id
@@ -40,11 +40,6 @@ class UserRepository {
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { adminId });
         }
         return true;
-    }
-
-    async createUserProfile(userData) {
-        const result = await this.collection.insertOne(userData);
-        return { ...userData, _id: result.insertedId };
     }
 
     // async findByEmail(email) {

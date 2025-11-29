@@ -12,17 +12,27 @@ class UserService {
     }
 
     async registerUser(data){
-    const user = await this.auth_service.registerEntity(data);
     const {error, value} = EntityProfileSchema.validate({
-        userId: user.userId,
-        full_name: data.name,
+        username: data.username,
         email: data.email,
+        password: data.password,
+        users_type: data.entity_type
     }, { stripUnknown: true });
     if (error) {
         throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
     }
-    const profile = await this.userRepository.createProfile(value);
-    return profile
+    const profile = await this.userRepository.createUserProfile(value);
+    const userId = profile.user_id
+    logger.info(`Created user profile with user_id=${userId}`);
+    const authPayload = {
+        user_id: userId,
+        email: value.email,
+        password: value.password,
+        entity_type: data.entity_type   // keep entity_type naming for auth table
+    };
+    const user = await this.auth_service.registerEntity(authPayload);
+    logger.info(`Creating user profile with data: ${JSON.stringify(value)}`);
+    return user
     }
 
     async getUserProfile(userId) {

@@ -23,7 +23,7 @@ class AdminService {
         if (error) {
             throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
         }
-        const profile = await this.userRepository.createAdminProfile(value);
+        const profile = await this.userRepository.createUserProfile(value);
         const userId = profile.user_id
         logger.info(`Created user profile with user_id=${userId}`);
         const authPayload = {
@@ -34,7 +34,7 @@ class AdminService {
         };
         const admin = await this.auth_service.registerEntity(authPayload)
         logger.info(`Creating admin profile with data: ${JSON.stringify(value)}`);
-        return profile
+        return admin
     }
 
     async getAdminProfile(adminId) {

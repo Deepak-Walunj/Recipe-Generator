@@ -25,7 +25,7 @@ class AuthRepository {
         }
         try{
         const result = await this.collection.insertOne(data);
-        return { ...data, auth_id: result.insertedId };
+        return { ...data};
         }catch(err){
             if (err.code === 11000) {
                 logger.error({ err }, "Duplicate email error");
