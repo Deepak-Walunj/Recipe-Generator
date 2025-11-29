@@ -26,6 +26,7 @@ function stopRedis() {
   if (isRedisRunning()) {
     logger.info("Stopping Redis container...");
     execSync(`docker stop my_redis && docker rm my_redis`, { stdio: "inherit" });
+    execSync(`docker rm my_redis`);
   }
 }
 

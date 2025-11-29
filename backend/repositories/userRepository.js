@@ -9,7 +9,40 @@ class UserRepository {
         this.collection = collection;
     }
 
-    async createProfile(userData) {
+    async createAdminProfile(adminData){
+        // ensure column names match DB: username, email, password, user_type
+        const payload = {
+            username: adminData.username,
+            email: adminData.email,
+            password: adminData.password,
+            users_type: adminData.users_type    // note: user_type (not users_type)
+        };
+        const result = await this.collection.insertOne(payload);
+        // result.insertedId is the auto-increment user_id
+        return { ...payload, user_id: result.insertedId };
+    }
+
+    async findAdminByAdminId(adminId) {
+        const result = await this.collection.findOne({ [AdminProfileFields.adminId]: adminId });
+        if (!result) {
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { adminId });
+        }
+        const { error, value } = AdminProfileSchema.validate(result, { stripUnknown: true });
+        if (error) {
+            throw new UnprocessableEntityError(error.message, 422, 'UNPROCESSIBLE_ENTITY', error.details);
+        }
+        return value;
+    }
+
+    async deleteAdminByAdminId(adminId) {
+        const result = await this.collection.deleteOne({ [AdminProfileFields.adminId]: adminId });
+        if (result.deletedCount === 0) {
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { adminId });
+        }
+        return true;
+    }
+
+    async createUserProfile(userData) {
         const result = await this.collection.insertOne(userData);
         return { ...userData, _id: result.insertedId };
     }

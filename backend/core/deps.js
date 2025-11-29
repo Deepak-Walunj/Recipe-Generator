@@ -3,7 +3,6 @@ const collections = require('./collections')
 const { setupLogging, getLogger } = require('../core/logger');
 const AuthRepository = require('../repositories/authRepository');
 const UserRepository = require('../repositories/userRepository');
-const AdminRepository = require('../repositories/adminRepository');
 const { CACHE } = require('./settings');
 const AuthService = require('../services/authService');
 const UserService = require('../services/userService');
@@ -44,7 +43,7 @@ class DependencyStorage{
         
         this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache });
         this.userService = new UserService({ userRepository: this.userRepo, auth_service: this.authService });
-        this.adminService = new AdminService({ adminRepository: this.adminRepo, auth_service: this.authService, user_service: this.userService });
+        this.adminService = new AdminService({ userRepository: this.userRepo, auth_service: this.authService, user_service: this.userService });
         }
     getAuthRepository() {
         return this.authRepo;

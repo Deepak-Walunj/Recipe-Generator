@@ -7,7 +7,6 @@ class MySQLCollection {
     async findOne(where) {
         const keys = Object.keys(where);
         const values = Object.values(where);
-
         const condition = keys.map(k => `${k} = ?`).join(" AND ");
         const [rows] = await this.db.query(
             `SELECT * FROM ${this.tableName} WHERE ${condition} LIMIT 1`,
@@ -19,10 +18,8 @@ class MySQLCollection {
     async insertOne(doc) {
         const keys = Object.keys(doc);
         const values = Object.values(doc);
-
         const columns = keys.join(",");
         const placeholders = keys.map(() => "?").join(",");
-
         const [result] = await this.db.query(
             `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`,
             values
@@ -33,18 +30,25 @@ class MySQLCollection {
     async updateOne(where, update) {
         const updateKeys = Object.keys(update);
         const updateValues = Object.values(update);
-
         const whereKeys = Object.keys(where);
         const whereValues = Object.values(where);
-
         const updateClause = updateKeys.map(k => `${k}=?`).join(", ");
         const whereClause = whereKeys.map(k => `${k}=?`).join(" AND ");
-
         const [result] = await this.db.query(
             `UPDATE ${this.tableName} SET ${updateClause} WHERE ${whereClause}`,
             [...updateValues, ...whereValues]
         );
+        return result;
+    }
 
+    async deleteOne(where) {
+        const keys = Object.keys(where);
+        const values = Object.values(where);
+        const condition = keys.map(k => `${k} = ?`).join(" AND ");
+        const [result] = await this.db.query(
+            `DELETE FROM ${this.tableName} WHERE ${condition}`,
+            values
+        );
         return result;
     }
 }

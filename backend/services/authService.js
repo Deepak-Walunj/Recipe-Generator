@@ -1,5 +1,5 @@
 const {InvalidCredentialsError, DuplicateRequestException} = require('../core/exception');
-const { EntityRegisterSchema } = require('../schemas/authSchema');
+const { AuthRegisterSchema } = require('../schemas/authSchema');
 const { AuthEntitySchema } = require('../models/authModel');
 const { create_access_token, create_refresh_token, hash_password, verify_password } = require('../middleware/security');
 const { v4: uuidv4 } = require("uuid");
@@ -14,8 +14,8 @@ class AuthService {
         this.cache = cacheClient;
     }
     async registerEntity(data) {
-        const { error, value } = EntityRegisterSchema.validate({
-            name: data.name,
+        const { error, value } = AuthRegisterSchema.validate({
+            user_id: data.user_id,
             email: data.email,
             password: data.password,
             entity_type: data.entity_type
@@ -23,15 +23,17 @@ class AuthService {
         if (error) {
             throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
         }
-        const existingUser = await this.authRepository.findByEmail(data.email, data.entity_type);
-        if (existingUser) {
-            throw new DuplicateRequestException('User already exists', 409, 'DUPLICATE_USER', { email: data.email });
+        let existingUser = null;
+        try {
+            existingUser = await this.authRepository.findByEmail(value.email, value.entity_type);
+        } catch (err) {
+            if (err.name !== 'NotFoundError') throw err;
         }
         // const hashedPassword = await hash_password(value.password);
         const auth_user = AuthEntitySchema.validate({
-            userId:uuidv4(),
+            user_id: value.user_id,
             email: value.email,
-            hashed_password: value.password, 
+            password: value.password, 
             entity_type: value.entity_type
         }, { stripUnknown: true });
         const newUser = await this.authRepository.createAuthEntity(auth_user.value);

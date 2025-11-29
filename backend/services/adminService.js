@@ -6,44 +6,50 @@ setupLogging();
 const logger = getLogger('admin-service')
 
 class AdminService {
-    constructor({ adminRepository, auth_service, user_service }) {
-        this.adminRepository = adminRepository;
+    constructor({ userRepository, auth_service, user_service }) {
+        this.userRepository = userRepository;
         this.auth_service = auth_service;
         this.user_service = user_service;
     }
 
     async registerAdmin(data) {
-        const admin = await this.auth_service.registerEntity(data)
         const { error, value } = EntityProfileSchema.validate({
-            userId: admin.userId,
-            full_name: data.name,
+            username: data.username,
             email: data.email,
+            password: data.password,
+            users_type: data.entity_type
         }, { stripUnknown: true });
+        logger.info("Verification successfull")
         if (error) {
             throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
         }
+        const profile = await this.userRepository.createAdminProfile(value);
+        const userId = profile.user_id
+        logger.info(`Created user profile with user_id=${userId}`);
+        const authPayload = {
+            user_id: userId,
+            email: value.email,
+            password: value.password,
+            entity_type: data.entity_type   // keep entity_type naming for auth table
+        };
+        const admin = await this.auth_service.registerEntity(authPayload)
         logger.info(`Creating admin profile with data: ${JSON.stringify(value)}`);
-        const profile = await this.adminRepository.createProfile(value);
         return profile
     }
 
     async getAdminProfile(adminId) {
-        const profile = await this.adminRepository.findAdminByAdminId( adminId );
+        const profile = await this.userRepository.findAdminByAdminId( adminId );
         return profile;
     }
 
     async deleteUser(adminId) {
-        const admin = await this.adminRepository.findAdminByAdminId(adminId);
+        const admin = await this.userRepository.findAdminByAdminId(adminId);
         const result_authRepo = await this.auth_service.deleteEntityByEntityId(admin.adminId);
-        const result_adminRepo = await this.adminRepository.deleteAdminByAdminId(admin.adminId);
+        const result_adminRepo = await this.userRepository.deleteAdminByAdminId(admin.adminId);
         return result_authRepo === result_adminRepo;
     }
 
-    async getAllUsers({
-        searchStr = null,
-        page = 1,
-        limit = 10
-    }) {
+    async getAllUsers({searchStr = null, page = 1, limit = 10 }) {
         const users = await this.user_service.getAllUsers({
             searchStr, page, limit
         });
