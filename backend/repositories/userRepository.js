@@ -1,6 +1,6 @@
 const { setupLogging, getLogger } = require('../core/logger');
-const { UserProfileFields, UserProfileSchema } = require('../models/userModel');
-const { UnprocessableEntityError, NotFoundError } = require('../core/exception');
+const { UserProfileFields } = require('../models/userModel');
+const { NotFoundError } = require('../core/exception');
 setupLogging();
 const logger = getLogger("user-repo");
 
@@ -10,60 +10,36 @@ class UserRepository {
     }
 
     async createUserProfile(userData){
-        // ensure column names match DB: username, email, password, user_type
         const payload = {
             username: userData.username,
             email: userData.email,
             password: userData.password,
-            users_type: userData.users_type    // note: user_type (not users_type)
+            users_type: userData.users_type   
         };
         const result = await this.collection.insertOne(payload);
-        // result.insertedId is the auto-increment user_id
         return { ...payload, user_id: result.insertedId };
     }
 
-    async findAdminByAdminId(adminId) {
-        const result = await this.collection.findOne({ [AdminProfileFields.adminId]: adminId });
+    async findUserByUserId(user_id) {
+        const result = await this.collection.findOne({ [UserProfileFields.USER_ID]: user_id });
         if (!result) {
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { adminId });
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { user_id });
         }
-        const { error, value } = AdminProfileSchema.validate(result, { stripUnknown: true });
-        if (error) {
-            throw new UnprocessableEntityError(error.message, 422, 'UNPROCESSIBLE_ENTITY', error.details);
-        }
-        return value;
-    }
-
-    async deleteAdminByAdminId(adminId) {
-        const result = await this.collection.deleteOne({ [AdminProfileFields.adminId]: adminId });
-        if (result.deletedCount === 0) {
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { adminId });
-        }
-        return true;
-    }
-
-    // async findByEmail(email) {
-    //     return await this.UserModel.findOne({ email });
-    // }
-
-    async findUserByUserId(userId) {
-        const result = await this.collection.findOne({ [UserProfileFields.userId]: userId });
-        if (!result) {
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { userId });
-        }
-        const { error, value } = UserProfileSchema.validate(result, { stripUnknown: true });
-        if (error) {
-            throw new UnprocessableEntityError(error.message, 422, 'UNPROCESSIBLE_ENTITY', error.details);
-        }
-        return value;
+        return result
     }
 
     async deleteUserByUserId(userId) {
-        const result = await this.collection.deleteOne({ [UserProfileFields.userId]: userId });
+        const result = await this.collection.deleteOne({ [UserProfileFields.USER_ID]: userId });
         if (result.deletedCount === 0) {
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { userId });
         }
         return true;
+    }
+
+    async findUserByEmail(email) {
+        const result = await this.collection.findOne({ [UserProfileFields.EMAIL]: email });
+        logger.info(`[UserRepo] found user ${JSON.stringify(result)} with email: ${email}`)
+        return result
     }
 
     async getAllUsers({ searchStr = null, page = 1, limit = 10 }){

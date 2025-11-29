@@ -1,20 +1,29 @@
 const Joi = require("joi");
-const {v4: uuidv4} = require("uuid");
+const { EntityType } = require('../core/enum');
 
 const now = () => new Date().toISOString();
 
 const UserProfileFields = Object.freeze({
-  userId: 'userId',
-  full_name: 'full_name',
-  email: 'email',
+  USER_ID: 'user_id',
+  USERNAME: 'username',
+  EMAIL: 'email',
+  USERS_TYPE: 'users_type',
+  PASSWORD: 'password'
 });
 
 const UserProfileSchema = Joi.object({
-  [UserProfileFields.userId]: Joi.string().guid({ version: "uuidv4" }).default(() => uuidv4()),
-  [UserProfileFields.full_name]: Joi.string().required(),
-  [UserProfileFields.email]: Joi.string().email().required(),
-  createdAt: Joi.date().default(() => now()).description("Timestamp when the user was created"),
-  updatedAt: Joi.date().default(() => now()).description("Timestamp when the user was last updated"),
+  [UserProfileFields.USER_ID]: Joi.number().optional(),
+  [UserProfileFields.USERNAME]: Joi.string().required(),
+  [UserProfileFields.EMAIL]: Joi.string().email().required(),
+  [UserProfileFields.PASSWORD]: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters long",
+    "string.empty": "Password is required"
+  }),
+  [UserProfileFields.USERS_TYPE]: Joi.string()
+    .valid(...Object.values(EntityType)).required().messages({
+      "any.only": `Entity type must be one of: ${Object.values(EntityType).join(', ')}`,
+      "string.empty": "Entity type is required"
+    }),
 });
 
 module.exports = {

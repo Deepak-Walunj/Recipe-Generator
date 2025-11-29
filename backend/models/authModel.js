@@ -1,30 +1,27 @@
 const Joi = require('joi');
 const { EntityType } = require('../core/enum');
-const {v4: uuidv4} = require("uuid");
 
 const now = () => new Date().toISOString();
 
 const AuthEntityFields = Object.freeze({
-  user_id: 'user_id',
-  email: 'email',
-  password: 'password',
-  entity_type: 'entity_type',
+  USER_ID: 'user_id',
+  EMAIL: 'email',
+  ENTITY_TYPE: 'entity_type',
+  PASSWORD: 'password'
 })
 
 const AuthEntitySchema  = Joi.object({
-  [AuthEntityFields.user_id]: Joi.number().optional(),
-  [AuthEntityFields.email]: Joi.string().email().required().messages({
+  [AuthEntityFields.USER_ID]: Joi.number().optional(),
+  [AuthEntityFields.EMAIL]: Joi.string().email().required().messages({
     "string.email": "Valid email is required",
     "string.empty": "Email is required"
   }),
-  [AuthEntityFields.password]: Joi.string().min(6).required().messages({
+  [AuthEntityFields.PASSWORD]: Joi.string().min(6).required().messages({
     "string.min": "Password must be at least 6 characters long",
     "string.empty": "Password is required"
   }),
-  [AuthEntityFields.entity_type]: Joi.string()
-    .valid(...Object.values(EntityType))
-    .required()
-    .messages({
+  [AuthEntityFields.ENTITY_TYPE]: Joi.string()
+    .valid(...Object.values(EntityType)).required().messages({
       "any.only": `Entity type must be one of: ${Object.values(EntityType).join(', ')}`,
       "string.empty": "Entity type is required"
     }),

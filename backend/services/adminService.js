@@ -1,6 +1,7 @@
 const { setupLogging, getLogger } = require('../core/logger')
 const { EntityProfileSchema } = require('../models/authModel');
-const { InvalidCredentialsError } = require('../core/exception')
+const { InvalidCredentialsError,  DuplicateRequestException } = require('../core/exception')
+
 
 setupLogging();
 const logger = getLogger('admin-service')
@@ -23,7 +24,11 @@ class AdminService {
         if (error) {
             throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
         }
-        const profile = await this.userRepository.createUserProfile(value);
+        const entity = await this.userRepository.findUserByEmail(value.email);
+        if (entity){
+            throw new DuplicateRequestException("Duplicate entry", 409, "DUPLICATE_REQUEST", value.email)
+        }
+        const profile = await this.userRepository.createUserProfile(entity);
         const userId = profile.user_id
         logger.info(`Created user profile with user_id=${userId}`);
         const authPayload = {
