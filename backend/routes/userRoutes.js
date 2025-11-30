@@ -24,21 +24,21 @@ router.post('/register', async (req, res, next) => {
 
 router.get('/me', allowedEntities(EntityType.USER), async (req, res, next) => {
   const userService = getUserService();
-  const userId = req.user.userId
-  const profile = await userService.getUserProfile(userId)
+  const email = req.user.email
+  const profile = await userService.getUserProfile(email)
   logger.info(`Fetched profile for user: ${profile}`);
   return res.json(new StandardResponse(true, 'User profile fetched successfully', profile))
 })
 
 router.delete('/me', allowedEntities(EntityType.USER), async (req, res, next) => {
   const userService = getUserService()
-  const userId = req.user.userId
-  const result = await userService.deleteUser(userId)
+  const email = req.user.email
+  const result = await userService.deleteUser(email)
   if (!result){
-    logger.error(`Failed to delete user with ID: ${userId}`);
+    logger.error(`Failed to delete user with ID: ${email}`);
   }
-  logger.info(`Deleted user with ID: ${userId}`);
-  return res.json(new StandardResponse(true, 'User deleted successfully'))
+  logger.info(`Deleted user with email: ${email}`);
+  return res.json(new StandardResponse(true, 'User deleted successfully', {"email": email}))
 })
 
 module.exports = router;

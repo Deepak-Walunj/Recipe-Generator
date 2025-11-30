@@ -39,16 +39,16 @@ class UserService {
         return user
     }
 
-    async getUserProfile(userId) {
-        const profile = await this.userRepository.findUserByUserId( userId );
-        return profile;
+    async getUserProfile(email) {
+        return await this.userRepository.findUserByEmail(email);
     }
 
-    async deleteUser(userId) {
-        const user = await this.userRepository.findUserByUserId(userId);
-        const result_authRepo = await this.auth_service.deleteEntityByEntityId(user.userId);
-        const result_userRepo = await this.userRepository.deleteUserByUserId(user.userId);
-        return result_authRepo === result_userRepo;
+    async deleteUser(email) {
+        const result = await this.auth_service.deleteEntityByEmail(email);
+        if (!result){
+            logger.info(`Unable to delete profile with email: ${email}`)
+        }
+        return await this.userRepository.deleteUserByemail(email);
     }
 }
 

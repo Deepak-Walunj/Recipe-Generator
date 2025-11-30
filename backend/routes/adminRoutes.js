@@ -36,7 +36,7 @@ router.delete('/me', allowedEntities(EntityType.ADMIN), async (req, res, next) =
     logger.error(`Failed to delete user with ID: ${userId}`);
   }
   logger.info(`Deleted user with email: ${email}`);
-  return res.json(new StandardResponse(true, 'Admin deleted successfully'))
+  return res.json(new StandardResponse(true, 'Admin deleted successfully', {"email": email}))
 })
 
 router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) => {

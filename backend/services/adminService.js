@@ -43,12 +43,14 @@ class AdminService {
     }
 
     async getAdminProfile(email) {
-        const profile = await this.userRepository.findUserByEmail( email );
-        return profile;
+        return await this.userRepository.findUserByEmail( email );
     }
 
     async deleteUser(email) {
         const result = await this.auth_service.deleteEntityByEmail(email);
+        if (!result){
+            logger.info(`Unable to delete profile with email: ${email}`)
+        }
         return await this.userRepository.deleteUserByemail(email);
     }
 
