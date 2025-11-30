@@ -1,6 +1,7 @@
 const { setupLogging, getLogger } = require('../core/logger');
 setupLogging();
 const logger = getLogger("ingredient-repo");
+const { ingredientsArraySchema } = require('../schemas/ingredients.js')
 
 class IngredientsRepository{
     constructor(collection) {
@@ -18,7 +19,8 @@ class IngredientsRepository{
         params.push(Number(limit), Number((page - 1) * limit));
         try {
             const [rows] = await this.collection.db.query(query, params);
-            return rows;
+            const validated = await ingredientsArraySchema.validateAsync(rows, {stripUnknown: true})
+            return validated;
         } catch (err) {
             logger.error(`Error fetching ingredients: ${err.message}`);
             throw err;
