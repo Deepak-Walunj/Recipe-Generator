@@ -4,7 +4,7 @@ module.exports = {
     AUTH_USERS: 'auth_users',
     CUISINES: 'cuisines',
     RECIPE: 'recipe',
-    RECIPE_INGREDIENTs: 'recipe_ingredients',
+    RECIPE_INGREDIENTS: 'recipe_ingredients',
     INGREDIENTS : 'ingredients',
     RECIPE_RATINGS: 'recipe_ratings',
     BOOKMARKS: 'bookmarks',

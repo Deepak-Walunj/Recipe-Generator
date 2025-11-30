@@ -4,7 +4,6 @@ const cors = require('cors');
 const { PORT, ALLOWED_ORIGINS } = require('./core/settings');
 const {disconnectDB } = require('./core/database');
 const { initializeDependencies } = require('./core/deps');
-const { startRedis, stopRedis } = require("./dockerRedisManager");
 const { appExceptionHandler, validationExceptionHandler, genericExceptionHandler} = require('./middleware/errorHandler');
 const requestId = require('./middleware/requestId');
 const { setupLogging, getLogger } = require('./core/logger');
@@ -23,10 +22,6 @@ const publicRouter = require('./routes/publicRoutes');
   logger.info('Starting Backend (Express)');
 
   try {
-    if (process.env.USE_DOCKER_REDIS === 'true'){
-      logger.info('Using Docker Redis for caching');
-      startRedis();
-    }
     // Connect DB & init dependencies
     await initializeDependencies();
     logger.info('Dependencies initialized successfully');
@@ -65,7 +60,6 @@ const publicRouter = require('./routes/publicRoutes');
     // Shutdown hooks
     process.on('SIGINT', async () => {
       disconnectDB();
-      stopRedis();
       logger.info('Application shutdown complete');
       if (global.logger && global.logger.flush) {
         try {

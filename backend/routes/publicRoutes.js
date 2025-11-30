@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { setupLogging, getLogger } = require('../core/logger');
-const { getIngredientsService, getCuisinesService } = require('../core/deps')
+const { getIngredientsService, getCuisinesService, getRecipesService } = require('../core/deps')
 const { StandardResponse } = require('../schemas/adminSchema')
 
 setupLogging();
@@ -19,6 +19,13 @@ router.get('/cuisines', async (req, resp, next) => {
     const {search} = req.query
     const cuisines = await cuisinesService.getAllCuisines(search)
     return resp.json(new StandardResponse(true, 'All cuisines fetched successfully', {cuisines}))  
+})
+
+router.get('/recipes', async (req, resp, next) => {
+    const recipesService = getRecipesService()
+    const { search = null, page = 1, limit = 10 } = req.query
+    const recipes = await recipesService.getAllRecipes({searchStr: search, page: parseInt(page), limit: parseInt(limit)})
+    return resp.json(new StandardResponse(true, 'All cuisines fetched successfully', {page, limit, recipes}))  
 })
 
 module.exports = router

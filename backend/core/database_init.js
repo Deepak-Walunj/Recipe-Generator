@@ -11,7 +11,7 @@ const REQUIRED_TABLES = [
   collections.AUTH_USERS,
   collections.CUISINES,
   collections.RECIPE,
-  collections.RECIPE_INGREDIENTs,
+  collections.RECIPE_INGREDIENTS,
   collections.INGREDIENTS,
   collections.RECIPE_RATINGS,
   collections.BOOKMARKS,
