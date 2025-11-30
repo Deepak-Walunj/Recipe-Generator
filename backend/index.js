@@ -13,7 +13,7 @@ const { setupLogging, getLogger } = require('./core/logger');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
-// const interviewRouter = require('./routes/interviewRoutes');
+const publicRouter = require('./routes/publicRoutes');
 // const dashboardRouter = require('./routes/dashboardRoutes');
 
 (async function main() {
@@ -45,6 +45,7 @@ const adminRouter = require('./routes/adminRoutes');
     app.use(`/auth`, authRouter);
     app.use(`/user`, userRouter);
     app.use(`/admin`, adminRouter);
+    app.use(`/public`,publicRouter);
 
     // Health check
     app.get('/health', (req, res) => {

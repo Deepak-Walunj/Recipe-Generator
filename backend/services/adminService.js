@@ -2,7 +2,6 @@ const { setupLogging, getLogger } = require('../core/logger')
 const { EntityProfileSchema } = require('../models/authModel');
 const { InvalidCredentialsError,  DuplicateRequestException } = require('../core/exception')
 
-
 setupLogging();
 const logger = getLogger('admin-service')
 
@@ -55,9 +54,7 @@ class AdminService {
     }
 
     async getAllUsers({searchStr = null, page = 1, limit = 10 }) {
-        const users = await this.userRepository.getAllUsers({
-            searchStr, page, limit
-        });
+        const users = await this.userRepository.getAllUsers({searchStr:searchStr, page:page, limit:limit});
         return users
     }
 }

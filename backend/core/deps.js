@@ -1,19 +1,22 @@
+const { createClient } = require("redis");
+
+const MySQLCollection = require("./mysqlCollection");
 const { getDB, connectDB} = require('./database')
 const collections = require('./collections')
-const { setupLogging, getLogger } = require('../core/logger');
+const { CACHE } = require('./settings');
+const { setupLogging, getLogger } = require('./logger');
+
 const AuthRepository = require('../repositories/authRepository');
 const UserRepository = require('../repositories/userRepository');
-const { CACHE } = require('./settings');
+const IngredientsRepository = require('../repositories/ingredientsRepository');
+
 const AuthService = require('../services/authService');
 const UserService = require('../services/userService');
-const AdminService = require('../services/AdminService');
-const logger = getLogger("deps");
-const { createClient } = require("redis");
-const MySQLCollection = require("./mysqlCollection");
+const AdminService = require('../services/adminService');
+const IngredientsService = require('../services/ingredientsService');
 
 setupLogging();
-
-logger.info('In deps.js');
+const logger = getLogger("deps");
 
 let dependencyStorage = null;
 
@@ -40,16 +43,21 @@ class DependencyStorage{
         this._cache = cache 
         this.userRepo = new UserRepository(new MySQLCollection(db, collections.USERS));
         this.authRepo = new AuthRepository(new MySQLCollection(db, collections.AUTH_USERS));
+        this.ingredientsRepo = new IngredientsRepository(new MySQLCollection(db, collections.INGREDIENTS))
         
         this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache });
         this.userService = new UserService({ userRepository: this.userRepo, auth_service: this.authService });
         this.adminService = new AdminService({ userRepository: this.userRepo, auth_service: this.authService, user_service: this.userService });
+        this.ingredientsService = new IngredientsService( { ingredientsRepository: this.ingredientsRepo })
         }
     getAuthRepository() {
         return this.authRepo;
     }
     getUserRepository() {
         return this.userRepo;
+    }
+    getIngredientsRepository(){
+      return this.ingredientsRepo;
     }
     getAuthService() {
         return this.authService;
@@ -59,6 +67,9 @@ class DependencyStorage{
     }
     getAdminService() {
         return this.adminService;
+    }
+    getIngredientsService(){
+      return this.ingredientsService
     }
     getCache() {
         return this._cache;
@@ -90,6 +101,10 @@ function getUserRepository() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getUserRepository();
 }
+function getIngredientsRepository(){
+  if (!dependencyStorage) throw new Error('Dependencies not initialised');
+  return dependencyStorage.getIngredientsRepository();
+}
 function getAuthService() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getAuthService();
@@ -102,6 +117,10 @@ function getAdminService() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getAdminService();
 }
+function getIngredientsService(){
+  if (!dependencyStorage) throw new Error('Dependencies not initialized');
+  return dependencyStorage.getIngredientsService();
+}
 function getCache() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getCache();
@@ -110,8 +129,10 @@ module.exports = {
   initializeDependencies,
   getAuthRepository,
   getUserRepository,
+  getIngredientsRepository,
   getAuthService,
   getUserService,
   getAdminService,
+  getIngredientsService,
   getCache
 };
