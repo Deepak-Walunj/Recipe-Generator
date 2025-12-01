@@ -17,6 +17,12 @@ class CuisinesService{
         }
         return cuisines;
     }
+
+    async addCuisine(name){
+        logger.info(`Adding cuisine: ${JSON.stringify(name)}`)
+        const cuisine = await this.cuisinesRepository.addCuisine(name)
+        return cuisine
+    }
 }
 
 module.exports = CuisinesService

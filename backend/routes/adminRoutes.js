@@ -1,11 +1,16 @@
 const express = require('express')
+
 const router = express.Router()
 const { setupLogging, getLogger } = require('../core/logger')
-const { getAdminService } = require('../core/deps')
-const { registerAdminSchema, StandardResponse } = require('../schemas/adminSchema')
+const { getAdminService, getCuisinesService, getIngredientsService } = require('../core/deps')
 const { ValidationError } = require('../core/exception')
-const allowedEntities = require('../middleware/authMiddleware')
 const { EntityType } = require('../core/enum')
+
+const allowedEntities = require('../middleware/authMiddleware')
+
+const { registerAdminSchema, StandardResponse } = require('../schemas/adminSchema')
+
+const {cuisineModel} = require('../models/cuisines')
 
 setupLogging()
 const logger = getLogger('admin-routes')
@@ -48,3 +53,26 @@ router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) =
 })
 
 module.exports = router
+
+router.post('/add-cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  const cuisineService = getCuisinesService()
+  const { error, value} =  cuisineModel.validate(req.body)
+  if (error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+  const cuisine = await cuisineService.addCuisine(value)
+  logger.info(`Added cuisine: ${JSON.stringify(cuisine)}`);
+  return resp.json (new StandardResponse(true, 'Cuisine added successfully', cuisine))
+})
+
+router.post('/add-ingredient', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  const ingredientsService = getIngredientsService()
+  const { error, value} =  cuisineModel.validate(req.body)
+  if (error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+  const ingredient = await ingredientsService.addIngredient(value)
+  logger.info(`Added ingredient: ${JSON.stringify(ingredient)}`);
+  return resp.json (new StandardResponse(true, 'Ingredient added successfully', ingredient))
+})
+

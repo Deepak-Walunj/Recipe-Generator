@@ -1,8 +1,6 @@
 const Joi = require('joi');
 const { EntityType } = require('../core/enum');
 
-const now = () => new Date().toISOString();
-
 const AuthEntityFields = Object.freeze({
   USER_ID: 'user_id',
   EMAIL: 'email',
@@ -10,7 +8,7 @@ const AuthEntityFields = Object.freeze({
   PASSWORD: 'password'
 })
 
-const AuthEntitySchema  = Joi.object({
+const AuthEntityModel  = Joi.object({
   [AuthEntityFields.USER_ID]: Joi.number().optional(),
   [AuthEntityFields.EMAIL]: Joi.string().email().required().messages({
     "string.email": "Valid email is required",
@@ -42,6 +40,6 @@ const EntityProfileSchema = Joi.object({
 
 module.exports = {
   AuthEntityFields,
-  AuthEntitySchema,
+  AuthEntityModel,
   EntityProfileSchema
 };

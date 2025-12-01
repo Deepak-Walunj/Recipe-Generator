@@ -11,7 +11,7 @@ const UserProfileFields = Object.freeze({
   PASSWORD: 'password'
 });
 
-const UserProfileSchema = Joi.object({
+const UserProfileModel = Joi.object({
   [UserProfileFields.USER_ID]: Joi.number().optional(),
   [UserProfileFields.USERNAME]: Joi.string().required(),
   [UserProfileFields.EMAIL]: Joi.string().email().required(),
@@ -28,5 +28,5 @@ const UserProfileSchema = Joi.object({
 
 module.exports = {
     UserProfileFields,
-    UserProfileSchema,
+    UserProfileModel,
 };

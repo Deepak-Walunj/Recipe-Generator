@@ -23,6 +23,11 @@ class CuisinesRepository{
             logger.info(`Error fetching cuisines: ${err}`)
         }
     }
+
+    async addCuisine(name){
+        const result = await this.collection.insertOne(name)
+            return {...name, cuisine_id: result.insertedId}
+    }
 }
 
 module.exports = CuisinesRepository

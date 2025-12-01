@@ -20,14 +20,6 @@ class UserRepository {
         return { ...payload, user_id: result.insertedId };
     }
 
-    async findUserByUserId(user_id) {
-        const result = await this.collection.findOne({ [UserProfileFields.USER_ID]: user_id });
-        if (!result) {
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { user_id });
-        }
-        return result
-    }
-
     async deleteUserByemail(email) {
         const result = await this.collection.deleteOne({ [UserProfileFields.EMAIL]: email });
         if (result.deletedCount === 0) {

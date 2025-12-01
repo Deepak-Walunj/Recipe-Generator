@@ -1,6 +1,6 @@
 const {InvalidCredentialsError, UnauthorizedError, NotFoundError} = require('../core/exception');
 const { AuthRegisterSchema } = require('../schemas/authSchema');
-const { AuthEntitySchema } = require('../models/authModel');
+const { AuthEntityModel } = require('../models/authModel');
 const { create_access_token, create_refresh_token, hash_password, verify_password } = require('../middleware/security');
 const { setupLogging, getLogger } = require('../core/logger');
 const bcrypt = require('bcrypt');
@@ -29,7 +29,7 @@ class AuthService {
             if (err.name !== 'NotFoundError') throw err;
         }
         const password = await hash_password(value.password);
-        const auth_user = AuthEntitySchema.validate({
+        const auth_user = AuthEntityModel.validate({
             user_id: value.user_id,
             email: value.email,
             password: password, 
@@ -41,7 +41,6 @@ class AuthService {
     
     async loginEntity(data) {
         const user = await this.authRepository.findByEmail(data.email);
-        logger.info(`User: ${user}`)
         if (!user){
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {email: data.email, entity_type: data.entity_type});
         }
@@ -60,7 +59,7 @@ class AuthService {
     }
 
     async generateTokens(user) {
-        const auth_entity = AuthEntitySchema.validate(user, { stripUnknown: true });
+        const auth_entity = AuthEntityModel.validate(user, { stripUnknown: true });
         if (auth_entity.error) {
             throw new InvalidCredentialsError('Invalid user data', 400, 'INVALID_USER', auth_entity.error.details);
         }
