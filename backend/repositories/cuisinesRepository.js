@@ -25,8 +25,8 @@ class CuisinesRepository{
     }
 
     async addCuisine(name){
-        const result = await this.collection.insertOne(name)
-            return {...name, cuisine_id: result.insertedId}
+        const result = await this.collection.insertOne({name})
+        return {...name, cuisine_id: result.insertedId}
     }
 }
 

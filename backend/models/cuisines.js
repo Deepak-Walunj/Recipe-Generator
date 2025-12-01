@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
 const cuisineFields = Object.freeze({
-    CUISINE_ID: 'cuisime_id',
+    CUISINE_ID: 'cuisine_id',
     NAME: 'name'
 })
 

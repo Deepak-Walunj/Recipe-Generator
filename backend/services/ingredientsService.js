@@ -17,6 +17,12 @@ class IngredientsService{
         }
         return ingredients;
     }
+
+    async addIngredient(name){
+        logger.info(`Adding ingredient: ${JSON.stringify(name)}`)
+        const ingredient = await this.ingredientsRepository.addIngredient(name)
+        return ingredient
+    }
 }
 
 module.exports = IngredientsService;

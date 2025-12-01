@@ -27,6 +27,12 @@ class IngredientsRepository{
         }
     }
 
+
+    async addIngredient(name){
+        const result = await this.collection.insertOne({name})
+        return {...name, ingredient_id: result.insertedId}
+    }
+
 }
 
 module.exports = IngredientsRepository
