@@ -1,7 +1,11 @@
 const { setupLogging, getLogger } = require('../core/logger');
+
+const { recipesArraySchema } = require('../schemas/recipes.js')
+
+const {recipeFields} = require('../models/recipes.js');
+
 setupLogging();
 const logger = getLogger("recipes-repo");
-const { recipesArraySchema } = require('../schemas/recipes.js')
 
 class RecipesRepository{
     constructor(collection) {
@@ -41,6 +45,16 @@ class RecipesRepository{
         return { ...recipeData, recipe_id: result.insertedId };
     }
 
+    async getRecipeById(recipeId){
+        const result = await this.collection.findOne({ [recipeFields.RECIPE_ID]: recipeId });
+        return result;
+    }
+
+    async deleteById(recipeId){
+        const result = await this.collection.deleteOne({ [recipeFields.RECIPE_ID]: recipeId });
+        logger.info(`Deleted ${result.deletedCount} recipe with ID: ${recipeId}`);
+        return result;
+    }
 }
 
 module.exports = RecipesRepository

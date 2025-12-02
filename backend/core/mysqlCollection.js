@@ -51,6 +51,28 @@ class MySQLCollection {
         );
         return result;
     }
+
+    async deleteMany(where){
+        const keys = Object.keys(where);
+        const values = Object.values(where);
+        const condition = keys.map(k => `${k} = ?`).join(" AND ");
+        const [result] = await this.db.query(
+            `DELETE FROM ${this.tableName} WHERE ${condition}`,
+            values
+        );
+        return result;
+    }
+
+    async findMany(where){
+        const keys = Object.keys(where);
+        const values = Object.values(where)
+        const condition = keys.map(k => `${k} = ?`).join(" AND ")
+        const [result] = await this.db.query(
+            `SELECT * FROM ${this.tableName} WHERE ${condition}`,
+            values
+        );
+        return result;
+    }
 }
 
 module.exports = MySQLCollection;

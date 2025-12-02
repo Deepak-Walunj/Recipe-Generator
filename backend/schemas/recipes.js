@@ -9,7 +9,7 @@ const ingredientItemSchema = Joi.object({
 const recipeInputSchema = Joi.object({
   title: Joi.string().required(),
   instruction: Joi.string().required(),
-  prep_time: Joi.string().optional(),
+  prep_time: Joi.number().integer().optional().allow(null, 0),
   cuisine_name: Joi.string().required(),
   ingredients: Joi.array().items(ingredientItemSchema).min(1).required(),
 });

@@ -9,7 +9,7 @@ const UserRepository = require('../repositories/userRepository');
 const IngredientsRepository = require('../repositories/ingredientsRepository');
 const CuisinesRepository = require('../repositories/cuisinesRepository')
 const RecipesRepository = require('../repositories/recipesRepository')
-const RecipeIngredientsRepository = require('../repositories/recipeIngredients.js')
+const RecipeIngredientsRepository = require('../repositories/recipeIngredientsRepository.js')
 
 const AuthService = require('../services/authService');
 const UserService = require('../services/userService');

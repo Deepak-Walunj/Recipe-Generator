@@ -32,10 +32,12 @@ class RecipesService{
         if (recipeValidation.error){
             return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
         }
-        logger.info(`Adding recipe: ${JSON.stringify(recipeValidation.value)}`)
+        // logger.info(`Adding recipe: ${JSON.stringify(recipeValidation.value)}`)
+
         const recipe = await this.recipesRepository.addRecipe(recipeValidation.value)
         const recipe_id = recipe.recipe_id;
         logger.info(`Recipe added with ID: ${recipe_id}`);
+
         const recipeIngredients = recipePayload.ingredients.map(item => ({
             recipe_id,
             ingredient_id: item.ingredient_id,
@@ -51,14 +53,34 @@ class RecipesService{
                 recipeIngredientsValidation.error.details
             );
         }
+
         const addedIngredients = []
         logger.info(`Adding recipe ingredients: ${JSON.stringify(recipeIngredientsValidation.value)}`);
         for (const row of recipeIngredientsValidation.value) {
-            logger.info(`Adding recipe ingredient: ${JSON.stringify(row)}`);
+            // logger.info(`Adding recipe ingredient: ${JSON.stringify(row)}`);
             const addedIngredient = await this.recipeIngredientsRepository.addRecipeIngredient(row);
-            addedIngredients.push(addedIngredient.recipe_ingredient_id);
+            addedIngredients.push(addedIngredient);
         }
-        return {...recipe, ingredients: addedIngredients};
+
+        return {recipe: recipe, ingredients: addedIngredients};
+    }
+
+    async deleteRecipe(recipeId){
+        const existingRecipe = await this.recipesRepository.getRecipeById(recipeId);
+        if (!existingRecipe){
+            throw new ValidationError(`Recipe with ID ${recipeId} does not exist`, 404, 'NOT_FOUND', null);
+        }
+        const existingIngredients = await this.recipeIngredientsRepository.getIngredientsByRecipeId(recipeId);
+        if (existingIngredients.length === 0){
+            throw new ValidationError(`No ingredients found for recipe ID ${recipeId}`, 404, 'NOT_FOUND', null);
+        }
+        logger.info(`Found existing recipe: ${JSON.stringify(existingRecipe)} with ID: ${recipeId}`);
+        logger.info(`Found existing ingredients: ${JSON.stringify(existingIngredients)} with ID: ${recipeId}`);
+        const deletedRecipeIngredients = await this.recipeIngredientsRepository.deleteByRecipeId(recipeId); 
+        logger.info(`Deleted recipe ingredients: ${JSON.stringify(deletedRecipeIngredients)} for recipe ID: ${recipeId}`);
+        const deletedRecipe = await this.recipesRepository.deleteById(recipeId);
+        logger.info(`Deleted recipe: ${JSON.stringify(deletedRecipe)} with ID: ${recipeId}`);
+        return { recipe:existingRecipe, ingredients:existingIngredients  };
     }
 }
 

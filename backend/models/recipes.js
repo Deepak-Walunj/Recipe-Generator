@@ -20,5 +20,6 @@ const recipeModel = Joi.object({
 })
 
 module.exports = {
+    recipeFields,
     recipeModel
 }

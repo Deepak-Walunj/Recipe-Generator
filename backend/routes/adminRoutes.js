@@ -80,7 +80,7 @@ router.post('/add-ingredient', allowedEntities(EntityType.ADMIN), async (req, re
   return resp.json (new StandardResponse(true, 'Ingredient added successfully', ingredient))
 })
 
-router.post('/add-recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   const recipeService = getRecipesService()
   const cuisineService = getCuisinesService()
   const ingredientService = getIngredientsService()
@@ -88,20 +88,36 @@ router.post('/add-recipe', allowedEntities(EntityType.ADMIN), async (req, resp, 
   if (error){
     return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
   }
-
+  const prep_time = value.prep_time
+  if (prep_time === undefined && (typeof prep_time === 'number' || Number.isInteger(prep_time) || prep_time > 0)) {
+    const prep_time_str = `${prep_time} mins`;
+  }
   const cuisineName = value.cuisine_name.toLowerCase();
   const cuisine_id = await cuisineService.ensureCuisineExist(cuisineName);
   const processedIngredients = await ingredientService.ensureIngredientsExist(value.ingredients);
   const recipe_payload = {
     title: value.title.toLowerCase(),
     instruction: value.instruction,
-    prep_time: value.prep_time,
+    prep_time: value.prep_time_str,
     cuisine_id,
     ingredients: processedIngredients,
   }
   logger.info(`Final recipe payload: ${JSON.stringify(recipe_payload)}`);
   const recipe_and_ingredients = await recipeService.addRecipe(recipe_payload)
   logger.info(`Added recipe with ingredients: ${JSON.stringify(recipe_and_ingredients)}`);
-  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe_and_ingredients": recipe_and_ingredients}))
+  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe": recipe_and_ingredients.recipe, "ingredients": recipe_and_ingredients.ingredients}) )
 })
 
+router.delete('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  try {
+    const recipeService = getRecipesService();
+    const recipe_id = Number(req.params.recipe_id);
+    if (!recipe_id || isNaN(recipe_id)) {
+      return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
+    }
+    const result = await recipeService.deleteRecipe(recipe_id);
+    return resp.json(new StandardResponse(true, "Recipe deleted successfully", result));
+  } catch (err) {
+    next(err);
+  }
+});
