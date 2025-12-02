@@ -1,5 +1,19 @@
 const Joi = require('joi');
 
+const ingredientItemSchema = Joi.object({
+  name: Joi.string().required(),
+  quantity: Joi.string().optional(),
+  unit: Joi.string().optional().allow(null, "")
+});
+
+const recipeInputSchema = Joi.object({
+  title: Joi.string().required(),
+  instruction: Joi.string().required(),
+  prep_time: Joi.string().optional(),
+  cuisine_name: Joi.string().required(),
+  ingredients: Joi.array().items(ingredientItemSchema).min(1).required(),
+});
+
 const recipeSchema = Joi.object({
   recipe_id: Joi.number().integer().required(),
   title: Joi.string().required(),
@@ -14,5 +28,6 @@ const recipesArraySchema = Joi.array().items(recipeSchema).required();
 
 module.exports = {
     recipeSchema,
-    recipesArraySchema
+    recipesArraySchema,
+    recipeInputSchema
 }

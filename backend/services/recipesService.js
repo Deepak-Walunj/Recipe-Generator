@@ -1,11 +1,15 @@
 const { setupLogging, getLogger } = require('../core/logger')
+const { ValidationError } = require('../core/exception');
 
+const { recipeModel } = require('../models/recipes.js');
+const { recipeIngredientArrayModel } = require('../models/recipeIngredient.js');
 setupLogging();
 const logger = getLogger('recipes-service')
 
 class RecipesService{
-    constructor({recipesRepository}){
+    constructor({recipesRepository, recipeIngredientsRepository}){
         this.recipesRepository = recipesRepository;
+        this.recipeIngredientsRepository = recipeIngredientsRepository;
     }
 
     async getAllRecipes({searchStr = null, page = 1, limit = 10}){
@@ -16,6 +20,45 @@ class RecipesService{
             logger.info(`No recipes fetched`)
         }
         return recipes;
+    }
+
+    async addRecipe(recipePayload){
+        const recipeValidation  = recipeModel.validate({
+            title: recipePayload.title,
+            instruction: recipePayload.instruction,
+            prep_time: recipePayload.prep_time,
+            cuisine_id: recipePayload.cuisine_id
+        }, {stripUnknown: true})
+        if (recipeValidation.error){
+            return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+        }
+        logger.info(`Adding recipe: ${JSON.stringify(recipeValidation.value)}`)
+        const recipe = await this.recipesRepository.addRecipe(recipeValidation.value)
+        const recipe_id = recipe.recipe_id;
+        logger.info(`Recipe added with ID: ${recipe_id}`);
+        const recipeIngredients = recipePayload.ingredients.map(item => ({
+            recipe_id,
+            ingredient_id: item.ingredient_id,
+            quantity: item.quantity,
+            unit: item.unit
+        }));
+        const recipeIngredientsValidation = recipeIngredientArrayModel.validate(recipeIngredients);
+        if (recipeIngredientsValidation.error) {
+            throw new ValidationError(
+                recipeIngredientsValidation.error.message,
+                400,
+                'VALIDATION_ERROR',
+                recipeIngredientsValidation.error.details
+            );
+        }
+        const addedIngredients = []
+        logger.info(`Adding recipe ingredients: ${JSON.stringify(recipeIngredientsValidation.value)}`);
+        for (const row of recipeIngredientsValidation.value) {
+            logger.info(`Adding recipe ingredient: ${JSON.stringify(row)}`);
+            const addedIngredient = await this.recipeIngredientsRepository.addRecipeIngredient(row);
+            addedIngredients.push(addedIngredient.recipe_ingredient_id);
+        }
+        return {...recipe, ingredients: addedIngredients};
     }
 }
 

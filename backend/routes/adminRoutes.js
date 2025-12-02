@@ -2,13 +2,14 @@ const express = require('express')
 
 const router = express.Router()
 const { setupLogging, getLogger } = require('../core/logger')
-const { getAdminService, getCuisinesService, getIngredientsService } = require('../core/deps')
+const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService } = require('../core/deps')
 const { ValidationError } = require('../core/exception')
 const { EntityType } = require('../core/enum')
 
 const allowedEntities = require('../middleware/authMiddleware')
 
 const { registerAdminSchema, StandardResponse } = require('../schemas/adminSchema')
+const {recipeInputSchema} = require('../schemas/recipes')
 
 const {cuisineModel} = require('../models/cuisines')
 const {ingredientModel} = require('../models/ingredients')
@@ -77,5 +78,30 @@ router.post('/add-ingredient', allowedEntities(EntityType.ADMIN), async (req, re
   const ingredient = await ingredientsService.addIngredient(name)
   logger.info(`Added ingredient: ${JSON.stringify(ingredient)}`);
   return resp.json (new StandardResponse(true, 'Ingredient added successfully', ingredient))
+})
+
+router.post('/add-recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  const recipeService = getRecipesService()
+  const cuisineService = getCuisinesService()
+  const ingredientService = getIngredientsService()
+  const { error, value} =  recipeInputSchema.validate(req.body)
+  if (error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+
+  const cuisineName = value.cuisine_name.toLowerCase();
+  const cuisine_id = await cuisineService.ensureCuisineExist(cuisineName);
+  const processedIngredients = await ingredientService.ensureIngredientsExist(value.ingredients);
+  const recipe_payload = {
+    title: value.title.toLowerCase(),
+    instruction: value.instruction,
+    prep_time: value.prep_time,
+    cuisine_id,
+    ingredients: processedIngredients,
+  }
+  logger.info(`Final recipe payload: ${JSON.stringify(recipe_payload)}`);
+  const recipe_and_ingredients = await recipeService.addRecipe(recipe_payload)
+  logger.info(`Added recipe with ingredients: ${JSON.stringify(recipe_and_ingredients)}`);
+  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe_and_ingredients": recipe_and_ingredients}))
 })
 

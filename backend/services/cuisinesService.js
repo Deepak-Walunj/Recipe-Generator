@@ -23,6 +23,19 @@ class CuisinesService{
         const cuisine = await this.cuisinesRepository.addCuisine(name)
         return cuisine
     }
+
+    async ensureCuisineExist(cuisineName){
+        const allCuisines = await this.getAllCuisines();
+        const cuisineMap = new Map(allCuisines.map(c => [c.name, c.cuisine_id]))
+        logger.info(`Cuisines Map: ${JSON.stringify(Array.from(cuisineMap.entries()))}`);
+        let cuisine_id = cuisineMap.get(cuisineName);
+        if (!cuisine_id){
+            const cuisine = await this.addCuisine(cuisineName.toLowerCase())
+            cuisine_id = cuisine.cuisine_id;
+            logger.info(`Added cuisine: ${JSON.stringify(cuisine)}`);
+        }
+        return cuisine_id;
+    }
 }
 
 module.exports = CuisinesService

@@ -36,6 +36,10 @@ class RecipesRepository{
             throw err;
         }
     }
+    async addRecipe(recipeData){
+        const result = await this.collection.insertOne(recipeData);
+        return { ...recipeData, recipe_id: result.insertedId };
+    }
 
 }
 

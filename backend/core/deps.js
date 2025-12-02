@@ -9,6 +9,7 @@ const UserRepository = require('../repositories/userRepository');
 const IngredientsRepository = require('../repositories/ingredientsRepository');
 const CuisinesRepository = require('../repositories/cuisinesRepository')
 const RecipesRepository = require('../repositories/recipesRepository')
+const RecipeIngredientsRepository = require('../repositories/recipeIngredients.js')
 
 const AuthService = require('../services/authService');
 const UserService = require('../services/userService');
@@ -48,13 +49,14 @@ class DependencyStorage{
         this.ingredientsRepo = new IngredientsRepository(new MySQLCollection(db, collections.INGREDIENTS))
         this.cusinesRepo = new CuisinesRepository(new MySQLCollection(db, collections.CUISINES))
         this.recipesRepo = new RecipesRepository(new MySQLCollection(db, collections.RECIPE))
+        this.recipeIngredientsRepo = new RecipeIngredientsRepository(new MySQLCollection(db, collections.RECIPE_INGREDIENTS))
         
         this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache });
         this.userService = new UserService({ userRepository: this.userRepo, auth_service: this.authService });
         this.adminService = new AdminService({ userRepository: this.userRepo, auth_service: this.authService, user_service: this.userService });
         this.ingredientsService = new IngredientsService( { ingredientsRepository: this.ingredientsRepo })
         this.cuisinesService = new CuisinesService( { cuisinesRepository: this.cusinesRepo })
-        this.recipesService = new RecipesService( { recipesRepository: this.recipesRepo })
+        this.recipesService = new RecipesService( { recipesRepository: this.recipesRepo, recipeIngredientsRepository: this.recipeIngredientsRepo } )
         }
     getAuthRepository() {
         return this.authRepo;
@@ -70,6 +72,9 @@ class DependencyStorage{
     }
     getRecipesRepository(){
       return this.recipesRepo;
+    }
+    getRecipeIngredientsRepository(){
+      return this.recipeIngredientsRepo;
     }
     getAuthService() {
         return this.authService;
@@ -123,6 +128,10 @@ function getRecipesRepository(){
   if (!dependencyStorage) throw new Error('Dependencies not initialised');
   return dependencyStorage.getRecipesRepository();
 }
+function getRecipeIngredientsRepository(){
+  if (!dependencyStorage) throw new Error('Dependencies not initialised');
+  return dependencyStorage.getRecipeIngredientsRepository();
+}
 function getAuthService() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getAuthService();
@@ -158,6 +167,7 @@ module.exports = {
   getIngredientsRepository,
   getCusinesRepository,
   getRecipesRepository,
+  getRecipeIngredientsRepository,
   getAuthService,
   getUserService,
   getAdminService,
