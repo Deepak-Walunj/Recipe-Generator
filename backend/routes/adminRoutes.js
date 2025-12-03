@@ -56,7 +56,7 @@ router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) =
 
 module.exports = router
 
-router.post('/add-cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+router.post('/cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   const cuisineService = getCuisinesService()
   const { error, value} =  cuisineModel.validate(req.body)
   const name = value.name.toLowerCase();
@@ -68,7 +68,7 @@ router.post('/add-cuisine', allowedEntities(EntityType.ADMIN), async (req, resp,
   return resp.json (new StandardResponse(true, 'Cuisine added successfully', cuisine))
 })
 
-router.post('/add-ingredient', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+router.post('/ingredient', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   const ingredientsService = getIngredientsService()
   const { error, value} =  ingredientModel.validate(req.body)
   const name = value.name.toLowerCase();

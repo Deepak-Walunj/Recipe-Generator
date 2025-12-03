@@ -5,7 +5,11 @@ const ENDPOINTS = {
     REGISTER: `${URL}/register`,
     GET_ME: `${URL}/me`,
     DELETE_ME: `${URL}/me`,
-    GET_USERS: `${URL}/users`
+    GET_USERS: `${URL}/users`,
+    ADD_CUISINE: `${URL}/cuisine`,
+    ADD_INGREDIENT: `${URL}/ingredient`,
+    ADD_RECIPE: `${URL}/recipe`,
+    DELETE_RECIPE: `${URL}/recipe/:recipe_id`,
 }
 
 export const adminRegistrationApi = async (data) => {
