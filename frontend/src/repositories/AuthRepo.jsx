@@ -25,7 +25,7 @@ export const loginApi = async (email, password, entity_type) => {
     return response.data
 }
 
-export const companyLoginApi = async (email, password) => {
+export const adminLoginApi = async (email, password) => {
     return loginApi(email, password, Constants.ENTITY.ADMIN)
 }
 

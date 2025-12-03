@@ -1,0 +1,263 @@
+.landing {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+/* dark overlay */
+.landing__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.72) 100%);
+  backdrop-filter: blur(0.5px);
+  z-index: 0;
+}
+
+/* Header */
+.landing__header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+}
+
+.brand {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.brand__logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color: white;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.brand__title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: #fff;
+}
+
+.brand__tag {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+
+/* Top-right admin button */
+.header__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header__actions .btn {
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Hero / card */
+.landing__main {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  flex: 1 0 auto;
+}
+
+.hero {
+  width: min(980px, 96%);
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.2rem;
+  align-items: center;
+}
+
+/* left content */
+.hero__content {
+  color: white;
+  padding: 2.2rem;
+}
+
+.hero__eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.95);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.hero__title {
+  font-size: 2.4rem;
+  line-height: 1.02;
+  margin: 0.15rem 0 0.6rem 0;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+
+.hero__lead {
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 1.25rem;
+  font-size: 1.02rem;
+  max-width: 680px;
+}
+
+/* small feature row */
+.features {
+  display:flex;
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.feature {
+  background: rgba(255,255,255,0.04);
+  padding: 0.55rem 0.85rem;
+  border-radius: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.95);
+  font-size: 0.92rem;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* right card */
+.hero__card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display:flex;
+  flex-direction:column;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Buttons — use .btn from index.css and more modifiers */
+.btn--primary {
+  /* gradient primary */
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 999px;
+  width: 100%;
+  font-size: 1rem;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.18);
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms;
+}
+
+.btn--primary:hover,
+.btn--primary:focus {
+  transform: translateY(-3px);
+  filter: brightness(1.03);
+  outline: none;
+  box-shadow: 0 12px 40px rgba(37,99,235,0.22);
+}
+
+.btn--ghost {
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.10);
+  padding: 12px 18px;
+  border-radius: 999px;
+  width: 100%;
+  font-weight: 700;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid rgba(37,99,235,0.14);
+  padding: 12px 18px;
+  border-radius: 12px;
+  width: 100%;
+}
+
+/* small helper text inside card */
+.hero__meta {
+  font-size: 0.92rem;
+  color: rgba(255,255,255,0.85);
+  text-align:center;
+}
+
+/* Footer */
+.landing__footer {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  padding: 1.75rem 2.5rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(0deg, rgba(0,0,0,0.25), transparent);
+}
+
+/* footer sections */
+.footer__left {
+  display:flex;
+  gap: 1rem;
+  align-items:center;
+}
+.footer__brand {
+  display:flex;
+  flex-direction:column;
+}
+.footer__links {
+  display:flex;
+  gap: 18px;
+  align-items:center;
+}
+.footer__links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration:none;
+  font-weight:600;
+}
+.footer__links a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* small screens */
+@media (max-width: 880px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .brand__title { font-size: 1.25rem; }
+  .hero__title { font-size: 1.6rem; }
+  .landing__header { padding: 1.25rem 1.25rem; }
+  .landing__footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .hero__card { width: 100%; }
+}

@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import "@/components/pages/auth/LandingPage.css";
 import landingBg from "@/assets/backgrounds/landing_bg.jpg";
 import { logOut } from "@utils/AuthUtils";
-
-import { Button } from "@/components/pages/ui/button";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -15,43 +13,123 @@ export default function LandingPage() {
 
   const goUserLogin = () => navigate("/ulogin");
   const goUserRegister = () => navigate("/uregister");
+  const goGuestLogin = () => navigate("/guest");
   const goAdminLogin = () => navigate("/alogin");
+return (
+    <main className="landing" style={{ backgroundImage: `url(${landingBg})` }} aria-labelledby="landing-title">
+      <div className="landing__overlay" aria-hidden="true" />
+      {/* HEADER */}
+      <header className="landing__header container" role="banner">
+        <div className="brand" title="RecipeGen">
+          <div className="brand__logo" aria-hidden="true">
+            R
+          </div>
+          <div className="brand__title">
+            RecipeGen
+            <div className="brand__tag">Cooking companion</div>
+          </div>
+        </div>
 
-  return (
-    <main
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat flex flex-col items-center justify-center"
-      style={{ backgroundImage: `url(${landingBg})` }}
-    >
-      {/* NAVBAR */}
-      <div className="w-full fixed top-0 left-0 p-5 flex justify-between items-center bg-black/30 backdrop-blur-sm">
-        <h1 className="text-3xl font-extrabold text-white drop-shadow">
-          RecipeGen
-        </h1>
+        <div className="header__actions">
+          <button
+            className="btn btn--ghost"
+            onClick={goAdminLogin}
+            aria-label="Admin login"
+            title="Admin login"
+          >
+            Admin
+          </button>
+        </div>
+      </header>
 
-        <button
-          onClick={goAdminLogin}
-          className="bg-white text-blue-600 px-5 py-2 rounded-xl shadow hover:bg-blue-50 transition"
-        >
-          Admin Login
-        </button>
-      </div>
+      {/* MAIN HERO */}
+      <section className="landing__main" role="main">
+        <div className="hero">
+          {/* left column */}
+          <div className="hero__content">
+            <div className="hero__eyebrow">Discover • Cook • Share</div>
 
-      {/* CENTER BUTTONS */}
-      <div className="flex flex-col gap-5 mt-20 p-8 bg-black/40 rounded-2xl backdrop-blur-md shadow-xl">
-        <Button
-          onClick={goUserLogin}
-          className="bg-orange-600 hover:bg-orange-700 text-white text-xl px-8 py-4 rounded-xl"
-        >
-          User Login
-        </Button>
+            <h1 id="landing-title" className="hero__title">
+              Cook smarter with a personal AI chef
+            </h1>
 
-        <Button
-          onClick={goUserRegister}
-          className="bg-white text-orange-600 border border-orange-600 text-xl px-8 py-4 rounded-xl hover:bg-orange-50"
-        >
-          User Registration
-        </Button>
-      </div>
+            <p className="hero__lead">
+              Explore global cuisines, discover unique recipes, follow step-by-step
+              guided video instructions and save your favorites.
+              Designed for home cooks and creators who want beautiful results, fast.
+            </p>
+
+            <div className="features" aria-hidden="false">
+              <div className="feature">Smart suggestions</div>
+              <div className="feature">Step-by-step videos</div>
+              <div className="feature">Save & share</div>
+            </div>
+          </div>
+
+          {/* right column — action card */}
+          <aside className="hero__card" aria-label="Get started actions">
+            <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "#fff" }}>
+              Get started
+            </h2>
+
+            <p className="hero__meta">
+              Create an account or continue as a guest — try RecipeGen for free.
+            </p>
+
+            <div style={{ width: "100%", display: "grid", gap: "0.7rem", marginTop: "0.6rem" }}>
+              <button
+                className="btn btn--primary"
+                onClick={goUserLogin}
+                aria-label="User login"
+              >
+                Sign in
+              </button>
+
+              <button
+                className="btn btn--ghost"
+                onClick={goUserRegister}
+                aria-label="User register"
+              >
+                Create account
+              </button>
+
+              <button
+                className="btn btn--secondary"
+                onClick={goGuestLogin}
+                aria-label="Continue as guest"
+              >
+                Continue as guest
+              </button>
+            </div>
+
+            <div className="hero__meta" style={{ marginTop: "0.6rem", opacity: 0.9 }}>
+              <small>No credit card required • Cancel anytime</small>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="landing__footer container" role="contentinfo">
+        <div className="footer__left">
+          <div className="footer__brand">
+            <div style={{ fontWeight: 800 }}>RecipeGen</div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.95rem" }}>
+              Built by Deepak Walunj
+            </div>
+          </div>
+        </div>
+
+        <nav className="footer__links" aria-label="Footer links">
+          <a href="https://github.com/Deepak-Walunj/" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <a href="https://linkedin.com/in/deepak-walunj-3a479925b/" target="_blank" rel="noreferrer">
+            LinkedIn
+          </a>
+          <a href="mailto:deepak.22211041@viit.ac.in">Email</a>
+        </nav>
+      </footer>
     </main>
   );
 }

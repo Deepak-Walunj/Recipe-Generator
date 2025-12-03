@@ -26,3 +26,11 @@ export const logOut = (clearAll = false, additional_keys = []) => {
 export const clearStorage = () => {
     localStorage.clear();
 }
+
+export const handleLoginSuccess = (entity, access_token, setUser) => {
+    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY, access_token);
+    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY, entity);
+    const userInfo = { access_token, entity };
+    // localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO, JSON.stringify(userInfo));
+    setUser(userInfo);
+}

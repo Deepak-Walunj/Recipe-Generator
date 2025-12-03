@@ -23,6 +23,7 @@ router.post('/login', async (req, res, next) => {
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     })
+    logger.info(`User ${user.user_id} logged in as ${value.entity_type}`);
     return res.json(new TokenResponse(true, "Login successful", new TokenData(access_token)));
 });
 

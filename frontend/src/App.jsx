@@ -1,9 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UnderConstruction from "@/components/error/UnderConstruction";
+import UnknownPage from "./components/error/UnknownPage";
 import RootLayout from "@/layouts/RootLayout";
 
 import RegistrationPage from "@components/pages/user/UserRegistrationPage.jsx";
 import LandingPage from "@components/pages/auth/LandingPage";
+import AdminLoginPage from "@components/pages/auth/AdminLoginPage";
+import UserLoginPage from "@components/pages/auth/UserLoginPage";
 
 const router = createBrowserRouter([
   {
@@ -11,13 +14,15 @@ const router = createBrowserRouter([
     errorElement: <UnderConstruction />,   // route-level failure
     children: [
       { path: "/", element: <LandingPage /> },
+      { path: "/alogin", element: <AdminLoginPage />},
+      { path: "/ulogin", element: <UserLoginPage />},
       { path: "/register", element: <RegistrationPage /> },
       // Add more below
     ],
   },
   {
     path: "*",
-    element: <UnderConstruction />,   // fallback for unknown routes
+    element: <UnknownPage />,   // fallback for unknown routes
   },
 ]);
 

@@ -1,0 +1,77 @@
+.login{
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: white;
+    background-size: cover;
+    background-position: center;
+}
+
+.login_overlay{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(4px);
+    z-index: 0;
+}
+
+.login_card{
+    width: 420px;
+    padding: 2rem;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.login_title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1.2rem;
+}
+
+.login_subtitle {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 1.4rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.login_form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login_footer {
+  margin-top: 1.4rem;
+  text-align: center;
+  color: rgba(255,255,255,0.85);
+}
+
+.login_form_label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn {
+  background-color: #4A90E2;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary{
+  background-color: #4A90E2;
+  gap: 5rem;
+}
