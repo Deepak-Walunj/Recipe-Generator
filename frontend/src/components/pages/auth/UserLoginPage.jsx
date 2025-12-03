@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {use, useState} from "react";
 import login_bg from "@/assets/backgrounds/login_bg.jpeg";
 import "@/components/pages/auth/LoginPage.css";
 import { useNavigate } from "react-router-dom";
-
+import { useToast } from "@predefined/Toast.jsx";
 import { useUser } from "@/components/contexts/UserContext";
 
 import { userLoginApi } from "@/repositories/AuthRepo";
@@ -11,6 +11,7 @@ import { handleLoginSuccess } from "@/utils/AuthUtils";
 import Constants from "@utils/Constants";
 
 export default function UserLoginPage(){
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const { setUser } = useUser();
     const [email, setEmail] = useState("");
@@ -24,11 +25,18 @@ export default function UserLoginPage(){
         setError("");
         try{
             const data = await userLoginApi(email, password);
-            console.log("Access_token:", data.data.access_token);
-            const access_token = data.data.access_token;
-            handleLoginSuccess(Constants.ENTITY.USER, access_token, setUser);
-            navigate("/user/dashboard");
+            if (data.success){
+                console.log("Access_token:", data.data.access_token);
+                const access_token = data.data.access_token;
+                handleLoginSuccess(Constants.ENTITY.USER, access_token, setUser);
+                showToast("Login successful!", "success");
+                navigate("/user/dashboard");
+            }else{
+                setError(data.message || "Login failed. Please try again.");
+                showToast(data.message || "Login failed. Please try again.", "error");
+            }
         }catch(err){
+            showToast(err.message || "Login failed. Please try again.", "error");
             setError(err.message || "Login failed. Please try again.");
         }finally{
             setLoading(false);
@@ -72,7 +80,7 @@ export default function UserLoginPage(){
                 </form>
                 <div className="login__footer">
                     <small>
-                        Don't have an account? <a href="/register" style={{ color: "#fff" }}>Sign up</a>
+                        Don't have an account? <a href="/uregister" style={{ color: "#fff" }}>Sign up</a>
                     </small>
                 </div>
             </div>

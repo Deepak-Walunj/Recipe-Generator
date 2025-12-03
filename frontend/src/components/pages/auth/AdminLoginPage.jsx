@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import login_bg from "@/assets/backgrounds/login_bg.jpeg";
 import "@/components/pages/auth/LoginPage.css";
 import { useNavigate } from "react-router-dom";
-
+import { useToast } from "@predefined/Toast.jsx";
 import { useUser } from "@/components/contexts/UserContext";
 
 import { adminLoginApi } from "@/repositories/AuthRepo";
@@ -11,6 +11,7 @@ import { handleLoginSuccess } from "@/utils/AuthUtils";
 import Constants from "@utils/Constants";
 
 export default function AdminLoginPage(){
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const { setUser } = useUser();
     const [email, setEmail] = useState("");
@@ -24,12 +25,19 @@ export default function AdminLoginPage(){
         setError("");
         try{
             const data = await adminLoginApi(email, password);
-            console.log("Access_token:", data.data.access_token);
-            const access_token = data.data.access_token;
-            handleLoginSuccess(Constants.ENTITY.ADMIN, access_token, setUser);
-            navigate("/admin/dashboard");
+            if (data.success){
+                console.log(data);
+                const access_token = data.data.access_token;
+                handleLoginSuccess(Constants.ENTITY.ADMIN, access_token, setUser);
+                showToast("Login successful!", "success");
+                navigate("/admin/dashboard");
+            }else{
+                setError(data.message || "Login failed. Please try again.");
+                showToast(data.message || "Login failed. Please try again.", "error");
+            }
         }catch(err){
             setError(err.message || "Login failed. Please try again.");
+            showToast(err.message || "Login failed. Please try again.", "error");
         }finally{
             setLoading(false);
         }
