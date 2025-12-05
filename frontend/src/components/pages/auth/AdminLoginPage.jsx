@@ -28,7 +28,7 @@ export default function AdminLoginPage(){
             if (data.success){
                 console.log(data);
                 const access_token = data.data.access_token;
-                handleLoginSuccess(Constants.ENTITY.ADMIN, access_token, setUser);
+                handleLoginSuccess(Constants.ENTITY.ADMIN, access_token, setUser, "logged");
                 showToast("Login successful!", "success");
                 navigate("/admin/dashboard");
             }else{

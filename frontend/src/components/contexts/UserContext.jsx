@@ -28,7 +28,10 @@ export const UserProvider = ({ children }) => {
         try{
             if (userState){
                 localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO, JSON.stringify(userState));
+                if (userState.access_token) localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY, userState.access_token);
+                if (userState.entity) localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY, userState.entity);
             }else{
+                localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_USER_TYPE_KEY);
                 localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO);
                 localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY);
                 localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY);
@@ -39,7 +42,10 @@ export const UserProvider = ({ children }) => {
     }, [userState])
 
     const contextValue = React.useMemo (() => ({
-        userState, setUser, isAuthenticated: !!userState?.access_token
+        userState, 
+        setUser, 
+        isAuthenticated: !!userState?.access_token && userState?.userType === "logged",
+        isDemo: userState?.userType === "demo",
     }), [userState, setUser]);
 
     return (

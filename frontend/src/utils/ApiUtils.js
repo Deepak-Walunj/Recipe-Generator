@@ -47,6 +47,16 @@ async function MakeApiCall (options = {}, retry=false, retries=3, delay=500, err
             break
         }catch(error){
             const statusCode = error.response ? error.response.status : null;
+            const userInfo = JSON.parse(localStorage.getItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO)||"{}")
+            const isDemo = userInfo?.userType === "demo"
+            if(isDemo){
+                console.warn("Demo user → ignoring API failure:", statusCode)
+                return { 
+                    data: 
+                    {success: true, data: {username: "Demo User", email: "demo@recipegencook.ai", role: "Demo", }, isDemo: true}, 
+                    status: 200 
+                };
+            }
             if (statusCode === 401 || statusCode === 403) {
                 console.warn("[ApiUtils] Unauthorized or Forbidden - logging out");
                 logOut(true);

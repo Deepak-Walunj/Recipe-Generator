@@ -2,18 +2,22 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "@components/pages/css/LandingPage.css";
 import landingBg from "@assets/backgrounds/landing_bg.jpg";
-import { logOut } from "@utils/AuthUtils";
+import { logOut, handleLoginSuccess } from "@utils/AuthUtils";
+import { useUser } from "@components/contexts/UserContext";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-
+  const {setUser} = useUser()
   useEffect(() => {
     logOut(true, []);
   }, []);
 
   const goUserLogin = () => navigate("/ulogin");
   const goUserRegister = () => navigate("/uregister");
-  const goGuestLogin = () => navigate("/guest");
+  const goGuestLogin = () => {
+    handleLoginSuccess("user", null, setUser, "demo")
+    navigate("/user/dashboard")
+  };
   const goAdminLogin = () => navigate("/alogin");
 return (
     <main className="landing" style={{ backgroundImage: `url(${landingBg})` }} aria-labelledby="landing-title">

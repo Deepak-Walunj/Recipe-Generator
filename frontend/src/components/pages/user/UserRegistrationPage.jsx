@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { userRegistrationApi } from "@repositories/UserRepo";
 import { useToast } from "@predefined/Toast.jsx";
 import Constants from "@utils/Constants";
+import "@components/pages/css/RegistrationPage.css";
 
 export default function UserRegistrationPage() {
     const navigate = useNavigate();

@@ -4,9 +4,7 @@ import "@components/pages/css/LoginPage.css";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@predefined/Toast.jsx";
 import { useUser } from "@components/contexts/UserContext";
-
 import { userLoginApi } from "@repositories/AuthRepo";
-
 import { handleLoginSuccess } from "@utils/AuthUtils";
 import Constants from "@utils/Constants";
 
@@ -28,7 +26,7 @@ export default function UserLoginPage(){
             if (data.success){
                 console.log("Access_token:", data.data.access_token);
                 const access_token = data.data.access_token;
-                handleLoginSuccess(Constants.ENTITY.USER, access_token, setUser);
+                handleLoginSuccess(Constants.ENTITY.USER, access_token, setUser, "logged");
                 showToast("Login successful!", "success");
                 navigate("/user/dashboard");
             }else{
@@ -78,9 +76,10 @@ export default function UserLoginPage(){
                     </div>
                     <button className="btn btn--primary">{loading ? "Logging in..." : "Login"}</button>
                 </form>
-                <div className="login__footer">
+                <div className="login_footer">
                     <small>
-                        Don't have an account? <a href="/uregister" style={{ color: "blue" }}>Sign up</a>
+                        Don't have an account?{" "}
+                        <a href="/uregister">Sign up</a>
                     </small>
                 </div>
             </div>

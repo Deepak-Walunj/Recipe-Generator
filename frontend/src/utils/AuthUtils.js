@@ -27,10 +27,16 @@ export const clearStorage = () => {
     localStorage.clear();
 }
 
-export const handleLoginSuccess = (entity, access_token, setUser) => {
+export const handleLoginSuccess = (entity, access_token, setUser, userType) => {
+    try{
     localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY, access_token);
     localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY, entity);
-    const userInfo = { access_token, entity };
-    // localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO, JSON.stringify(userInfo));
+    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_TYPE_KEY, userType);
+    const userInfo = { access_token, entity, userType };
+    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO, JSON.stringify(userInfo));
+    console.log(userInfo)
     setUser(userInfo);
+    }catch(error){
+        console.error("Failed to handle login success", error);
+    }
 }

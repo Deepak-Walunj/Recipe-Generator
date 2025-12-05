@@ -15,14 +15,29 @@ export default function UserMePage(){
     const [error, setError] = useState("")
     const [profile, setProfile] = useState(null)
     const [showConfirm, setShowConfirm] = useState(false)
-
+    const [isDemo, setIsDemo] = useState(false)
+    const token = user?.access_token || null
+    if (user?.userType === "demo"){
+        setIsDemo(true)
+    }
+    // console.log(isDemo)
+    const demoProfile = {
+        username: "Demo User",
+        email: "demo@recipegencook.ai",
+        role: "Demo",
+    };
     useEffect(() => {
-        const token = user?.access_token
         const getProfile = async () => {
+            if (isDemo){
+                setProfile(demoProfile);
+                setLoading(false);
+                return;
+            }
             try{
                 const resp = await getMeApi(token)
                 console.log(resp)
                 if(resp.success){
+                    if(resp.isDemo) setIsDemo(true);
                     setProfile(resp.data)
                     setError("")
                 }
@@ -38,6 +53,10 @@ export default function UserMePage(){
     }, [])
 
     const handleDeleteUser = async () => {
+        if (isDemo){
+            showToast("Demo users cannot delete account. Create an account to unlock this.", "warning");
+            return;
+        }
         try{
             const response = await deleteMeApi(user?.access_token)
             console.log(response)
@@ -70,7 +89,7 @@ export default function UserMePage(){
     return (
         <div className="entity_me_main">
             <h2 className="entity_me_title">
-                Hey User 👋
+                Hey {isDemo? "Demo User" : "User"} 👋
             </h2>
             <div className="entity_me_subtitle">
                 Welcome to your profile page. Here are your details:
@@ -78,10 +97,14 @@ export default function UserMePage(){
             <div className="entity_me_profile_card">
                 <p><strong>Name:</strong> {profile.username || "User"}</p>
                 <p><strong>Email:</strong> {profile?.email}</p>
-                <p><strong>Role:</strong> {"User"}</p>
-                <button className="entity_header_delete" onClick={() => setShowConfirm(true)}>Delete</button>
+                <p><strong>Role:</strong> {isDemo? "Demo User" : "User"}</p>
+                {!isDemo && (
+                    <button className="entity_header_delete" onClick={() => setShowConfirm(true)}>
+                        Delete
+                    </button>
+                )}
             </div>
-            {showConfirm && (
+            {showConfirm && !isDemo && (
                 <div className="modal_overlay">
                     <div className="modal_box">
                         <h3>Are you sure?</h3>
@@ -121,7 +144,13 @@ export default function UserMePage(){
                         <h4>Or Want to Suggest Your Own Special Recipe?</h4>
                         <p>On RecipeGen You Can Suggest Your Own Tasty And Delicious Recipes.</p>
                     </div>
-                    <button className="entity_action_btn" onClick={() => navigate("user/dashboard/ingredients")}>Go</button>
+                    {isDemo? (
+                        <button className="entity_action_btn disabled"
+                            style={{ background: "#9ca3af", cursor: "not-allowed" }}>Locked</button>
+                    ): (
+                        <button className="entity_action_btn" onClick={() => navigate("user/dashboard/ingredients")}>Go</button>
+                    )}
+                    
                 </div>
             </div>
         </div>

@@ -41,7 +41,7 @@ export const getMeApi = async (token='') => {
             headers : headers
         })
     }catch(error){
-        console.error(error);
+        console.error(`[UserRepo] Error : ${JSON.stringify(error)}`);
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
     if(response.status != 200) {
