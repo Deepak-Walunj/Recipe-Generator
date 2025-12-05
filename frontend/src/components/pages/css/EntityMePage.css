@@ -1,22 +1,22 @@
-.admin_me_main {
+.entity_me_main {
     color: black;  
     padding: 10px;
     position: relative;
 }
 
-.admin_me_title{
+.entity_me_title{
     font-size: 26px;
     font-weight: 500;
     margin-bottom: 10px;
 }
 
-.admin_me_subtitle {
+.entity_me_subtitle {
     font-size: 16px;
     color: black; /* gray-600 */
     margin-bottom: 30px;
 }
 
-.admin_me_profile_card {
+.entity_me_profile_card {
     background: rgba(255,255,255,0.15);
     color: black;
     padding: 20px;
@@ -27,7 +27,7 @@
     position: relative;
 }
 
-.admin_me_profile_card p {
+.entity_me_profile_card p {
     color: #1f2937; /* Slate Gray → professional, not harsh black */
     font-size: 15px;
     font-weight: 500;
@@ -36,13 +36,13 @@
 }
 
 /* Style for label "Name:", "Email:", "Role:" */
-.admin_me_profile_card p strong {
+.entity_me_profile_card p strong {
     color: #111827; /* Darker for label emphasis */
     font-weight: 600;
     margin-right: 4px;
 }
 
-.admin_header_delete {
+.entity_header_delete {
     position: absolute;
     top: 110px;
     right: 12px;
@@ -55,11 +55,11 @@
     transition: background 0.25s ease;
 }
 
-.admin_header_delete:hover {
+.entity_header_delete:hover {
     background: #dc2626;
 }
 
-.admin_actions_card{
+.entity_actions_card{
     margin-top: 30px;
     background: rgba(255,255,255,0.15);
     backdrop-filter: blur(12px);
@@ -69,14 +69,14 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
-.admin_actions_title {
+.entity_actions_title {
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 20px;
     color: #111827;
 }
 
-.admin_action_item{
+.entity_action_item{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -87,19 +87,19 @@
     border: 1px solid rgba(255,255,255,0.2);
 }
 
-.admin_action_item h4 {
+.entity_action_item h4 {
     font-size: 16px;
     font-weight: 600;
     color: #111827;
     margin-bottom: 4px;
 }
 
-.admin_action_item p {
+.entity_action_item p {
     font-size: 14px;
     color: #374151;
 }
 
-.admin_action_btn {
+.entity_action_btn {
     padding: 8px 18px;
     background: #2563eb; /* nice blue */
     color: white;
@@ -111,7 +111,7 @@
     font-weight: 500;
 }
 
-.admin_action_btn:hover {
+.entity_action_btn:hover {
     background: #1d4ed8;
     transform: scale(1.03);
 }

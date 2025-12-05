@@ -51,7 +51,7 @@ export default function UserLoginPage(){
                     This is the user login page. Please enter your credentials to access the admin panel.
                 </p>
                 {error && (
-                    <p style={{ color: "salmon", textAlign: "center" }}>
+                    <p style={{ color: "red", textAlign: "center" }}>
                         {error}
                     </p>
                 )}
@@ -80,7 +80,7 @@ export default function UserLoginPage(){
                 </form>
                 <div className="login__footer">
                     <small>
-                        Don't have an account? <a href="/uregister" style={{ color: "#fff" }}>Sign up</a>
+                        Don't have an account? <a href="/uregister" style={{ color: "blue" }}>Sign up</a>
                     </small>
                 </div>
             </div>

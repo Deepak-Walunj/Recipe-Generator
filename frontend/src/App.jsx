@@ -9,6 +9,8 @@ import AdminLoginPage from "@components/pages/auth/AdminLoginPage";
 import UserLoginPage from "@components/pages/auth/UserLoginPage";
 import AdminDashboard from "./components/pages/admin/AdminDashboardPage";
 import AdminMePage from "./components/pages/admin/AdminMePage";
+import UserDashboard from "./components/pages/user/UserDashboardPage";
+import UserMePage from "./components/pages/user/UserMePage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,13 @@ const router = createBrowserRouter([
           { path: "/admin/dashboard/me", element: <AdminMePage />},
         ]
       },
+      {
+        path: "/user/dashboard",
+        element: <UserDashboard/>,
+        children: [
+          { index: true, element: <UserMePage />},
+        ]
+      }
     ],
   },
   {
