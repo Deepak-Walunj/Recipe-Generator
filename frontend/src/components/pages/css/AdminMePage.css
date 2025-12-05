@@ -1,0 +1,59 @@
+.admin_me_main {
+    color: black;  
+    padding: 10px;
+    position: relative;
+}
+
+.admin_me_title{
+    font-size: 26px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.admin_me_subtitle {
+    font-size: 16px;
+    color: black; /* gray-600 */
+    margin-bottom: 30px;
+}
+
+.admin_me_profile_card {
+    background: rgba(255,255,255,0.15);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.admin_me_profile_card p {
+    color: #1f2937; /* Slate Gray → professional, not harsh black */
+    font-size: 15px;
+    font-weight: 500;
+    margin: 10px 0;
+    letter-spacing: 0.2px;
+}
+
+/* Style for label "Name:", "Email:", "Role:" */
+.admin_me_profile_card p strong {
+    color: #111827; /* Darker for label emphasis */
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.admin_header_logout {
+    position: absolute;
+    top: 280px;
+    right: 20px;
+    padding: 8px 14px;
+    background: #ef4444;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.admin_header_logout:hover {
+    background: #dc2626;
+}

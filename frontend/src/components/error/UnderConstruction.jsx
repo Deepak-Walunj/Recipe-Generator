@@ -1,4 +1,4 @@
-import errorBg from "@/assets/backgrounds/error_bg.jpg";
+import errorBg from "@assets/backgrounds/error_bg.jpg";
 
 export default function UnderConstruction() {
     return (

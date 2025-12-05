@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "@/components/pages/auth/LandingPage.css";
-import landingBg from "@/assets/backgrounds/landing_bg.jpg";
+import "@components/pages/css/LandingPage.css";
+import landingBg from "@assets/backgrounds/landing_bg.jpg";
 import { logOut } from "@utils/AuthUtils";
 
 export default function LandingPage() {

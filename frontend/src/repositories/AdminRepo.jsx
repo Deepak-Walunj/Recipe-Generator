@@ -26,7 +26,9 @@ export const adminRegistrationApi = async (data) => {
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
     if(response.status != 200) {
-        throw new Error("Unable to register admin")
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to register admin");
     }
     return response.data
 }
@@ -48,7 +50,9 @@ export const getMeApi = async (token='') => {
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
     if(response.status != 200) {
-        throw new Error("Unable to fetch user profile")
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch user profile");
     }
     return response.data
 }
@@ -70,7 +74,9 @@ export const deleteMeApi = async (token=' ') => {
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
     if(response.status != 200) {
-        throw new Error("Unable to delete user")
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to delete user");
     }
     return response.data
 }
@@ -93,7 +99,9 @@ export const getUsers = async (token='', search=null, page=1, limit=10) => {
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
     if(response.status != 200) {
-        throw new Error("Unable to fetch users")
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch users");
     }
     return response.data
 }

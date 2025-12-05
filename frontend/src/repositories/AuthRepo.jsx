@@ -20,7 +20,9 @@ export const loginApi = async (email, password, entity_type) => {
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
     if(response.status != 200) {
-        throw new Error("Unable to login")
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Login failed");
     }
     return response.data
 }

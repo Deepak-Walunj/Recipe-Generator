@@ -1,0 +1,116 @@
+.admin_dashboard_wrapper {
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.admin_dashboard_wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4); /* dark overlay */
+    backdrop-filter: blur(2px);  /* global blur */
+    z-index: 1;
+}
+
+
+.admin_dashboard{
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    background: transparent;  /* <-- FIX */
+    z-index: 2;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin_sidebar{
+    width: 260px;
+    background: rgba(17, 24, 39, 0.55);
+    backdrop-filter: blur(1px);
+    color: #ffffff;
+    padding: 20px 0;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.admin_sidebar_header {
+    font-size: 22px;
+    font-weight: 600;
+    padding: 0 24px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin_sidebar_menu {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin_menu_item {
+    padding: 14px 24px;
+    font-size: 15px;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: all 0.25s ease;
+    opacity: 0.85;
+}
+
+.admin_menu_item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 1;
+}
+
+.admin_menu_item.active {
+    background: rgba(255, 255, 255, 0.12);
+    border-left-color: #38bdf8; /* sky-400 */
+    opacity: 1;
+}
+
+.admin_content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(1px);
+    overflow-y: auto;
+}
+
+.admin_header {
+    height: 65px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(1px);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+}
+
+.admin_header_title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937; /* gray-800 */
+}
+
+.admin_header_right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.admin_header_user {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.admin_inner_content {
+    padding: 50px;
+    backdrop-filter: blur(1px);
+}
+
+@media (max-width: 768px) {
+    .admin_sidebar {
+        width: 200px;
+    }
+}

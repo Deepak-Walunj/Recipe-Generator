@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import "@/components/pages/user/RegistrationPage.css";
-import registration_bg from "@/assets/backgrounds/registration_bg.jpeg";
+import registration_bg from "@assets/backgrounds/registration_bg.jpeg";
 import { useNavigate } from "react-router-dom";
-import { userRegistrationApi } from "@/repositories/UserRepo";
+import { userRegistrationApi } from "@repositories/UserRepo";
 import { useToast } from "@predefined/Toast.jsx";
 import Constants from "@utils/Constants";
 

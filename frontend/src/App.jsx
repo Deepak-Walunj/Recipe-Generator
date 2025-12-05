@@ -7,6 +7,8 @@ import RegistrationPage from "@components/pages/user/UserRegistrationPage.jsx";
 import LandingPage from "@components/pages/auth/LandingPage";
 import AdminLoginPage from "@components/pages/auth/AdminLoginPage";
 import UserLoginPage from "@components/pages/auth/UserLoginPage";
+import AdminDashboard from "./components/pages/admin/AdminDashboardPage";
+import AdminMePage from "./components/pages/admin/AdminMePage";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +19,14 @@ const router = createBrowserRouter([
       { path: "/alogin", element: <AdminLoginPage />},
       { path: "/ulogin", element: <UserLoginPage />},
       { path: "/uregister", element: <RegistrationPage /> },
-      // Add more below
+      { 
+        path: "/admin/dashboard", 
+        element: <AdminDashboard />,
+        children: [
+          { index: true, element: <AdminMePage />},
+          { path: "/admin/dashboard/me", element: <AdminMePage />},
+        ]
+      },
     ],
   },
   {
