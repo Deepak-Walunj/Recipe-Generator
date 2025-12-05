@@ -70,6 +70,21 @@
     opacity: 1;
 }
 
+.admin_menu_logout {
+    margin-top: auto;
+    padding: 14px 24px;
+    font-size: 15px;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: all 0.25s ease;
+    opacity: 0.85;
+}
+
+.admin_menu_logout:hover {
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 1;
+}
+
 .admin_content {
     flex: 1;
     display: flex;
@@ -102,6 +117,19 @@
     font-size: 14px;
     font-weight: 500;
     color: #374151;
+}
+
+.admin_header_logout {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.admin_header_logout:hover {
+    background: #dc2626;
 }
 
 .admin_inner_content {

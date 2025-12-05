@@ -24,6 +24,7 @@
     margin-bottom: 20px;
     border: 1px solid rgba(255,255,255,0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    position: relative;
 }
 
 .admin_me_profile_card p {
@@ -41,10 +42,10 @@
     margin-right: 4px;
 }
 
-.admin_header_logout {
+.admin_header_delete {
     position: absolute;
-    top: 280px;
-    right: 20px;
+    top: 110px;
+    right: 12px;
     padding: 8px 14px;
     background: #ef4444;
     font-size: 14px;
@@ -54,6 +55,63 @@
     transition: background 0.25s ease;
 }
 
-.admin_header_logout:hover {
+.admin_header_delete:hover {
     background: #dc2626;
+}
+
+.admin_actions_card{
+    margin-top: 30px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.admin_actions_title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+.admin_action_item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 12px;
+    background: rgba(255,255,255,0.10);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.admin_action_item h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.admin_action_item p {
+    font-size: 14px;
+    color: #374151;
+}
+
+.admin_action_btn {
+    padding: 8px 18px;
+    background: #2563eb; /* nice blue */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.25s ease;
+    font-weight: 500;
+}
+
+.admin_action_btn:hover {
+    background: #1d4ed8;
+    transform: scale(1.03);
 }

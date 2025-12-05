@@ -54,7 +54,7 @@ export default function AdminLoginPage(){
                     This is the admin login page. Please enter your credentials to access the admin panel.
                 </p>
                 {error && (
-                    <p style={{ color: "salmon", textAlign: "center" }}>
+                    <p style={{ color: "red",textAlign: "center" }}>
                         {error}
                     </p>
                 )}

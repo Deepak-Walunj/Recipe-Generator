@@ -1,7 +1,13 @@
 import { NavLink, Outlet } from "react-router-dom";
 import '@components/pages/css/AdminDashboardPage.css';
 import admin_dashboard_bg from "@assets/backgrounds/admin_dashboard_bg.jpeg";
+import { logOut } from "@/utils/AuthUtils";
+
 export default function AdminDashboard() {
+    const handleLogOut = () => {
+        logOut(true, []);
+        window.location.href = "/";
+    }
     return (
         <div className="admin_dashboard_wrapper" style={{backgroundImage: `url(${admin_dashboard_bg})`}}>
             <div className="admin_dashboard">
@@ -16,8 +22,17 @@ export default function AdminDashboard() {
                         <NavLink to="/users" className={({ isActive }) => isActive ? "admin_menu_item active" : "admin_menu_item"}>
                             Manage Users
                         </NavLink>
+                        <NavLink to="/cuisines" className={({ isActive }) => isActive ? "admin_menu_item active" : "admin_menu_item"}>
+                            Manage Cuisines
+                        </NavLink>
                         <NavLink to="/recipes" className={({ isActive }) => isActive ? "admin_menu_item active" : "admin_menu_item"}>
                             Manage Recipes
+                        </NavLink>
+                        <NavLink to="/ingredients" className={({ isActive }) => isActive ? "admin_menu_item active" : "admin_menu_item"}>
+                            Manage Ingredients
+                        </NavLink>
+                        <NavLink className={"admin_menu_logout"} onClick={() => handleLogOut()}>
+                            Logout
                         </NavLink>
                     </div>
                 </aside>

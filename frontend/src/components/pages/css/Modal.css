@@ -1,0 +1,55 @@
+.modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal_box{
+    background: #fff;
+    padding: 24px;
+    width: 380px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+.modal_box h3 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: #111827;
+}
+
+.modal_box p {
+    font-size: 14px;
+    color: #4b5563;
+    margin-bottom: 20px;
+}
+
+.modal_actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.modal_cancel {
+    padding: 8px 16px;
+    background: #e5e7eb;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.modal_confirm {
+    padding: 8px 16px;
+    background: #ef4444;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}

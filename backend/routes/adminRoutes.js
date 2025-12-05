@@ -29,6 +29,7 @@ router.post('/register', async (req, res, next) => {
 
 router.get('/me', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
   const adminService = getAdminService();
+  // logger.info(req.user)
   const email = req.user.email;
   const profile = await adminService.getAdminProfile(email)
   logger.info(`Fetched profile for user: ${JSON.stringify(profile)}`);
