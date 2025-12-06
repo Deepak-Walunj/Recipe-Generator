@@ -24,7 +24,7 @@ export default function UserLoginPage(){
         try{
             const data = await userLoginApi(email, password);
             if (data.success){
-                console.log("Access_token:", data.data.access_token);
+                // console.log("Access_token:", data.data.access_token);
                 const access_token = data.data.access_token;
                 handleLoginSuccess(Constants.ENTITY.USER, access_token, setUser, "logged");
                 showToast("Login successful!", "success");

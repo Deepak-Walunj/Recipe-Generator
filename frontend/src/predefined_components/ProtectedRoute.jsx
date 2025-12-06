@@ -8,7 +8,8 @@ import { useUser } from "@components/contexts/UserContext";
 
 export function ProtectedRoute({ children, requireAuth = true}){
     const {user} = useUser()
-    const isLogged = user?.userType === "logged" && !!user?.access_token;
+    const isLogged = user?.userType === "logged";
+    const isDemo = user?.userType === "demo";
     if (requireAuth && !isLogged){
         if (user.userType === "demo") return <Navigate to="/uregister" />
         return <Navigate to="/ulogin"/>

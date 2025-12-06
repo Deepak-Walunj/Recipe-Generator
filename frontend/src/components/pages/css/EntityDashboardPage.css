@@ -51,6 +51,7 @@
 }
 
 .entity_menu_item {
+    color: #ffffff;
     padding: 14px 24px;
     font-size: 15px;
     cursor: pointer;
@@ -66,12 +67,13 @@
 
 .entity_menu_item.active {
     background: rgba(255, 255, 255, 0.12);
-    border-left-color: #38bdf8; /* sky-400 */
+    border-left-color: #38bdf8; 
     opacity: 1;
 }
 
 .entity_menu_logout {
     margin-top: auto;
+    color: #ffffff;
     padding: 14px 24px;
     font-size: 15px;
     cursor: pointer;
@@ -81,7 +83,7 @@
 }
 
 .entity_menu_logout:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(116, 116, 116, 0.08);
     opacity: 1;
 }
 
@@ -120,6 +122,7 @@
 }
 
 .entity_header_logout {
+    color: #ffffff;
     padding: 8px 14px;
     font-size: 14px;
     font-weight: 500;
@@ -135,6 +138,22 @@
 .entity_inner_content {
     padding: 50px;
     backdrop-filter: blur(1px);
+}
+
+.locked_item {
+    color: #ffffff;
+    padding: 14px 24px;
+    opacity: 0.4;
+    cursor: not-allowed;
+    font-size: 15px;
+    border-left: 4px solid transparent;
+    transition: all 0.25s ease;
+    opacity: 0.85;
+}
+
+.locked_item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 1;
 }
 
 @media (max-width: 768px) {

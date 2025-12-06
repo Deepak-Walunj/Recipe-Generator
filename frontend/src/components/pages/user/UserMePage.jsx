@@ -10,34 +10,31 @@ import '@components/pages/css/Modal.css';
 export default function UserMePage(){
     const navigate = useNavigate()
     const {user} = useUser()
+    // console.log(JSON.stringify(user.userType))
+    const isDemo = user?.userType === "demo";
+    const token = user?.access_token || null
     const {showToast} = useToast()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [profile, setProfile] = useState(null)
     const [showConfirm, setShowConfirm] = useState(false)
-    const [isDemo, setIsDemo] = useState(false)
-    const token = user?.access_token || null
-    if (user?.userType === "demo"){
-        setIsDemo(true)
-    }
-    // console.log(isDemo)
     const demoProfile = {
         username: "Demo User",
         email: "demo@recipegencook.ai",
         role: "Demo",
     };
     useEffect(() => {
+        if (isDemo){
+            // console.log("Fetching profile for demo user")
+            setProfile(demoProfile);
+            setLoading(false);
+            return;
+        }
         const getProfile = async () => {
-            if (isDemo){
-                setProfile(demoProfile);
-                setLoading(false);
-                return;
-            }
             try{
                 const resp = await getMeApi(token)
-                console.log(resp)
+                // console.log(resp)
                 if(resp.success){
-                    if(resp.isDemo) setIsDemo(true);
                     setProfile(resp.data)
                     setError("")
                 }
@@ -50,7 +47,7 @@ export default function UserMePage(){
             }
         }
         getProfile()
-    }, [])
+    }, [isDemo, token])
 
     const handleDeleteUser = async () => {
         if (isDemo){

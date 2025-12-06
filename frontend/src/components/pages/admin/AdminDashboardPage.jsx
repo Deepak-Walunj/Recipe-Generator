@@ -16,19 +16,19 @@ export default function AdminDashboard() {
                         Recipe Admin
                     </div>
                     <div className="entity_sidebar_menu">
-                        <NavLink to="/me" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
+                        <NavLink to="/admin/dashboard/me" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
                             My Profile
                         </NavLink>
-                        <NavLink to="/users" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
+                        <NavLink to="/admin/dashboard/users" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
                             Manage Users
                         </NavLink>
-                        <NavLink to="/cuisines" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
+                        <NavLink to="/admin/dashboard/cuisines" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
                             Manage Cuisines
                         </NavLink>
-                        <NavLink to="/recipes" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
+                        <NavLink to="/admin/dashboard/recipes" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
                             Manage Recipes
                         </NavLink>
-                        <NavLink to="/ingredients" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
+                        <NavLink to="/admin/dashboard/ingredients" className={({ isActive }) => isActive ? "entity_menu_item active" : "entity_menu_item"}>
                             Manage Ingredients
                         </NavLink>
                         <NavLink className={"entity_menu_logout"} onClick={() => handleLogOut()}>

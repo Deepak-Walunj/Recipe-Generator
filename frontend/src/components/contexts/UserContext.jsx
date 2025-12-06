@@ -26,11 +26,16 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
         try{
-            if (userState){
+            if (userState) {
                 localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO, JSON.stringify(userState));
-                if (userState.access_token) localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY, userState.access_token);
-                if (userState.entity) localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY, userState.entity);
-            }else{
+                if (userState.access_token !== undefined)
+                    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY, userState.access_token);
+                if (userState.entity)
+                    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY, userState.entity);
+                if (userState.userType)
+                    localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_USER_TYPE_KEY, userState.userType);
+            }
+            else{
                 localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_USER_TYPE_KEY);
                 localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO);
                 localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY);
@@ -42,6 +47,7 @@ export const UserProvider = ({ children }) => {
     }, [userState])
 
     const contextValue = React.useMemo (() => ({
+        user: userState,
         userState, 
         setUser, 
         isAuthenticated: !!userState?.access_token && userState?.userType === "logged",
