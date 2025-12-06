@@ -83,7 +83,7 @@ export default function AdminManageRecipes() {
                 await fetchRecipes();
                 showToast("Recipe deleted successfully.", "success");
             }else{
-                showToast(response.message || "Failed to fetch admin profile.", "error");
+                showToast(response.message || "Failed to delete recipe.", "error");
             }
         } catch (err) {
             console.error("Delete failed:", err);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getMeApi, deleteMeApi } from "@repositories/AdminRepo";
+import { getMeApi, deleteAdminApi } from "@repositories/AdminRepo";
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
 import { logOut } from "@/utils/AuthUtils";
@@ -43,7 +43,7 @@ export default function AdminMePage(){
 
     const handleDeleteAdmin = async () => {
         try{
-            const response = await deleteMeApi(user?.access_token);
+            const response = await deleteAdminApi(user?.access_token);
             // console.log(response);
             if (response.success){
                 logOut(true, []);

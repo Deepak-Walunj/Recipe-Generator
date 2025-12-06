@@ -88,6 +88,9 @@ class AuthService {
     async deleteEntityByEmail(email) {
         return await this.authRepository.deleteByEmail(email);
     }
+    async deleteEntityById(id) {
+        return await this.authRepository.deleteById(id);
+    }
 }
 
 module.exports = AuthService;

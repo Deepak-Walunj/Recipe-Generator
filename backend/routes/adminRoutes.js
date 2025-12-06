@@ -3,12 +3,12 @@ const express = require('express')
 const router = express.Router()
 const { setupLogging, getLogger } = require('../core/logger')
 const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService } = require('../core/deps')
-const { ValidationError } = require('../core/exception')
+const { ValidationError, NotFoundError } = require('../core/exception')
 const { EntityType } = require('../core/enum')
 
 const allowedEntities = require('../middleware/authMiddleware')
 
-const { registerAdminSchema, StandardResponse } = require('../schemas/adminSchema')
+const { registerAdminSchema, deleteEntitySchema, StandardResponse } = require('../schemas/adminSchema')
 const {recipeInputSchema} = require('../schemas/recipes')
 
 const {cuisineModel} = require('../models/cuisines')
@@ -45,6 +45,32 @@ router.delete('/me', allowedEntities(EntityType.ADMIN), async (req, res, next) =
   }
   logger.info(`Deleted user with email: ${email}`);
   return res.json(new StandardResponse(true, 'Admin deleted successfully', {"email": email}))
+})
+
+router.delete('/entity-by-id', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
+  const adminService = getAdminService()
+  const email = req.user.email
+  const { error, value } = deleteEntitySchema.validate(req.body)
+    if (error) {
+        return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+    }
+  logger.info(value)
+  const entity_id=value.entity_id
+  const entity_type=value.entity_type
+  if (!entity_id || isNaN(entity_id)) {
+    return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
+  }
+  const admin = await adminService.findUserbyId(entity_id, entity_type)
+  logger.info(admin)
+  if (!admin){
+    return next(new NotFoundError("Entity not found", 404, "NOT_FOUND", {"Entity_id": entity_id}))
+  }
+  const result = await adminService.deleteUserbyId(admin.user_id)
+  if (!result){
+    logger.error(`Failed to delete admin with ID: ${entity_id}`);
+  }
+  logger.info(`Deleted admin with admin id: ${entity_id}`);
+  return res.json(new StandardResponse(true, 'Admin deleted successfully', {"by_email": email, "deleted_email": admin.email}))
 })
 
 router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) => {

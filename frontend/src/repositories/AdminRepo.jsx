@@ -10,6 +10,7 @@ const ENDPOINTS = {
     ADD_INGREDIENT: `${URL}/ingredient`,
     ADD_RECIPE: `${URL}/recipe`,
     DELETE_RECIPE: `${URL}/recipe/:recipe_id`,
+    DELETE_ENTITY: `${URL}/entity-by-id`
 }
 
 export const adminRegistrationApi = async (data) => {
@@ -57,7 +58,7 @@ export const getMeApi = async (token='') => {
     return response.data
 }
 
-export const deleteMeApi = async (token=' ') => {
+export const deleteAdminApi = async (token=' ') => {
     let response= {}
     let headers = {}
     if (!!token){
@@ -68,6 +69,31 @@ export const deleteMeApi = async (token=' ') => {
             url : ENDPOINTS.DELETE_ME,
             method : "DELETE",
             headers : headers
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if(response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to delete user");
+    }
+    return response.data
+}
+
+export const deleteEntityApi = async (token=' ', data) => {
+    let response= {}
+    let headers = {}
+    if (!!token){
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.DELETE_ENTITY,
+            method : "DELETE",
+            headers : headers,
+            data: data
         })
     }catch(error){
         console.error(error)

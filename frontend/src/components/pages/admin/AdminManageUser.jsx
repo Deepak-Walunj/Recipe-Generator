@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { getAllUsers, adminRegistrationApi } from "@repositories/AdminRepo.jsx";
+import { getAllUsers, adminRegistrationApi, deleteEntityApi } from "@repositories/AdminRepo.jsx";
 import { userRegistrationApi } from "@repositories/UserRepo.jsx";
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
@@ -19,6 +19,7 @@ export default function AdminManageUsers() {
   const [totalFetched, setTotalFetched] = useState(0);
 
   const [deletingUserId, setDeletingUserId] = useState(null);
+  const [deletingEntityType, setDeletingEntityType] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -35,7 +36,6 @@ export default function AdminManageUsers() {
 
   const token = user?.access_token;
 
-
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -49,6 +49,7 @@ export default function AdminManageUsers() {
       if (response?.success) {
         const payload = response.data || {};
         const usersList = payload.users || [];
+        // console.log(usersList)
         setUsers(usersList);
         setTotalFetched(usersList.length);
         setHasMore(Number(payload.limit) ? usersList.length === Number(payload.limit) : usersList.length === l);
@@ -78,7 +79,6 @@ export default function AdminManageUsers() {
     setPage(prev => prev + 1);
   };
 
-  // ---------- form helpers ----------
   const updateFormField = (key, value) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
@@ -89,7 +89,6 @@ export default function AdminManageUsers() {
     if (!form.email.trim()) return showToast("Email is required", "error");
     if (!form.password.trim()) return showToast("Password is required", "error");
     if (!form.entity_type) return showToast("Please choose entity type", "error");
-
     const payload = {
       username: form.username.trim(),
       email: form.email.trim(),
@@ -104,7 +103,6 @@ export default function AdminManageUsers() {
       } else {
         response = await userRegistrationApi(payload);
       }
-
       if (response?.success) {
         showToast("Registered successfully", "success");
         setPage(1);
@@ -121,6 +119,44 @@ export default function AdminManageUsers() {
       setSubmitting(false);
     }
   };
+
+  const confirmDelete = (entity_id, entity_type) => {
+    console.log(entity_id, entity_type)
+    setDeletingUserId(entity_id);
+    setDeletingEntityType(entity_type)
+    setShowDeleteModal(true);
+    };
+
+  const performDelete = async() => {
+    if (!deletingUserId && !deletingEntityType) return ;
+    setIsDeleting(true)
+    try{
+      const response = await deleteEntityApi(
+        token,
+        {
+          entity_id: deletingUserId,
+          entity_type: deletingEntityType
+        }
+      )
+      if (response.success){
+          await fetchUsers();
+          showToast("Entity deleted successfully.", "success");
+      }else{
+          showToast(response.message || "Failed to delete entity.", "error");
+      }
+    }catch(error){
+      console.error("Delete failed:", error);
+      showToast(error.message || "Failed to delete entity.", "error");
+    }finally {
+        setShowDeleteModal(false);
+        setDeletingUserId(null);
+        setDeletingEntityType(null)
+        setIsDeleting(false);
+    }
+  }
+
+  const capitalize = (str="") => str.charAt(0).toUpperCase() + str.slice(1)
+
   return (
     <div className="table_main">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
@@ -166,6 +202,8 @@ export default function AdminManageUsers() {
                   <th style={{ width: 40 }}>ID</th>
                   <th>Name</th>
                   <th>Email</th>
+                  <th>Role</th>
+                  <th style={{ width: 170 }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -177,8 +215,20 @@ export default function AdminManageUsers() {
                   users.map((u) => (
                     <tr key={u.user_id}>
                       <td>{u.user_id}</td>
-                      <td>{(u.username || "").toString()}</td>
-                      <td>{(u.email || "").toString()}</td>
+                      <td>{(capitalize(u.username) || "").toString()}</td>
+                      <td>{(capitalize(u.email) || "").toString()}</td>
+                      <td>{(capitalize(u.users_type) || "").toString()}</td>
+                      <td>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          {/* If you'd later add edit — keep placeholder */}
+                          <button
+                            className="table_action_btn table_btn_delete"
+                            onClick={() => confirmDelete(Number(u.user_id), u.users_type)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -278,10 +328,18 @@ export default function AdminManageUsers() {
             <h3>Confirm delete?</h3>
             <p>Are you sure you want to permanently delete user ID <strong>{deletingUserId}</strong>?</p>
             <div className="modal_actions">
-              <button className="modal_cancel" onClick={() => setShowDeleteModal(false)} disabled={isDeleting}>
+              <button 
+              className="modal_cancel" 
+              onClick={() => setShowDeleteModal(false)} 
+              disabled={isDeleting}
+              >
                 Cancel
               </button>
-              <button className="modal_confirm" onClick={() => {}} disabled={isDeleting}>
+              <button 
+              className="modal_confirm" 
+              onClick={performDelete} 
+              disabled={isDeleting}
+              >
                 {isDeleting ? "Deleting…" : "Delete"}
               </button>
             </div>

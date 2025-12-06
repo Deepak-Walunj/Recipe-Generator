@@ -1,5 +1,5 @@
 import { useState, useEffect, useDebugValue } from "react";
-import { getMeApi, deleteMeApi } from "@repositories/UserRepo";
+import { getMeApi, deleteUserApi } from "@repositories/UserRepo";
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
 import { logOut } from "@/utils/AuthUtils";
@@ -55,7 +55,7 @@ export default function UserMePage(){
             return;
         }
         try{
-            const response = await deleteMeApi(user?.access_token)
+            const response = await deleteUserApi(user?.access_token)
             console.log(response)
             if (response.success){
                 logOut(true, [])

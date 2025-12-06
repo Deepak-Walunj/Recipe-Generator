@@ -52,7 +52,7 @@ export const getMeApi = async (token='') => {
     return response.data
 }
 
-export const deleteMeApi = async (token=' ') => {
+export const deleteUserApi = async (token=' ') => {
     let response= {}
     let headers = {}
     if (!!token){

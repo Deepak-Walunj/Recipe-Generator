@@ -45,12 +45,24 @@ class AdminService {
         return await this.userRepository.findUserByEmail( email );
     }
 
+    async findUserbyId(id, entity_type) {
+        return await this.userRepository.findUserbyId( id, entity_type );
+    }
+
     async deleteUser(email) {
         const result = await this.auth_service.deleteEntityByEmail(email);
         if (!result){
             logger.info(`Unable to delete profile with email: ${email}`)
         }
         return await this.userRepository.deleteUserByemail(email);
+    }
+
+    async deleteUserbyId(admin_id) {
+        const result = await this.auth_service.deleteEntityById(admin_id);
+        if (!result){
+            logger.info(`Unable to delete profile with admin_id: ${admin_id}`)
+        }
+        return await this.userRepository.deleteUserById(admin_id);
     }
 
     async getAllUsers({searchStr = null, page = 1, limit = 10 }) {
