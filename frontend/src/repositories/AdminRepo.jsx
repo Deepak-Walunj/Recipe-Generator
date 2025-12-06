@@ -81,7 +81,7 @@ export const deleteMeApi = async (token=' ') => {
     return response.data
 }
 
-export const getUsers = async (token='', search=null, page=1, limit=10) => {
+export const getAllUsers = async ({token='', search=null, page=1, limit=10}) => {
     let response = {}
     let headers = {}
     if (!!token) {

@@ -3,7 +3,7 @@ import {addRecipe, deleteRecipe} from "@repositories/AdminRepo.jsx"
 import {getAllRecipes} from "@repositories/PublicRepo.jsx"
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx"; 
-import '@components/pages/css/Recipes.css';
+import '@components/pages/css/Table.css';
 import '@components/pages/css/Modal.css';
 
 export default function AdminManageRecipes() {
@@ -16,7 +16,6 @@ export default function AdminManageRecipes() {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [totalFetched, setTotalFetched] = useState(0);
-    
     const [deletingRecipeId, setDeletingRecipeId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -31,13 +30,14 @@ export default function AdminManageRecipes() {
     });
     const [submitting, setSubmitting] = useState(false);
     const token = user?.access_token
+
     const fetchRecipes = useCallback(async () => {
         setLoading(true);
         try {
             const response = await getAllRecipes({
                 search: search || null,
-                page,
-                limit
+                page: page || 1,
+                limit: limit || 10
             });
             if (response.success) {
                 const payload = response.data; // {page, limit, recipes}
@@ -62,11 +62,11 @@ export default function AdminManageRecipes() {
 
     const goPrev = () => {
         if (page <= 1) return;
-        setPage(page-1)
+        setPage(prev => prev - 1)
     };
     const goNext = () => {
         if (!hasMore && totalFetched < limit) return;
-        setPage(page+1)
+        setPage(prev => prev + 1)
     };
 
     const confirmDelete = (recipeId) => {
@@ -87,7 +87,7 @@ export default function AdminManageRecipes() {
             }
         } catch (err) {
             console.error("Delete failed:", err);
-            showToast(err.message || "Failed to fetch admin profile.", "error");
+            showToast(err.message || "Failed to delete recipe.", "error");
         } finally {
             setShowDeleteModal(false);
             setDeletingRecipeId(null);
@@ -173,22 +173,22 @@ export default function AdminManageRecipes() {
     const capitalize = (str="") => str.charAt(0).toUpperCase() + str.slice(1)
     const truncate = (txt, n = 120) => (txt && txt.length > n ? txt.slice(0, n) + "…" : txt);
   return (
-    <div className="manage_recipes_main">
+    <div className="table_main">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
         <div>
-          <div className="manage_recipes_title">Manage Recipes</div>
-          <div className="manage_recipes_subtitle">View, create and remove recipes from the system.</div>
+          <div className="table_title">Manage Recipes</div>
+          <div className="table_subtitle">View, Create And Remove Recipes From The System.</div>
         </div>
 
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           <input
-            className="manage_recipes_search"
+            className="table_search"
             placeholder="Search recipes by title or ingredient..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
-            className="manage_recipes_add_btn"
+            className="table_add_btn"
             onClick={() => {
                 setShowAddForm(prev => !prev);
                 setTimeout(() => {
@@ -204,12 +204,12 @@ export default function AdminManageRecipes() {
         </div>
       </div>
 
-      <div className="manage_recipes_list_card">
+      <div className="table_list_card">
         {loading ? (
           <div style={{ padding: 20 }}>Loading recipes…</div>
         ) : (
           <>
-            <table className="manage_recipes_table" role="table">
+            <table className="table_table" role="table">
               <thead>
                 <tr>
                   <th style={{ width: 40 }}>ID</th>
@@ -236,7 +236,7 @@ export default function AdminManageRecipes() {
                       <div style={{ display: "flex", gap: 8 }}>
                         {/* If you'd later add edit — keep placeholder */}
                         <button
-                          className="recipe_action_btn recipe_btn_delete"
+                          className="table_action_btn table_btn_delete"
                           onClick={() => confirmDelete(Number(r.recipe_id))}
                         >
                           Delete
@@ -251,22 +251,25 @@ export default function AdminManageRecipes() {
             </table>
 
             {/* pagination */}
-            <div className="manage_recipes_pagination" style={{ marginTop: 18 }}>
-              <button className="pagination_btn" onClick={goPrev} disabled={page <= 1}>
+            <div className="table_pagination" style={{ marginTop: 18 }}>
+              <button 
+              className="pagination_btn" 
+              onClick={goPrev} 
+              disabled={page <= 1}
+              >
                 Previous
               </button>
               <div style={{ alignSelf: "center", fontSize: 13, color: "#374151" }}>Page {page}</div>
               <button
-                className={`pagination_btn`}
+                className="pagination_btn"
                 onClick={goNext}
                 disabled={recipes.length < limit}
               >
                 Next
               </button>
               <select 
-              title={"select limit"}
-              placeholder="select limit"
-              className="manage_recipes_limit" 
+              title="select limit"
+              className="table_limit" 
               value={limit} 
               onChange={(e) => {setLimit(e.target.value); setPage(1)}}
               >
@@ -360,7 +363,7 @@ export default function AdminManageRecipes() {
                   </div>
                 ))}
                 <div>
-                  <button type="button" className="manage_recipes_add_btn" onClick={addIngredientRow}>
+                  <button type="button" className="table_add_btn" onClick={addIngredientRow}>
                     + Add ingredient
                   </button>
                 </div>
