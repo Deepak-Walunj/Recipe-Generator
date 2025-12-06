@@ -1,0 +1,224 @@
+.manage_recipes_main {
+    width: 100%;
+    color: black;
+    position: relative;
+}
+
+.manage_recipes_title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #010203;
+}
+
+.manage_recipes_subtitle {
+    font-size: 15px;
+    margin-bottom: 28px;
+    color: #252c36;
+}
+
+.manage_recipes_actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.manage_recipes_search {
+    width: 280px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.15);
+    color: black;
+    font-size: 14px;
+    backdrop-filter: blur(6px);
+}
+
+.manage_recipes_limit {
+    width: 58px;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.manage_recipes_search::placeholder {
+    color: #323232;
+}
+
+.manage_recipes_add_btn {
+    padding: 10px 18px;
+    background: #2563eb;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    border: none;
+}
+
+.manage_recipes_add_btn:hover {
+    background: #1d4ed8;
+    transform: scale(1.03);
+}
+
+.manage_recipes_list_card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,0.28);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+    backdrop-filter: blur(8px);
+    overflow-y: auto
+}
+
+.manage_recipes_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.manage_recipes_table thead {
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(4px);
+}
+
+.manage_recipes_table th,
+.manage_recipes_table td {
+    text-align: center;
+    color: #111827;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb; /* thin gray line */
+    padding: 14px 12px;
+}
+
+.manage_recipes_table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.manage_recipes_table tr:hover {
+    background: rgba(255,255,255,0.1);
+    transition: 0.25s ease;
+}
+
+.recipe_action_btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    transition: 0.25s ease;
+}
+
+.recipe_btn_delete {
+    background: #dc2626;
+    color: white;
+}
+
+.recipe_btn_delete:hover {
+    background: #b91c1c;
+    transform: scale(1.05);
+}
+
+.manage_recipe_form {
+    margin-top: 30px;
+    padding: 24px;
+    background: rgba(255,255,255,0.16);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+}
+
+.manage_recipe_form h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: #111827;
+}
+
+.manage_recipe_form_group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.manage_recipe_input,
+.manage_recipe_textarea,
+.manage_recipe_select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.15);
+    font-size: 14px;
+    color: black;
+    backdrop-filter: blur(4px);
+}
+
+.manage_recipe_textarea {
+    height: 110px;
+    resize: none;
+}
+
+.manage_recipe_form_group label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #111827;
+}
+
+.manage_recipe_submit_btn {
+    padding: 12px 20px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+    width: fit-content;
+}
+
+.manage_recipe_submit_btn:hover {
+    background: #1d4ed8;
+    transform: scale(1.02);
+}
+
+.manage_recipes_pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+.pagination_btn {
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    cursor: pointer;
+    color: #1f2937;
+    font-size: 13px;
+    transition: 0.25s ease;
+}
+
+.pagination_btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.pagination_btn.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.pagination_btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed !important;
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+

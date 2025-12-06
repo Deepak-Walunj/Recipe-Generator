@@ -15,7 +15,7 @@ class RecipesService{
     async getAllRecipes({searchStr = null, page = 1, limit = 10}){
         const recipes = await this.recipesRepository.getAllRecipes({searchStr:searchStr, page:page, limit:limit});
         if (recipes.length !== 0){
-            logger.info(`Fetched recipes: ${JSON.stringify(recipes)}`)
+            logger.info(`Fetched all recipes`)
         }else{
             logger.info(`No recipes fetched`)
         }

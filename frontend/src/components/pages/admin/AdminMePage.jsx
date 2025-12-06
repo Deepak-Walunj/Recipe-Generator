@@ -15,13 +15,13 @@ export default function AdminMePage(){
     const [error, setError] = useState("");
     const [profile, setProfile] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+    const token = user?.access_token
 
     useEffect(() => {
-        const token = user?.access_token
         const getProfile = async () => {
             try{
                 const resp = await getMeApi(token);
-                console.log(resp);
+                // console.log(resp);
                 if (resp.success){
                     setProfile(resp.data);
                     // showToast("Profile fetched successfully.", "success");
@@ -31,7 +31,7 @@ export default function AdminMePage(){
                     showToast(resp.message || "Failed to fetch admin profile.", "error");
                 }
             }catch(err){
-                console.log(err);
+                console.error(err);
                 setError(err.message || "Failed to fetch profile.");
                 showToast(err.message || "Failed to fetch profile.", "error");
             }finally{
@@ -44,7 +44,7 @@ export default function AdminMePage(){
     const handleDeleteAdmin = async () => {
         try{
             const response = await deleteMeApi(user?.access_token);
-            console.log(response);
+            // console.log(response);
             if (response.success){
                 logOut(true, []);
                 showToast("Admin deleted successfully.", "success");

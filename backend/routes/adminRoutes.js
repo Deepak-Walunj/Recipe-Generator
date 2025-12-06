@@ -90,8 +90,9 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
     return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
   }
   const prep_time = value.prep_time
-  if (prep_time === undefined && (typeof prep_time === 'number' || Number.isInteger(prep_time) || prep_time > 0)) {
-    const prep_time_str = `${prep_time} mins`;
+  let prep_time_str = null;
+  if (typeof prep_time === "number" && prep_time > 0) {
+    prep_time_str = `${prep_time} mins`;
   }
   const cuisineName = value.cuisine_name.toLowerCase();
   const cuisine_id = await cuisineService.ensureCuisineExist(cuisineName);
@@ -99,7 +100,7 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
   const recipe_payload = {
     title: value.title.toLowerCase(),
     instruction: value.instruction,
-    prep_time: value.prep_time_str,
+    prep_time: prep_time_str,
     cuisine_id,
     ingredients: processedIngredients,
   }

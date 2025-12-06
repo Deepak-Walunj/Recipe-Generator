@@ -105,3 +105,53 @@ export const getUsers = async (token='', search=null, page=1, limit=10) => {
     }
     return response.data
 }
+
+export const addRecipe = async (token='', data) => {
+    let response = {}
+    let headers = {}
+    if (!!token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.ADD_RECIPE,
+            method : "POST",
+            headers : headers,
+            data : data, 
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if(response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch users");
+    }
+    return response.data
+}
+
+export const deleteRecipe = async (token='', recipeId) => {
+    let response = {}
+    let headers = {}
+    if (!!token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.DELETE_RECIPE.replace(":recipe_id", recipeId),
+            method : "DELETE",
+            headers : headers,
+            params: { recipeId }
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if(response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch users");
+    }
+    return response.data
+}

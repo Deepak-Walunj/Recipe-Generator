@@ -11,6 +11,7 @@ import AdminDashboard from "./components/pages/admin/AdminDashboardPage";
 import AdminMePage from "./components/pages/admin/AdminMePage";
 import UserDashboard from "./components/pages/user/UserDashboardPage";
 import UserMePage from "./components/pages/user/UserMePage";
+import AdminManageRecipes from "@components/pages/admin/AdminManageRecipes.jsx"
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <AdminMePage />},
           { path: "/admin/dashboard/me", element: <AdminMePage />},
+          { path: "/admin/dashboard/recipes", element: <AdminManageRecipes />},
         ]
       },
       {

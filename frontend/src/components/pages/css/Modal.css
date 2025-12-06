@@ -53,3 +53,7 @@
     border: none;
     cursor: pointer;
 }
+
+.modal_confirm:hover {
+    background: #b91c1c;
+}

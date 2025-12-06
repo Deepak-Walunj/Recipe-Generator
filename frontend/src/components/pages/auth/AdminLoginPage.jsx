@@ -26,18 +26,18 @@ export default function AdminLoginPage(){
         try{
             const data = await adminLoginApi(email, password);
             if (data.success){
-                console.log(data);
+                // console.log(data);
                 const access_token = data.data.access_token;
                 handleLoginSuccess(Constants.ENTITY.ADMIN, access_token, setUser, "logged");
                 showToast("Login successful!", "success");
                 navigate("/admin/dashboard");
             }else{
-                console.log(data);
+                console.warn(data);
                 setError(data.message || "Login failed. Please try again.");
                 showToast(data.message || "Login failed. Please try again.", "error");
             }
         }catch(err){
-            console.log(err);
+            console.error(err);
             setError(err.message || "Login failed. Please try again.");
             showToast(err.message || "Login failed. Please try again.", "error");
         }finally{
