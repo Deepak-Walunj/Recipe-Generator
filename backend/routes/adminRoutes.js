@@ -10,6 +10,7 @@ const allowedEntities = require('../middleware/authMiddleware')
 
 const { registerAdminSchema, deleteEntitySchema, StandardResponse } = require('../schemas/adminSchema')
 const {recipeInputSchema} = require('../schemas/recipes')
+const {updateEntitySchema} = require('../schemas/adminSchema')
 
 const {cuisineModel} = require('../models/cuisines')
 const {ingredientModel} = require('../models/ingredients')
@@ -54,14 +55,14 @@ router.delete('/entity-by-id', allowedEntities(EntityType.ADMIN), async (req, re
     if (error) {
         return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
     }
-  logger.info(value)
+  // logger.info(value)
   const entity_id=value.entity_id
   const entity_type=value.entity_type
   if (!entity_id || isNaN(entity_id)) {
     return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
   }
   const admin = await adminService.findUserbyId(entity_id, entity_type)
-  logger.info(admin)
+  // logger.info(admin)
   if (!admin){
     return next(new NotFoundError("Entity not found", 404, "NOT_FOUND", {"Entity_id": entity_id}))
   }
@@ -71,6 +72,16 @@ router.delete('/entity-by-id', allowedEntities(EntityType.ADMIN), async (req, re
   }
   logger.info(`Deleted admin with admin id: ${entity_id}`);
   return res.json(new StandardResponse(true, 'Admin deleted successfully', {"by_email": email, "deleted_email": admin.email}))
+})
+
+router.put('/entity', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  const adminService = getAdminService()
+  const {error, value} = updateEntitySchema.validate(req.body)
+  if(error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+  const updated_user= await adminService.updateEntityDetails(value)
+  return resp.json(new StandardResponse(true, 'Entity updated successfully', {"Updated prodile": updated_user}))
 })
 
 router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) => {

@@ -1,6 +1,6 @@
 const { setupLogging, getLogger } = require('../core/logger')
 const { EntityProfileSchema } = require('../models/authModel');
-const { InvalidCredentialsError,  DuplicateRequestException } = require('../core/exception')
+const { InvalidCredentialsError,  DuplicateRequestException, NotFoundError } = require('../core/exception')
 
 setupLogging();
 const logger = getLogger('admin-service')
@@ -46,7 +46,11 @@ class AdminService {
     }
 
     async findUserbyId(id, entity_type) {
-        return await this.userRepository.findUserbyId( id, entity_type );
+        const user = await this.userRepository.findUserbyId( id, entity_type );
+        if (!user){
+            throw new NotFoundError("Entity not found", 401, 'NOT_FOUND', details={"user_id": id, "Entity_type": entity_type})
+        }
+        return user
     }
 
     async deleteUser(email) {
@@ -63,6 +67,32 @@ class AdminService {
             logger.info(`Unable to delete profile with admin_id: ${admin_id}`)
         }
         return await this.userRepository.deleteUserById(admin_id);
+    }
+
+    async updateEntityDetails(data){
+        const existing_user = await this.findUserbyId(data.id, data.entity_type)
+        if (!data.updated_name && !data.updated_password  && !data.updated_email) {
+            throw new InvalidCredentialsError(
+                "Please provide name or password or email to update",
+                400,
+                "VALIDATION_ERROR"
+            );
+        }
+        const updated_user = await this.userRepository.updateEntityDetails(existing_user.user_id, existing_user.users_type, {
+                updated_name: data.updated_name,
+                updated_email: data.updated_email,
+                updated_password: data.updated_password
+            }
+        );
+        if (data.updated_password || data.updated_email){
+            await this.auth_service.updateEntityDetails(existing_user.user_id, existing_user.users_type, {
+                updated_password: data.updated_password,
+                updated_email: data.updated_email
+            })
+        }
+        if (updated_user){
+            return await this.findUserbyId(data.id, data.entity_type)
+        }
     }
 
     async getAllUsers({searchStr = null, page = 1, limit = 10 }) {

@@ -1,6 +1,6 @@
 const {InvalidCredentialsError, UnauthorizedError, NotFoundError} = require('../core/exception');
 const { AuthRegisterSchema } = require('../schemas/authSchema');
-const { AuthEntityModel } = require('../models/authModel');
+const { AuthEntityModel, AuthEntityFields } = require('../models/authModel');
 const { create_access_token, create_refresh_token, hash_password, verify_password } = require('../middleware/security');
 const { setupLogging, getLogger } = require('../core/logger');
 const bcrypt = require('bcrypt');
@@ -90,6 +90,18 @@ class AuthService {
     }
     async deleteEntityById(id) {
         return await this.authRepository.deleteById(id);
+    }
+
+    async updateEntityDetails(user_id, entity_type, updates){
+        const update_payload = {}
+        if (updates.updated_password){
+        const new_password = await hash_password(updates.updated_password);
+        update_payload[AuthEntityFields.PASSWORD] = new_password
+        }
+        if (updates.updated_email){
+        update_payload[AuthEntityFields.EMAIL] = updates.updated_email
+        }
+        await this.authRepository.updateEntityDetails(user_id, entity_type, update_payload)
     }
 }
 

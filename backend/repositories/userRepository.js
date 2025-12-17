@@ -51,6 +51,29 @@ class UserRepository {
         return result
     }
 
+    async updateEntityDetails(user_id, users_type, updates){
+        const updatePayload = {}
+        if (updates.updated_name){
+            updatePayload[UserProfileFields.USERNAME] = updates.updated_name  
+        }
+        if (updates.updated_password){
+            updatePayload[UserProfileFields.PASSWORD] = updates.updated_password
+        }
+        if (updates.updated_email){
+            updatePayload[UserProfileFields.EMAIL] = updates.updated_email
+        }
+        const result = await this.collection.updateOne({
+            [UserProfileFields.USER_ID]: user_id,
+            [UserProfileFields.USERS_TYPE]: users_type
+            },
+            updatePayload
+        )
+        if (result.affectedRows===0){
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {user_id});
+        }
+        return true
+    }
+
     async getAllUsers({ searchStr = null, page = 1, limit = 10 }) {
         let query = `SELECT user_id, username, email, users_type FROM users`;
         const params = [];

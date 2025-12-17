@@ -13,6 +13,14 @@ const deleteEntitySchema = Joi.object({
     entity_type: Joi.string().valid(EntityType.ADMIN, EntityType.USER).required().messages({"any.only": "Entity type must be ADMIN", "string.empty": "Entity type is required"}),
 })
 
+const updateEntitySchema = Joi.object({
+    id: Joi.number().required(),
+    entity_type: Joi.string().required(),
+    updated_name: Joi.string().optional(),
+    updated_email: Joi.string().email(),
+    updated_password: Joi.string().min(6).optional(),
+})
+
 class StandardResponse {
     constructor(success=true, message=null, data=null){
         this.success = success;
@@ -24,5 +32,6 @@ class StandardResponse {
 module.exports = {
     registerAdminSchema,
     deleteEntitySchema,
+    updateEntitySchema,
     StandardResponse
 }

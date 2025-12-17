@@ -18,7 +18,7 @@ class AuthRepository {
         const required_fields = ['password', 'entity_type']
         const missing_fields = required_fields.filter(field => !(field in data));
         if (missing_fields.length > 0) {
-        throw new MissingRequiredFields('Missing required fields', 400, 'MISSING_FIELDS', missing_fields);
+            throw new MissingRequiredFields('Missing required fields', 400, 'MISSING_FIELDS', missing_fields);
         }
         try{
         const result = await this.collection.insertOne(data);
@@ -53,6 +53,18 @@ class AuthRepository {
             throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { id });
         }
         return true;
+    }
+
+    async updateEntityDetails(user_id, entity_type, payload){
+        const result = await this.collection.updateOne({
+            [AuthEntityFields.USER_ID]: user_id,
+            [AuthEntityFields.ENTITY_TYPE]: entity_type
+        },
+        payload
+        )
+        if (result.affectedRows === 0){
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {user_id});
+        }
     }
 }
 
