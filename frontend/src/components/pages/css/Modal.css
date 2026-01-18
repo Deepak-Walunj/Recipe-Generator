@@ -45,6 +45,15 @@
     cursor: pointer;
 }
 
+.modal_back {
+    padding: 8px 16px;
+    background: #9ca3af;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
 .modal_confirm {
     padding: 8px 16px;
     background: #ef4444;
@@ -56,4 +65,42 @@
 
 .modal_confirm:hover {
     background: #b91c1c;
+}
+
+.modal_confirm:disabled {
+  background: #111827;
+  color: #9ca3af;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.modal_confirm:disabled:hover::after {
+  content: "❌ Nothing to update";
+  position: absolute;
+  top: -35px;
+  background: #1f2937;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.field {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.readonly {
+  position: relative;
+}
+
+.lock {
+  opacity: 0;
+  transition: 0.3s;
+  color: red;
+}
+
+.readonly:hover .lock {
+  opacity: 1;
 }

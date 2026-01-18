@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { getAllUsers, adminRegistrationApi, deleteEntityApi } from "@repositories/AdminRepo.jsx";
+import { getAllUsers, adminRegistrationApi, deleteEntityApi, updateEntityApi, getEntity } from "@repositories/AdminRepo.jsx";
 import { userRegistrationApi } from "@repositories/UserRepo.jsx";
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
@@ -10,7 +10,10 @@ export default function AdminManageUsers() {
   const { user } = useUser();
   const { showToast } = useToast();
 
+  const [entity, setEntity] = useState(null);
   const [users, setUsers] = useState([]);
+  const [newUsername, setNewUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
@@ -21,7 +24,10 @@ export default function AdminManageUsers() {
   const [deletingUserId, setDeletingUserId] = useState(null);
   const [deletingEntityType, setDeletingEntityType] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
 
   const addFormRef = useRef(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -35,6 +41,29 @@ export default function AdminManageUsers() {
   const [submitting, setSubmitting] = useState(false);
 
   const token = user?.access_token;
+
+  const fetchUser = async(entity_id, entity_type) => {
+    if (!entity_id || !entity_type) return ;
+    try{
+      const response = await getEntity(
+        token,
+        {
+          entity_id: entity_id,
+          entity_type: entity_type
+        }
+      )
+      if (response.success){
+          // console.log("Fetched entity:", response?.data?.Entity);
+          showToast("Entity fetched successfully.", "success");
+          setEntity(response?.data?.Entity);
+      }else{
+          showToast(response.message || "Failed to fetch entity.", "error");
+      }
+    } catch (error){
+      console.error("Fetch user failed:", error);
+      showToast(error.message || "Failed to fetch entity.", "error");
+    }
+  }
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -69,19 +98,12 @@ export default function AdminManageUsers() {
     fetchUsers();
   }, [token, page, search, limit]);
 
-  const goPrev = () => {
-    if (page <= 1) return;
-    setPage(prev => prev - 1);
-  };
-
-  const goNext = () => {
-    if (!hasMore) return;
-    setPage(prev => prev + 1);
-  };
-
-  const updateFormField = (key, value) => {
-    setForm(prev => ({ ...prev, [key]: value }));
-  };
+  useEffect(() => {
+    if (showUpdateModal && entity) {
+      setNewUsername(entity.username || "");
+      setNewPassword("");
+    }
+  }, [showUpdateModal, entity]);
 
   const submitRegister = async (e) => {
     e.preventDefault();
@@ -121,11 +143,58 @@ export default function AdminManageUsers() {
   };
 
   const confirmDelete = (entity_id, entity_type) => {
-    console.log(entity_id, entity_type)
+    // console.log(entity_id, entity_type)
     setDeletingUserId(entity_id);
     setDeletingEntityType(entity_type)
     setShowDeleteModal(true);
     };
+
+  const updateUser = async(entity_id, entity_type) => {
+    // console.log(entity_id, entity_type)
+    await fetchUser(entity_id, entity_type);
+    setShowUpdateModal(true);
+  }
+
+  const viewUser = async(entity_id, entity_type) => {
+    // console.log(entity_id, entity_type)
+    await fetchUser(entity_id, entity_type);
+    setShowViewModal(true);
+  }
+
+  const performUserUpdate = async() => {
+    if (!entity) return ;
+    const nothingChanged = (!newPassword.trim()) && (newUsername.trim() === entity.username);
+    if (nothingChanged) {
+      showToast("Nothing to update", "info");
+      return;
+    }
+    // console.log(newUsername, newPassword)
+    setIsUpdating(true);
+    try{
+      const response = await updateEntityApi(
+        token,
+        {
+          updated_password: newPassword? newPassword.trim() : undefined,
+          updated_name: newUsername? newUsername.trim() : undefined,
+          email: entity.email
+        }
+      );
+      if (response.success){
+          showToast("Entity updated successfully.", "success");
+      }else{
+          showToast(response.message || "Failed to update entity.", "error");
+      }
+    }catch(error){
+      console.error("Update failed:", error);
+      showToast(error.message || "Failed to update entity.", "error");
+    }finally{
+        setShowUpdateModal(false);
+        setIsUpdating(false);
+        setNewPassword("");
+        setNewUsername("");
+        await fetchUsers();
+    }
+  }
 
   const performDelete = async() => {
     if (!deletingUserId && !deletingEntityType) return ;
@@ -155,7 +224,22 @@ export default function AdminManageUsers() {
     }
   }
 
+  const goPrev = () => {
+    if (page <= 1) return;
+    setPage(prev => prev - 1);
+  };
+
+  const goNext = () => {
+    if (!hasMore) return;
+    setPage(prev => prev + 1);
+  };
+
+  const updateFormField = (key, value) => {
+    setForm(prev => ({ ...prev, [key]: value }));
+  };
+
   const capitalize = (str="") => str.charAt(0).toUpperCase() + str.slice(1)
+  const nothingChanged = (!newPassword.trim()) && (newUsername.trim() === (entity?.username || ""));
 
   return (
     <div className="table_main">
@@ -222,10 +306,22 @@ export default function AdminManageUsers() {
                         <div style={{ display: "flex", gap: 8 }}>
                           {/* If you'd later add edit — keep placeholder */}
                           <button
+                            className="table_action_btn table_btn_view"
+                            onClick={() => viewUser(Number(u.user_id), u.users_type)}
+                          >
+                            View
+                          </button>
+                          <button
                             className="table_action_btn table_btn_delete"
                             onClick={() => confirmDelete(Number(u.user_id), u.users_type)}
                           >
                             Delete
+                          </button>
+                          <button
+                            className="table_action_btn table_btn_update"
+                            onClick={() => updateUser(Number(u.user_id), u.users_type)}
+                            >
+                            Update
                           </button>
                         </div>
                       </td>
@@ -321,7 +417,101 @@ export default function AdminManageUsers() {
         </form>
       )}
 
-      {/* Delete modal (kept for future) */}
+      {/* Update user modal */}
+      {showUpdateModal && entity &&(
+        <div className="modal_overlay" role="dialog" aria-modal="true">
+          <div className="modal_box">
+            <h3>User Details</h3>
+            <div className="user_fields">
+              <div className="field readonly">
+                <label >Email</label>
+                <span>{entity.email}</span>
+                <span className="lock">❌</span>
+              </div>
+              <div className="field readonly">
+                <label >Entity Type</label>
+                <span>{entity.users_type}</span>
+                <span className="lock">❌</span>
+              </div>
+              <div className="field editable">
+                <label >Username</label>
+                <input 
+                  type="text" 
+                  value={newUsername}
+                  placeholder={entity.username || "username"}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                />
+              </div>
+              <div className="field editable">
+                <label >Password</label>
+                <input 
+                  type="text" 
+                  value={newPassword}
+                  placeholder={entity.password || "password"}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="modal_actions">
+              <button 
+              className="modal_cancel" 
+              onClick={() => setShowUpdateModal(false)} 
+              disabled={isUpdating}
+              >
+                Cancel
+              </button>
+              <button 
+              className="modal_confirm" 
+              onClick={performUserUpdate}
+              disabled={isUpdating || nothingChanged}
+              >
+                {isUpdating ? "Updating…" : "Update"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View user modal */}
+      {showViewModal && entity &&(
+        <div className="modal_overlay" role="dialog" aria-modal="true">
+          <div className="modal_box">
+            <h3>User Details</h3>
+            <div className="user_fields">
+              <div className="field readonly">
+                <label >User ID</label>
+                <span>{entity.user_id}</span>
+              </div>
+              <div className="field readonly">
+                <label >Email</label>
+                <span>{entity.email}</span>
+              </div>
+              <div className="field readonly">
+                <label >Entity Type</label>
+                <span>{entity.users_type}</span>
+              </div>
+              <div className="field readonly">
+                <label >Username</label>
+                <span>{entity.username}</span>
+              </div>
+              <div className="field readonly">
+                <label >Password</label>
+                <span>{entity.password}</span>
+              </div>
+            </div>
+            <div className="modal_actions">
+              <button 
+              className="modal_back" 
+              onClick={() => setShowViewModal(false)} 
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete modal */}
       {showDeleteModal && (
         <div className="modal_overlay" role="dialog" aria-modal="true">
           <div className="modal_box">

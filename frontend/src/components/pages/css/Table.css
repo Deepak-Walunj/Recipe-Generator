@@ -123,6 +123,28 @@
     transform: scale(1.05);
 }
 
+.table_btn_update {
+    background: #07e7ba;
+    color: white;
+    margin-right: 8px;
+}
+
+.table_btn_update:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
+.table_btn_view {
+    background: #2563eb;
+    color: white;
+    margin-right: 8px;
+}
+
+.table_btn_view:hover {
+    background: #1d4ed8;
+    transform: scale(1.05);
+}
+
 .manage_recipe_form {
     margin-top: 30px;
     padding: 24px;

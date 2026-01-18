@@ -10,7 +10,7 @@ const allowedEntities = require('../middleware/authMiddleware')
 
 const { registerAdminSchema, deleteEntitySchema, StandardResponse } = require('../schemas/adminSchema')
 const {recipeInputSchema} = require('../schemas/recipes')
-const {updateEntitySchema} = require('../schemas/adminSchema')
+const {updateEntitySchema, getEntitySchema} = require('../schemas/adminSchema')
 
 const {cuisineModel} = require('../models/cuisines')
 const {ingredientModel} = require('../models/ingredients')
@@ -48,7 +48,7 @@ router.delete('/me', allowedEntities(EntityType.ADMIN), async (req, res, next) =
   return res.json(new StandardResponse(true, 'Admin deleted successfully', {"email": email}))
 })
 
-router.delete('/entity-by-id', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
+router.delete('/entity', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
   const adminService = getAdminService()
   const email = req.user.email
   const { error, value } = deleteEntitySchema.validate(req.body)
@@ -84,7 +84,17 @@ router.put('/entity', allowedEntities(EntityType.ADMIN), async (req, resp, next)
   return resp.json(new StandardResponse(true, 'Entity updated successfully', {"Updated prodile": updated_user}))
 })
 
-router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
+router.get('/entity', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
+  const adminService = getAdminService()
+  const {error, value} = getEntitySchema.validate(req.query)
+  if (error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+  const user = await adminService.findUserbyId(value.entity_id, value.entity_type)
+  return res.json(new StandardResponse(true, 'Entity fetched successfully', {"Entity": user}))
+})
+
+router.get('/entities', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
   const adminService = getAdminService()
   const { search = null, page = 1, limit = 10 } = req.query
   const users = await adminService.getAllUsers({searchStr: search, page: parseInt(page), limit: parseInt(limit)})
@@ -92,7 +102,6 @@ router.get('/users', allowedEntities(EntityType.ADMIN), async (req, res, next) =
   return res.json (new StandardResponse(true, 'All users fetched successfully', { page, limit, users }))
 })
 
-module.exports = router
 
 router.post('/cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   const cuisineService = getCuisinesService()
@@ -160,3 +169,5 @@ router.delete('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (re
     next(err);
   }
 });
+
+module.exports = router

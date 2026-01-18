@@ -5,12 +5,14 @@ const ENDPOINTS = {
     REGISTER: `${URL}/register`,
     GET_ME: `${URL}/me`,
     DELETE_ME: `${URL}/me`,
-    GET_USERS: `${URL}/users`,
+    GET_USERS: `${URL}/entities`,
+    GET_USER: `${URL}/entity`,
     ADD_CUISINE: `${URL}/cuisine`,
     ADD_INGREDIENT: `${URL}/ingredient`,
     ADD_RECIPE: `${URL}/recipe`,
     DELETE_RECIPE: `${URL}/recipe/:recipe_id`,
-    DELETE_ENTITY: `${URL}/entity-by-id`
+    DELETE_ENTITY: `${URL}/entity`,
+    UPDATE_ENTITY: `${URL}/entity`,
 }
 
 export const adminRegistrationApi = async (data) => {
@@ -103,6 +105,56 @@ export const deleteEntityApi = async (token=' ', data) => {
         const backendMessage = response?.data?.message;
         const detailsMessage = response?.data?.details?.[0]?.message;
         throw new Error(backendMessage || detailsMessage || "Unable to delete user");
+    }
+    return response.data
+}
+
+export const updateEntityApi = async (token=' ', data) => {
+    let response= {}
+    let headers = {}
+    if (!!token){
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.UPDATE_ENTITY,
+            method : "PUT",
+            headers : headers,
+            data: data
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if (response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to update user");
+    }
+    return response.data
+}
+
+export const getEntity = async (token=' ', data) => {
+    let response = {}
+    let headers = {}
+    if (!!token){
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.GET_USER,
+            method : "GET",
+            headers : headers,
+            params: data
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if(response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch user");
     }
     return response.data
 }
