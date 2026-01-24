@@ -47,6 +47,10 @@ class RecipesRepository{
 
     async getRecipeById(recipeId){
         const result = await this.collection.findOne({ [recipeFields.RECIPE_ID]: recipeId });
+        if (!result){
+            logger.info(`No recipe found with ID: ${recipeId}`);
+            return null;
+        }
         return result;
     }
 

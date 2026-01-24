@@ -104,3 +104,14 @@
 .readonly:hover .lock {
   opacity: 1;
 }
+
+.recipe_view_modal_box {
+  background: #fff;
+  padding: 24px;
+  width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  text-align: left;
+}

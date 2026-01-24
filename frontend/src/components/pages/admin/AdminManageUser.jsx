@@ -477,7 +477,7 @@ export default function AdminManageUsers() {
         <div className="modal_overlay" role="dialog" aria-modal="true">
           <div className="modal_box">
             <h3>User Details</h3>
-            <div className="user_fields">
+            <div>
               <div className="field readonly">
                 <label >User ID</label>
                 <span>{entity.user_id}</span>

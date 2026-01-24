@@ -53,7 +53,7 @@ const publicRouter = require('./routes/publicRoutes');
     app.use(genericExceptionHandler);
 
     // Start server
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0",() => {
       logger.info(`🚀 Server listening on http://localhost:${PORT}`);
     });
 

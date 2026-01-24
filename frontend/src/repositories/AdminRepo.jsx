@@ -11,6 +11,8 @@ const ENDPOINTS = {
     ADD_INGREDIENT: `${URL}/ingredient`,
     ADD_RECIPE: `${URL}/recipe`,
     DELETE_RECIPE: `${URL}/recipe/:recipe_id`,
+    GET_RECIPES: `${URL}/recipes`,
+    GET_RECIPE: `${URL}/recipe/:recipe_id`,
     DELETE_ENTITY: `${URL}/entity`,
     UPDATE_ENTITY: `${URL}/entity`,
 }
@@ -205,6 +207,51 @@ export const addRecipe = async (token='', data) => {
         const backendMessage = response?.data?.message;
         const detailsMessage = response?.data?.details?.[0]?.message;
         throw new Error(backendMessage || detailsMessage || "Unable to fetch users");
+    }
+    return response.data
+}
+
+export const getAllRecipes = async({ search=null, page=1, limit=10 }) =>{
+    let response = {}
+    try{
+        response = await MakeApiCall({
+            url: ENDPOINTS.GET_RECIPES,
+            method: "GET",
+            params: {search, page, limit}
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if(response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch users");
+    }
+    return response.data
+}
+
+export const getRecipe = async (token='', recipeId) => {
+    let response = {}
+    let headers = {}
+    if (!!token){
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.GET_RECIPE.replace(":recipe_id", recipeId),
+            method : "GET",
+            headers : headers,
+            params: { recipeId}
+        })
+    }catch (error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong")
+    }
+    if (response.status != 200){
+        const backendMessage = response?.data?.message
+        const detailsMessage = response?.data?.details?.[0]?.message
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch recipe")
     }
     return response.data
 }

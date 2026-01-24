@@ -68,11 +68,11 @@ class RecipesService{
     async deleteRecipe(recipeId){
         const existingRecipe = await this.recipesRepository.getRecipeById(recipeId);
         if (!existingRecipe){
-            throw new ValidationError(`Recipe with ID ${recipeId} does not exist`, 404, 'NOT_FOUND', null);
+            throw new ValidationError(`Recipe with ID ${recipeId} does not exist`, 404, 'NOT_FOUND', {"recipeID": recipeId});
         }
         const existingIngredients = await this.recipeIngredientsRepository.getIngredientsByRecipeId(recipeId);
         if (existingIngredients.length === 0){
-            throw new ValidationError(`No ingredients found for recipe ID ${recipeId}`, 404, 'NOT_FOUND', null);
+            throw new ValidationError(`No ingredients found for recipe ID ${recipeId}`, 404, 'NOT_FOUND', {"recipeID": recipeId});
         }
         logger.info(`Found existing recipe: ${JSON.stringify(existingRecipe)} with ID: ${recipeId}`);
         logger.info(`Found existing ingredients: ${JSON.stringify(existingIngredients)} with ID: ${recipeId}`);
@@ -81,6 +81,14 @@ class RecipesService{
         const deletedRecipe = await this.recipesRepository.deleteById(recipeId);
         logger.info(`Deleted recipe: ${JSON.stringify(deletedRecipe)} with ID: ${recipeId}`);
         return { recipe:existingRecipe, ingredients:existingIngredients  };
+    }
+
+    async getRecipeById(recipeId){
+        const recipe = await this.recipesRepository.getRecipeById(recipeId);
+        if (!recipe){
+            throw new ValidationError(`Recipe with ID ${recipeId} does not exist`, 404, 'NOT_FOUND', {"recipeID": recipeId});
+        }
+        return recipe;
     }
 }
 
