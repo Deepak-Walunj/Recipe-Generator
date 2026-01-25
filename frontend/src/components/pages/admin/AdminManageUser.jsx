@@ -426,12 +426,12 @@ export default function AdminManageUsers() {
               <div className="field readonly">
                 <label >Email</label>
                 <span>{entity.email}</span>
-                <span className="lock">❌</span>
+                <span className="lock"></span>
               </div>
               <div className="field readonly">
                 <label >Entity Type</label>
                 <span>{entity.users_type}</span>
-                <span className="lock">❌</span>
+                <span className="lock"></span>
               </div>
               <div className="field editable">
                 <label >Username</label>

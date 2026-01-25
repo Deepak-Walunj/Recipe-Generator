@@ -191,6 +191,16 @@ export default function AdminManageRecipes() {
     };
     const capitalize = (str="") => str.charAt(0).toUpperCase() + str.slice(1)
     const truncate = (txt, n = 120) => (txt && txt.length > n ? txt.slice(0, n) + "…" : txt);
+    const formatInstruction = (text = '') => {
+      return text
+        .split('\n')
+        .map((line, index) => {
+          const trimmed = line.trim();
+          if (!trimmed) return ""
+          const capitalized = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+          return `${index+1}. ${capitalized}`;
+        }).join('\n');
+    }
   return (
     <div className="table_main">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
@@ -248,7 +258,14 @@ export default function AdminManageRecipes() {
                   <tr key={r.recipe_id }>
                     <td>{r.recipe_id}</td>
                     <td style={{ fontWeight: 600 }}>{(capitalize(r.title) || "").toString()}</td>
-                    <td>{truncate(capitalize(r.instruction) || "", 140)}</td>
+                    <td>
+                      <div className="instruction_cell">
+                        {truncate(formatInstruction(r.instruction) || "", 140)}
+                        <div className="instruction_tooltip">
+                          {formatInstruction(r.instruction)}
+                        </div>
+                      </div>
+                    </td>
                     <td>{r.prep_time || "-"}</td>
                     <td>{capitalize(r.cuisine_name) || "-"}</td>
                     <td>
@@ -432,7 +449,7 @@ export default function AdminManageRecipes() {
       {showViewModal && recipe && (
         <div className="modal_overlay" role="dialog" aria-modal="true">
           <div className="recipe_view_modal_box">
-            <h3>{recipe.title}</h3>
+            <h3>{capitalize(recipe.title)}</h3>
             <div>
               <div className="field readonly">
                 <label >Id: </label>
@@ -440,16 +457,16 @@ export default function AdminManageRecipes() {
               </div>
               <div className="field readonly">
                 <label >Instructions:</label>
-                <span>{recipe.instruction}</span>
+                <span>{formatInstruction(recipe.instruction)}</span>
               </div>
               <div className="field readonly">
                 <label >Preparation Time: </label>
                 <span>{recipe.prep_time || "-"}</span>
               </div>
-              {/* <div className="field readonly">
+              <div className="field readonly">
                 <label >Cuisine</label>
-                <span>{recipe.cuisine_name || "-"}</span>
-              </div> */}
+                <span>{capitalize(recipe.cuisine_name) || "-"}</span>
+              </div>
               <div className="field readonly">
                 <label >Total Views: </label>
                 <span>{recipe.views || "-"}</span>

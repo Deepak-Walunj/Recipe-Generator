@@ -40,18 +40,33 @@ class RecipesRepository{
             throw err;
         }
     }
+
     async addRecipe(recipeData){
         const result = await this.collection.insertOne(recipeData);
         return { ...recipeData, recipe_id: result.insertedId };
     }
 
     async getRecipeById(recipeId){
-        const result = await this.collection.findOne({ [recipeFields.RECIPE_ID]: recipeId });
-        if (!result){
-            logger.info(`No recipe found with ID: ${recipeId}`);
-            return null;
+        const query = `SELECT 
+                    r.recipe_id,
+                    r.title,
+                    r.instruction,
+                    r.prep_time,
+                    r.cuisine_id,
+                    c.name AS cuisine_name,
+                    r.views,
+                    r.no_of_bookmarks
+                FROM recipe r
+                JOIN cuisines c ON r.cuisine_id = c.cuisine_id
+                WHERE r.recipe_id = ?
+                LIMIT 1`;
+        try{
+            const [rows] = await this.collection.db.query(query, [recipeId]);
+            return rows[0] || null;
+        } catch(err){
+            logger.error(`Error fetching recipe by ID ${recipeId}: ${err.message}`);
+            throw err;
         }
-        return result;
     }
 
     async deleteById(recipeId){

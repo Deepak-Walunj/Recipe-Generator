@@ -72,16 +72,6 @@ router.delete('/entity', allowedEntities(EntityType.ADMIN), async (req, res, nex
   return res.json(new StandardResponse(true, 'Admin deleted successfully', {"by_email": email, "deleted_email": admin.email}))
 })
 
-router.put('/entity', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
-  const adminService = getAdminService()
-  const {error, value} = updateEntitySchema.validate(req.body)
-  if(error){
-    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
-  }
-  const updated_user= await adminService.updateEntityDetails(value)
-  return resp.json(new StandardResponse(true, 'Entity updated successfully', {"Updated prodile": updated_user}))
-})
-
 router.get('/entity', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
   const adminService = getAdminService()
   const {error, value} = getEntitySchema.validate(req.query)
@@ -98,6 +88,16 @@ router.get('/entities', allowedEntities(EntityType.ADMIN), async (req, res, next
   const users = await adminService.getAllUsers({searchStr: search, page: parseInt(page), limit: parseInt(limit)})
   logger.info(`Fetched users from DB: ${JSON.stringify(users)}`);
   return res.json (new StandardResponse(true, 'All users fetched successfully', { page, limit, users }))
+})
+
+router.put('/entity', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  const adminService = getAdminService()
+  const {error, value} = updateEntitySchema.validate(req.body)
+  if(error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+  const updated_user= await adminService.updateEntityDetails(value)
+  return resp.json(new StandardResponse(true, 'Entity updated successfully', {"Updated profile": updated_user}))
 })
 
 router.post('/cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
@@ -171,6 +171,15 @@ router.get('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, 
     return res.json(new StandardResponse(true, "Recipe fetched successfully", {Recipe: recipe}));
   } catch (err) {
     next(err);
+  }
+})
+
+router.put('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  try{
+    const recipeService = getRecipesService();
+    const { error, value} =  recipeInputSchema.validate(req.body)
+  } catch(err){
+    next(err)
   }
 })
 

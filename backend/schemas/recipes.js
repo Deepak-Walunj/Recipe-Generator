@@ -14,6 +14,13 @@ const recipeInputSchema = Joi.object({
   ingredients: Joi.array().items(ingredientItemSchema).min(1).required(),
 });
 
+const recipeUpdateSchema = Joi.object({
+  instruction : Joi.string().optional(),
+  prep_time : Joi.number().integer().optional().allow(null, 0),
+  cuisine_name : Joi.string().optional(),
+  ingredients : Joi.array().items(ingredientItemSchema).min(1).optional(),
+})
+
 const recipeSchema = Joi.object({
   recipe_id: Joi.number().integer().required(),
   title: Joi.string().required(),
