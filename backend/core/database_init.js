@@ -14,7 +14,7 @@ const REQUIRED_TABLES = [
   collections.RECIPE_INGREDIENTS,
   collections.INGREDIENTS,
   collections.RECIPE_RATINGS,
-  collections.BOOKMARKS,
+  collections.BOOKMARKS
 ];
 
 async function initializeCollections(db) {
@@ -44,7 +44,7 @@ async function createTable(db, table) {
           email VARCHAR(255)  NOT NULL,
           password VARCHAR(255) NOT NULL,
           username VARCHAR(255) NOT NULL,
-          users_type VARCHAR(50) NOT NULL,
+          users_type VARCHAR(50) NOT NULL
         );
       `;
       break;
