@@ -55,14 +55,12 @@ router.delete('/entity', allowedEntities(EntityType.ADMIN), async (req, res, nex
     if (error) {
         return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
     }
-  // logger.info(value)
   const entity_id=value.entity_id
   const entity_type=value.entity_type
   if (!entity_id || isNaN(entity_id)) {
     return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
   }
   const admin = await adminService.findUserbyId(entity_id, entity_type)
-  // logger.info(admin)
   if (!admin){
     return next(new NotFoundError("Entity not found", 404, "NOT_FOUND", {"Entity_id": entity_id}))
   }
@@ -72,16 +70,6 @@ router.delete('/entity', allowedEntities(EntityType.ADMIN), async (req, res, nex
   }
   logger.info(`Deleted admin with admin id: ${entity_id}`);
   return res.json(new StandardResponse(true, 'Admin deleted successfully', {"by_email": email, "deleted_email": admin.email}))
-})
-
-router.put('/entity', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
-  const adminService = getAdminService()
-  const {error, value} = updateEntitySchema.validate(req.body)
-  if(error){
-    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
-  }
-  const updated_user= await adminService.updateEntityDetails(value)
-  return resp.json(new StandardResponse(true, 'Entity updated successfully', {"Updated prodile": updated_user}))
 })
 
 router.get('/entity', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
@@ -102,6 +90,15 @@ router.get('/entities', allowedEntities(EntityType.ADMIN), async (req, res, next
   return res.json (new StandardResponse(true, 'All users fetched successfully', { page, limit, users }))
 })
 
+router.put('/entity', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  const adminService = getAdminService()
+  const {error, value} = updateEntitySchema.validate(req.body)
+  if(error){
+    return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+  }
+  const updated_user= await adminService.updateEntityDetails(value)
+  return resp.json(new StandardResponse(true, 'Entity updated successfully', {"Updated profile": updated_user}))
+})
 
 router.post('/cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   const cuisineService = getCuisinesService()
@@ -154,6 +151,36 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
   const recipe_and_ingredients = await recipeService.addRecipe(recipe_payload)
   logger.info(`Added recipe with ingredients: ${JSON.stringify(recipe_and_ingredients)}`);
   return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe": recipe_and_ingredients.recipe, "ingredients": recipe_and_ingredients.ingredients}) )
+})
+
+router.get('/recipes', async (req, resp, next) => {
+    const recipesService = getRecipesService()
+    const { search = null, page = 1, limit = 10 } = req.query
+    const recipes = await recipesService.getAllRecipes({searchStr: search, page: parseInt(page), limit: parseInt(limit)})
+    return resp.json(new StandardResponse(true, 'All recipes fetched successfully', {page, limit, recipes}))  
+})
+
+router.get('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
+  try{
+    const recipeService = getRecipesService();
+    const recipe_id = Number(req.params.recipe_id);
+    if (!recipe_id || isNaN(recipe_id)){
+      return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
+    }
+    const recipe = await recipeService.getRecipeById(recipe_id)
+    return res.json(new StandardResponse(true, "Recipe fetched successfully", {Recipe: recipe}));
+  } catch (err) {
+    next(err);
+  }
+})
+
+router.put('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  try{
+    const recipeService = getRecipesService();
+    const { error, value} =  recipeInputSchema.validate(req.body)
+  } catch(err){
+    next(err)
+  }
 })
 
 router.delete('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {

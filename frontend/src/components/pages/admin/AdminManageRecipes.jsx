@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import {addRecipe, deleteRecipe} from "@repositories/AdminRepo.jsx"
-import {getAllRecipes} from "@repositories/PublicRepo.jsx"
+import {addRecipe, deleteRecipe, getAllRecipes, getRecipe} from "@repositories/AdminRepo.jsx"
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx"; 
 import '@components/pages/css/Table.css';
@@ -9,6 +8,7 @@ import '@components/pages/css/Modal.css';
 export default function AdminManageRecipes() {
     const {user} = useUser();
     const {showToast} = useToast();
+    const [recipe, setRecipe] = useState(null);
     const [recipes, setRecipes] = useState([]);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
@@ -29,7 +29,22 @@ export default function AdminManageRecipes() {
         ingredients: [{ name: "", quantity: "", unit: "" }],
     });
     const [submitting, setSubmitting] = useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
     const token = user?.access_token
+
+    const fetchRecipe = async(recipeId) => {
+      if (!recipeId) return 
+      try{
+        const response = await getRecipe(token, recipeId)
+        if (response.success){
+          showToast("Recipe fetched successfully.", "success");
+          setRecipe(response?.data?.Recipe)
+        }
+      } catch(error){
+        console.error("Failed to fetch recipe:", error);
+        showToast(error.message) || "Unable to fetch recipe."
+      }
+    }
 
     const fetchRecipes = useCallback(async () => {
         setLoading(true);
@@ -57,7 +72,6 @@ export default function AdminManageRecipes() {
         }
     }, [page, search, limit]);
 
-
     useEffect(() => { fetchRecipes(); }, [fetchRecipes]);
 
     const goPrev = () => {
@@ -73,6 +87,11 @@ export default function AdminManageRecipes() {
         setDeletingRecipeId(recipeId);
         setShowDeleteModal(true);
     };
+
+    const viewRecipe = async(recipeId) => {
+      await fetchRecipe(recipeId);
+      setShowViewModal(true);
+    }
 
     const performDelete = async () => {
         if (!deletingRecipeId) return;
@@ -172,6 +191,16 @@ export default function AdminManageRecipes() {
     };
     const capitalize = (str="") => str.charAt(0).toUpperCase() + str.slice(1)
     const truncate = (txt, n = 120) => (txt && txt.length > n ? txt.slice(0, n) + "…" : txt);
+    const formatInstruction = (text = '') => {
+      return text
+        .split('\n')
+        .map((line, index) => {
+          const trimmed = line.trim();
+          if (!trimmed) return ""
+          const capitalized = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+          return `${index+1}. ${capitalized}`;
+        }).join('\n');
+    }
   return (
     <div className="table_main">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
@@ -229,20 +258,32 @@ export default function AdminManageRecipes() {
                   <tr key={r.recipe_id }>
                     <td>{r.recipe_id}</td>
                     <td style={{ fontWeight: 600 }}>{(capitalize(r.title) || "").toString()}</td>
-                    <td>{truncate(capitalize(r.instruction) || "", 140)}</td>
+                    <td>
+                      <div className="instruction_cell">
+                        {truncate(formatInstruction(r.instruction) || "", 140)}
+                        <div className="instruction_tooltip">
+                          {formatInstruction(r.instruction)}
+                        </div>
+                      </div>
+                    </td>
                     <td>{r.prep_time || "-"}</td>
                     <td>{capitalize(r.cuisine_name) || "-"}</td>
                     <td>
                       <div style={{ display: "flex", gap: 8 }}>
-                        {/* If you'd later add edit — keep placeholder */}
                         <button
                           className="table_action_btn table_btn_delete"
                           onClick={() => confirmDelete(Number(r.recipe_id))}
                         >
                           Delete
                         </button>
-                        {/* Potential future button */}
-                        {/* <button className="recipe_action_btn">Edit</button> */}
+                        <button
+                         className="table_action_btn table_btn_view"
+                         onClick={() => {
+                            viewRecipe(Number(r.recipe_id));
+                         }}
+                        >
+                          View
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -398,6 +439,49 @@ export default function AdminManageRecipes() {
                 disabled={isDeleting}
               >
                 {isDeleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Recipe Modal */}
+      {showViewModal && recipe && (
+        <div className="modal_overlay" role="dialog" aria-modal="true">
+          <div className="recipe_view_modal_box">
+            <h3>{capitalize(recipe.title)}</h3>
+            <div>
+              <div className="field readonly">
+                <label >Id: </label>
+                <span>{recipe.recipe_id}</span>
+              </div>
+              <div className="field readonly">
+                <label >Instructions:</label>
+                <span>{formatInstruction(recipe.instruction)}</span>
+              </div>
+              <div className="field readonly">
+                <label >Preparation Time: </label>
+                <span>{recipe.prep_time || "-"}</span>
+              </div>
+              <div className="field readonly">
+                <label >Cuisine</label>
+                <span>{capitalize(recipe.cuisine_name) || "-"}</span>
+              </div>
+              <div className="field readonly">
+                <label >Total Views: </label>
+                <span>{recipe.views || "-"}</span>
+              </div>
+              <div className="field readonly">
+                <label >Bookmark Count: </label>
+                <span>{recipe.no_of_bookmarks || "-"}</span>
+              </div>
+            </div>
+            <div className="modal_actions">
+              <button 
+                className="modal_back"
+                onClick={() => setShowViewModal(false)}
+              >
+                Close
               </button>
             </div>
           </div>

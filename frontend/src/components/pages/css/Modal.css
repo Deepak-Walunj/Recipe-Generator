@@ -1,9 +1,12 @@
 .modal_overlay {
     position: fixed;
-    top: 0;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.55); /* dark blur */
+    backdrop-filter: blur(4px);
+    /* top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100%; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,25 +35,41 @@
 }
 
 .modal_actions {
+    margin-top: 24px;
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Update user modal: Cancel left, Update right */
+.modal_actions:has(.modal_cancel):has(.modal_confirm) {
+  justify-content: space-between;
+}
+
+/* View user modal: single Back button centered */
+.modal_actions:has(.modal_back):not(:has(.modal_confirm)) {
+  justify-content: center;
 }
 
 .modal_cancel {
     padding: 8px 16px;
-    background: #e5e7eb;
-    border-radius: 6px;
+    background: #2563eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
     border: none;
     cursor: pointer;
 }
 
 .modal_back {
     padding: 8px 16px;
-    background: #9ca3af;
+    background: #2563eb;
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     border: none;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
 }
 
@@ -58,7 +77,9 @@
     padding: 8px 16px;
     background: #ef4444;
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
     border: none;
     cursor: pointer;
 }
@@ -85,14 +106,39 @@
   font-size: 12px;
 }
 
-.field {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
+.field.readonly {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  align-items: flex-start;
 }
 
-.readonly {
-  position: relative;
+/* Labels */
+.field.readonly label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.field.readonly span {
+  font-size: 14px;
+  color: #111827;
+  line-height: 1.65;
+  white-space: pre-line; /* VERY IMPORTANT for instructions */
+}
+
+.field.readonly span:has(+ *) {
+  white-space: pre-line;
+}
+
+.field.readonly label:contains("Instructions") + span,
+.field.readonly span {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 14px 16px;
+  border-radius: 10px;
 }
 
 .lock {
@@ -103,4 +149,31 @@
 
 .readonly:hover .lock {
   opacity: 1;
+}
+
+.recipe_view_modal_box {
+  background: #ffffff;
+  padding: 28px 32px 24px;
+  width: 720px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: 14px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe_view_modal_box h3 {
+  margin-bottom: 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.recipe_view_modal_box > div {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }

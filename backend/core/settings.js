@@ -16,7 +16,7 @@ module.exports = {
   	REFRESH_TOKEN_EXPIRE_DAYS: parseInt(process.env.REFRESH_TOKEN_EXPIRE_DAYS || '7'),
   	ALGORITHM: process.env.ALGORITHM || 'HS256',
 
-    ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:5173'],
+    ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000','http://localhost:5173','http://192.168.1.7:5173'],
     PORT: process.env.PORT || 5000,
 
 	LOG_LEVEL: process.env.LOG_LEVEL, 
