@@ -94,6 +94,22 @@ async function createTable(db, table) {
       `;
       break;
 
+    case collections.RECIPE_STEPS:
+      sql = `
+        CREATE TABLE recipe_steps (
+          step_id INT AUTO_INCREMENT PRIMARY KEY,
+          recipe_id INT NOT NULL,
+          step_number INT NOT NULL,
+          instruction TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          CONSTRAINT fk_recipe_steps
+          FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE,
+          UNIQUE KEY unique_step_per_recipe (recipe_id, step_number)
+        );
+      `;
+      break;
+
     case collections.RECIPE_INGREDIENTs:
       sql = `
         CREATE TABLE recipe_ingredients (

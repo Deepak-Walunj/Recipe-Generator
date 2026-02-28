@@ -27,6 +27,22 @@ class MySQLCollection {
         return { insertedId: result.insertId };
     }
 
+    async insertMany(docs){
+        if (!Array.isArray(docs) || docs.length === 0){
+            throw new Error("docs must be a non-empty array");
+        }
+        const keys = Object.keys(docs[0])
+        const values = docs.map(doc => Object.values(doc))
+        const columns = keys.join(",")
+        const placeholders = docs.map(() => `(${keys.map(() => "?").join(",")})`).join(",")
+        const flatValues = values.flat()
+        const [result] = await this.db.query(
+            `INSERT INTO ${this.tableName} (${columns}) VALUES ${placeholders}`,
+            flatValues
+        );
+        return { insertedCount: result.affectedRows };
+    }
+
     async updateOne(where, update) {
         const updateKeys = Object.keys(update);
         const updateValues = Object.values(update);

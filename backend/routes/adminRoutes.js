@@ -1,8 +1,8 @@
 const express = require('express')
-
 const router = express.Router()
+
 const { setupLogging, getLogger } = require('../core/logger')
-const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService } = require('../core/deps')
+const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService, getRecipeStepsService } = require('../core/deps')
 const { ValidationError, NotFoundError } = require('../core/exception')
 const { EntityType } = require('../core/enum')
 
@@ -128,6 +128,7 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
   const recipeService = getRecipesService()
   const cuisineService = getCuisinesService()
   const ingredientService = getIngredientsService()
+  const recipeStepsService = getRecipeStepsService()
   const { error, value} =  recipeInputSchema.validate(req.body)
   if (error){
     return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
@@ -147,10 +148,14 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
     cuisine_id,
     ingredients: processedIngredients,
   }
-  logger.info(`Final recipe payload: ${JSON.stringify(recipe_payload)}`);
   const recipe_and_ingredients = await recipeService.addRecipe(recipe_payload)
+  const recipe_steps_payload = {
+    recipe_id: recipe_and_ingredients.recipe.recipe_id,
+    instruction: recipe_payload.instruction
+  }
+  const recipe_steps = await recipeStepsService.addRecipeSteps(recipe_steps_payload)
   logger.info(`Added recipe with ingredients: ${JSON.stringify(recipe_and_ingredients)}`);
-  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe": recipe_and_ingredients.recipe, "ingredients": recipe_and_ingredients.ingredients}) )
+  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe": recipe_and_ingredients.recipe, "ingredients": recipe_and_ingredients.ingredients, "recipe_steps": recipe_steps}) )
 })
 
 router.get('/recipes', async (req, resp, next) => {

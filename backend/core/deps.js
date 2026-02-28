@@ -9,6 +9,7 @@ const UserRepository = require('../repositories/userRepository');
 const IngredientsRepository = require('../repositories/ingredientsRepository');
 const CuisinesRepository = require('../repositories/cuisinesRepository')
 const RecipesRepository = require('../repositories/recipesRepository')
+const RecipeStepsRepository = require('../repositories/recipeStepsRepository.js')
 const RecipeIngredientsRepository = require('../repositories/recipeIngredientsRepository.js')
 
 const AuthService = require('../services/authService');
@@ -17,6 +18,7 @@ const AdminService = require('../services/adminService');
 const IngredientsService = require('../services/ingredientsService');
 const CuisinesService = require('../services/cuisinesService.js')
 const RecipesService = require('../services/recipesService')
+const RecipeStepsService = require('../services/recipeStepsService.js');
 
 setupLogging();
 const logger = getLogger("deps");
@@ -49,6 +51,7 @@ class DependencyStorage{
         this.ingredientsRepo = new IngredientsRepository(new MySQLCollection(db, collections.INGREDIENTS))
         this.cusinesRepo = new CuisinesRepository(new MySQLCollection(db, collections.CUISINES))
         this.recipesRepo = new RecipesRepository(new MySQLCollection(db, collections.RECIPE))
+        this.recipeStepsRepo = new RecipeStepsRepository(new MySQLCollection(db, collections.RECIPE_STEPS))
         this.recipeIngredientsRepo = new RecipeIngredientsRepository(new MySQLCollection(db, collections.RECIPE_INGREDIENTS))
         
         this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache });
@@ -57,6 +60,7 @@ class DependencyStorage{
         this.ingredientsService = new IngredientsService( { ingredientsRepository: this.ingredientsRepo })
         this.cuisinesService = new CuisinesService( { cuisinesRepository: this.cusinesRepo })
         this.recipesService = new RecipesService( { recipesRepository: this.recipesRepo, recipeIngredientsRepository: this.recipeIngredientsRepo } )
+        this.recipeStepsService = new RecipeStepsService( { recipeStepsRepository: this.recipeStepsRepo } )
         }
     getAuthRepository() {
         return this.authRepo;
@@ -72,6 +76,9 @@ class DependencyStorage{
     }
     getRecipesRepository(){
       return this.recipesRepo;
+    }
+    getRecipeStepsRepository(){
+      return this.recipeStepsRepo;
     }
     getRecipeIngredientsRepository(){
       return this.recipeIngredientsRepo;
@@ -93,6 +100,9 @@ class DependencyStorage{
     }
     getRecipesService(){
       return this.recipesService
+    }
+    getRecipeStepsService(){
+      return this.recipeStepsService
     }
     getCache() {
         return this._cache;
@@ -128,6 +138,10 @@ function getRecipesRepository(){
   if (!dependencyStorage) throw new Error('Dependencies not initialised');
   return dependencyStorage.getRecipesRepository();
 }
+function getRecipeStepsRepository(){
+  if (!dependencyStorage) throw new Error('Dependencies not initialised');
+  return dependencyStorage.getRecipeStepsRepository();
+}
 function getRecipeIngredientsRepository(){
   if (!dependencyStorage) throw new Error('Dependencies not initialised');
   return dependencyStorage.getRecipeIngredientsRepository();
@@ -156,6 +170,10 @@ function getRecipesService(){
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getRecipesService();
 }
+function getRecipeStepsService(){
+  if (!dependencyStorage) throw new Error('Dependencies not initialized');
+  return dependencyStorage.getRecipeStepsService();
+}
 function getCache() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getCache();
@@ -167,6 +185,7 @@ module.exports = {
   getIngredientsRepository,
   getCusinesRepository,
   getRecipesRepository,
+  getRecipeStepsRepository,
   getRecipeIngredientsRepository,
   getAuthService,
   getUserService,
@@ -174,5 +193,6 @@ module.exports = {
   getIngredientsService,
   getCuisinesService,
   getRecipesService,
+  getRecipeStepsService,
   getCache
 };
