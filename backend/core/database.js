@@ -9,8 +9,16 @@ setupLogging();
 const logger = getLogger("database");
 logger.info('In database.js');
 
-async function connectDB(){
+const MAX_RETRIES = 5;
+const BASE_RETRY_DELAY_MS = 2000;
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function connectDB(retryCount = 0){
     try{
+        logger.info(`Attempting MySQL connection (attempt ${retryCount + 1})`);
         pool = mysql.createPool({
             host: SQL_HOST,
             user: SQL_USER,
@@ -19,10 +27,13 @@ async function connectDB(){
             port: SQL_PORT,
             waitForConnections: true,
             connectionLimit: 10,
-            queueLimit: 0
+            queueLimit: 0,
+            ssl: {
+                rejectUnauthorized: false
+            }
         })
         const connection = await pool.getConnection();
-        connection.ping();
+        await connection.ping();
         connection.release();
         db = pool;
 
@@ -32,17 +43,24 @@ async function connectDB(){
         }
         logger.info(`Connected to SQL: ${SQL_HOST}:${SQL_PORT}/${SQL_DATABASE}`);
     }catch(err){
-        disconnectDB()
         logger.error(`DB connection failed ${err}`)
+        disconnectDB()
+        if (retryCount < MAX_RETRIES){
+            const delay = BASE_RETRY_DELAY_MS * Math.pow(2, retryCount);
+            logger.warn(`Retrying MySQL connection in ${delay} ms`);
+            await sleep(delay)
+            return connectDB(retryCount + 1);
+        }
+        logger.error('Max MySQL retry attempts reached. Giving up.');
     }
 }
 
 async function disconnectDB() {
-    if (client) {
-        client.close();
+    if (db) {
+        await db.close();
         client = null;
         db = null;
-        logger.info('Disconnected from MongoDB');
+        logger.info('Disconnected from MySQL');
     }
 }
 

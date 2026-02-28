@@ -1,0 +1,18 @@
+{"level":30,"time":"2026-01-23T08:26:45.213Z","pid":1,"hostname":"e524f9ad1ffd","name":"errorHandler","msg":"In errorHandler.js"}
+{"level":30,"time":"2026-01-23T08:26:44.944Z","pid":1,"hostname":"e524f9ad1ffd","name":"database","msg":"In database.js"}
+{"level":30,"time":"2026-01-23T08:26:45.311Z","pid":1,"hostname":"e524f9ad1ffd","name":"database","msg":"Attempting MySQL connection (attempt 1)"}
+{"level":30,"time":"2026-01-23T08:26:44.942Z","pid":1,"hostname":"e524f9ad1ffd","name":"database_init","msg":"Starting Backend (Express)"}
+{"level":30,"time":"2026-01-23T08:26:45.310Z","pid":1,"hostname":"e524f9ad1ffd","name":"main","msg":"Starting Backend (Express)"}
+{"level":30,"time":"2026-01-23T08:26:45.555Z","pid":1,"hostname":"e524f9ad1ffd","name":"main","msg":"Dependencies initialized successfully"}
+{"level":30,"time":"2026-01-23T08:26:45.570Z","pid":1,"hostname":"e524f9ad1ffd","name":"main","msg":"🚀 Server listening on http://localhost:5000"}
+{"level":30,"time":"2026-01-23T08:26:45.555Z","pid":1,"hostname":"e524f9ad1ffd","name":"database","msg":"Connected to SQL: mysql:3306/recipe_db"}
+{"level":30,"time":"2026-01-23T08:26:45.555Z","pid":1,"hostname":"e524f9ad1ffd","name":"deps","msg":"Using in-memory cache"}
+{"level":30,"time":"2026-01-23T09:54:05.713Z","pid":1,"hostname":"e524f9ad1ffd","name":"errorHandler","msg":"In errorHandler.js"}
+{"level":30,"time":"2026-01-23T09:54:05.265Z","pid":1,"hostname":"e524f9ad1ffd","name":"database","msg":"In database.js"}
+{"level":30,"time":"2026-01-23T09:54:05.893Z","pid":1,"hostname":"e524f9ad1ffd","name":"database","msg":"Attempting MySQL connection (attempt 1)"}
+{"level":30,"time":"2026-01-23T09:54:05.261Z","pid":1,"hostname":"e524f9ad1ffd","name":"database_init","msg":"Starting Backend (Express)"}
+{"level":30,"time":"2026-01-23T09:54:05.890Z","pid":1,"hostname":"e524f9ad1ffd","name":"main","msg":"Starting Backend (Express)"}
+{"level":30,"time":"2026-01-23T09:54:06.569Z","pid":1,"hostname":"e524f9ad1ffd","name":"main","msg":"Dependencies initialized successfully"}
+{"level":30,"time":"2026-01-23T09:54:06.579Z","pid":1,"hostname":"e524f9ad1ffd","name":"main","msg":"🚀 Server listening on http://localhost:5000"}
+{"level":30,"time":"2026-01-23T09:54:06.568Z","pid":1,"hostname":"e524f9ad1ffd","name":"database","msg":"Connected to SQL: mysql:3306/recipe_db"}
+{"level":30,"time":"2026-01-23T09:54:06.569Z","pid":1,"hostname":"e524f9ad1ffd","name":"deps","msg":"Using in-memory cache"}

@@ -7,8 +7,8 @@ module.exports = {
 
     SQL_HOST: process.env.SQL_HOST || 'localhost',
 	SQL_USER: process.env.SQL_USER || 'root',
-	SQL_PASSWORD: process.env.SQL_PASSWORD,
-	SQL_DATABASE: process.env.SQL_DATABASE,
+	SQL_PASSWORD: process.env.SQL_PASSWORD || 'Deep@2004',
+	SQL_DATABASE: process.env.SQL_DATABASE || 'recipe_db',
 	SQL_PORT: process.env.SQL_PORT || 3306,
 
     SECRET_KEY: process.env.SECRET_KEY,
