@@ -13,11 +13,15 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - recipe-network
 
   frontend:
     build: ../frontend
     ports:
       - "5173:5173"
+    networks:
+      - recipe-network
 
   mysql:
     image: mysql:8.0
@@ -35,20 +39,32 @@ services:
       MYSQL_DATABASE: recipe_db
     volumes:
       - mysql_data:/var/lib/mysql
-      - ../mysql-logs:/var/log/mysql
+      - ../backend/logs/my-sql/:/var/log/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - recipe-network
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:8.11.0
     user: root
+    environment:
+      LOGSTASH_HOST: ${LOGSTASH_HOST:-host.docker.internal}
+      LOGSTASH_PORT: ${LOGSTASH_PORT:-5044}
     volumes:
       - ../backend/logs:/app-logs
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ../mysql-logs:/var/log/mysql
+      - ../backend/logs/my-sql/:/var/log/mysql
     command: ["filebeat", "-e", "--strict.perms=false"]
     depends_on:
       - backend
+    networks:
+      - recipe-network
+
+networks:
+  recipe-network:
+    external: true
+    name: elk-net
