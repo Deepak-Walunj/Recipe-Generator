@@ -33,8 +33,7 @@ class RecipesRepository{
         params.push(Number(limit), Number((page - 1) * limit));
         try {
             const [rows] = await this.collection.db.query(query, params);
-            const validated = await recipesArraySchema.validateAsync(rows, {stripUnknown: true})
-            return validated;
+            return await recipesArraySchema.validateAsync(rows, {stripUnknown: true})
         } catch (err) {
             logger.error(`Error fetching recipes: ${err.message}`);
             throw err;
@@ -73,6 +72,17 @@ class RecipesRepository{
         const result = await this.collection.deleteOne({ [recipeFields.RECIPE_ID]: recipeId });
         logger.info(`Deleted ${result.deletedCount} recipe with ID: ${recipeId}`);
         return result;
+    }
+
+    async updateRecipeByRecipeId(recipe_id, updatePayload){
+        try{
+        const fieldsToUpated = Object.fromEntries(Object.entries(updatePayload).filter(([_, value]) => value !== undefined))
+        await this.collection.updateOne({ [recipeFields.RECIPE_ID]: recipe_id }, fieldsToUpated)
+        return await this.collection.findOne({ [recipeFields.RECIPE_ID]: recipe_id})
+        }catch(err) {
+            logger.error(`Error updating recipe with ID ${recipe_id}: ${err.message}`);
+            throw err;
+        }
     }
 }
 

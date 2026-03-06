@@ -12,8 +12,16 @@ class RecipeStepsService{
     async addRecipeSteps(stepsPayload){
         const recipe_steps_payload = await buildRecipeStepsPayload(stepsPayload.recipe_id, stepsPayload.instruction);
         logger.info(`Adding recipe steps: ${JSON.stringify(recipe_steps_payload.step_number)}`);
-        const recipe_steps_result = await this.recipeStepsRepository.addRecipeSteps(recipe_steps_payload)
-        return recipe_steps_result
+        return await this.recipeStepsRepository.addRecipeSteps(recipe_steps_payload)
+    }
+
+    async updateRecipeSteps(recipe_id, instruction){
+        const recipe_steps_payload = await buildRecipeStepsPayload(recipe_id, instruction);
+        logger.info(`Deleting recipe steps with recip ID: ${recipe_id}`);
+        const delete_result = await this.recipeStepsRepository.deleteByRecipeId(recipe_id)
+        logger.info(`Deleted ${delete_result.affectedRows} recipe steps for recipe ID: ${recipe_id}`);
+        logger.info(`Adding recipe steps`);
+        return await this.recipeStepsRepository.updateRecipeSteps(recipe_steps_payload)
     }
 }
 

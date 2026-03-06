@@ -10,5 +10,6 @@ const cuisineModel = Joi.object({
 })
 
 module.exports = {
-    cuisineModel
+    cuisineModel,
+    cuisineFields,
 }

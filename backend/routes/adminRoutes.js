@@ -2,14 +2,14 @@ const express = require('express')
 const router = express.Router()
 
 const { setupLogging, getLogger } = require('../core/logger')
-const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService, getRecipeStepsService } = require('../core/deps')
+const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService, getRecipeStepsService, getRecipeIngredientsService } = require('../core/deps')
 const { ValidationError, NotFoundError } = require('../core/exception')
 const { EntityType } = require('../core/enum')
 
 const allowedEntities = require('../middleware/authMiddleware')
 
 const { registerAdminSchema, deleteEntitySchema, StandardResponse } = require('../schemas/adminSchema')
-const {recipeInputSchema} = require('../schemas/recipes')
+const {recipeInputSchema, recipeUpdateSchema} = require('../schemas/recipes')
 const {updateEntitySchema, getEntitySchema} = require('../schemas/adminSchema')
 
 const {cuisineModel} = require('../models/cuisines')
@@ -107,9 +107,9 @@ router.post('/cuisine', allowedEntities(EntityType.ADMIN), async (req, resp, nex
   if (error){
     return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
   }
-  const cuisine = await cuisineService.addCuisine(name)
-  logger.info(`Added cuisine: ${JSON.stringify(cuisine)}`);
-  return resp.json (new StandardResponse(true, 'Cuisine added successfully', cuisine))
+  const cuisine_id = await cuisineService.addCuisine(name)
+  logger.info(`Added cuisine: ${JSON.stringify(cuisine_id)}`);
+  return resp.json (new StandardResponse(true, 'Cuisine added successfully', cuisine_id))
 })
 
 router.post('/ingredient', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
@@ -124,7 +124,22 @@ router.post('/ingredient', allowedEntities(EntityType.ADMIN), async (req, resp, 
   return resp.json (new StandardResponse(true, 'Ingredient added successfully', ingredient))
 })
 
+router.get('/ingredients/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  try{
+    const recipe_id = Number(req.params.recipe_id);
+    if (!recipe_id || isNaN(recipe_id)){
+      return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
+    }
+    const recipeIngredientsService = getRecipeIngredientsService()
+    const ingredients = await recipeIngredientsService.getIngredientsByRecipeId(recipe_id)
+    return resp.json(new StandardResponse(true, "Ingredients fetched successfully", {ingredients}))
+  }catch (err){
+    next(err)
+  }
+})
+
 router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
+  try{
   const recipeService = getRecipesService()
   const cuisineService = getCuisinesService()
   const ingredientService = getIngredientsService()
@@ -139,7 +154,11 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
     prep_time_str = `${prep_time} mins`;
   }
   const cuisineName = value.cuisine_name.toLowerCase();
-  const cuisine_id = await cuisineService.ensureCuisineExist(cuisineName);
+  let cuisine_id = await cuisineService.getCuisineIdByName(cuisineName);
+  if (!cuisine_id){
+    logger.info(`Cuisine not found, adding new cuisine: ${cuisineName}`);
+    cuisine_id = await cuisineService.addCuisine(cuisineName);
+  }
   const processedIngredients = await ingredientService.ensureIngredientsExist(value.ingredients);
   const recipe_payload = {
     title: value.title.toLowerCase(),
@@ -155,14 +174,21 @@ router.post('/recipe', allowedEntities(EntityType.ADMIN), async (req, resp, next
   }
   const recipe_steps = await recipeStepsService.addRecipeSteps(recipe_steps_payload)
   logger.info(`Added recipe with ingredients: ${JSON.stringify(recipe_and_ingredients)}`);
-  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe": recipe_and_ingredients.recipe, "ingredients": recipe_and_ingredients.ingredients, "recipe_steps": recipe_steps}) )
+  return resp.json (new StandardResponse(true, 'Recipe added successfully', {"cuisine_id": cuisine_id, "recipe": recipe_and_ingredients.recipe, "ingredients": recipe_and_ingredients.ingredients, "recipe_steps": recipe_steps}))
+  }catch(err) {
+    next(err)
+  }
 })
 
 router.get('/recipes', async (req, resp, next) => {
+  try{
     const recipesService = getRecipesService()
     const { search = null, page = 1, limit = 10 } = req.query
     const recipes = await recipesService.getAllRecipes({searchStr: search, page: parseInt(page), limit: parseInt(limit)})
-    return resp.json(new StandardResponse(true, 'All recipes fetched successfully', {page, limit, recipes}))  
+    return resp.json(new StandardResponse(true, 'All recipes fetched successfully', {page, limit, recipes})) 
+  } catch (error) {
+    next(error)
+  }
 })
 
 router.get('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
@@ -182,7 +208,44 @@ router.get('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, 
 router.put('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   try{
     const recipeService = getRecipesService();
-    const { error, value} =  recipeInputSchema.validate(req.body)
+    const recipeStepsService = getRecipeStepsService();
+    const { error, value} =  recipeUpdateSchema.validate(req.body)
+
+    if (error) {
+      return next (new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
+    }
+
+    const recipe_id = Number(req.params.recipe_id);
+    if (!recipe_id || isNaN(recipe_id)){
+      return next(new ValidationError("Invalid recipe_id", 400, "VALIDATION_ERROR"));
+    }
+
+    if (value.prep_time === undefined && value.instruction === undefined) {
+      return next(new ValidationError("At least one field (prep_time, instruction, cuisine_name) must be provided", 400, "VALIDATION_ERROR"));
+    }
+
+    let updatedRecipe = null;
+    let recipe_steps_result = null;
+
+    const updatePayload = {};
+    if (value.instruction !== undefined && value.instruction !== null) {
+        updatePayload.instruction = value.instruction;
+    }
+    if (value.prep_time !== undefined && value.prep_time !== null) {
+      updatePayload.prep_time = `${value.prep_time} mins`;
+    }
+    updatedRecipe = await recipeService.updateRecipe(recipe_id, updatePayload)
+    if (value.instruction){
+      recipe_steps_result = await recipeStepsService.updateRecipeSteps(recipe_id, value.instruction)
+    }
+    const response = {}
+    if (updatedRecipe) {
+      response.updatedRecipe = updatedRecipe
+    }
+    if (recipe_steps_result){
+      response.updatedRecipeSteps = recipe_steps_result
+    }
+    return resp.json(new StandardResponse(true, "recipe updated successfully",response))
   } catch(err){
     next(err)
   }

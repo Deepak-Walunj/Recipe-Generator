@@ -244,6 +244,24 @@
     transform: scale(1.02);
 }
 
+.manage_recipe_cancel_btn {
+    padding: 12px 20px;
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+    width: fit-content;
+}
+
+.manage_recipe_cancel_btn:hover {
+    background: #b91c1c;
+    transform: scale(1.02);
+}
+
 .table_pagination {
     display: flex;
     justify-content: center;

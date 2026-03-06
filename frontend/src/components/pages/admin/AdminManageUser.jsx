@@ -260,18 +260,20 @@ export default function AdminManageUsers() {
               setPage(1);
             }}
           />
-          <button
-            className="table_add_btn"
-            onClick={() => {
-              setShowAddForm(prev => !prev);
-              // scroll to form after rendering it
-              setTimeout(() => {
-                if (addFormRef.current) addFormRef.current.scrollIntoView({ behavior: "smooth" });
-              }, 120);
-            }}
-          >
-            {showAddForm ? "Close Form" : "Register User"}
-          </button>
+          {!showAddForm && (
+            <button
+              className="table_add_btn"
+              onClick={() => {
+                setShowAddForm(true);
+                // scroll to form after rendering it
+                setTimeout(() => {
+                  if (addFormRef.current) addFormRef.current.scrollIntoView({ behavior: "smooth" });
+                }, 120);
+              }}
+            >
+              Register User
+            </button>
+          )}
         </div>
       </div>
 
@@ -409,9 +411,12 @@ export default function AdminManageUsers() {
             </select>
           </div>
 
-          <div style={{ marginTop: 18 }}>
+          <div style={{ marginTop: 18, display: "flex", gap: 12 }}>
             <button type="submit" className="manage_recipe_submit_btn" disabled={submitting}>
               {submitting ? "Registering…" : "Register"}
+            </button>
+            <button type="button" className="manage_recipe_cancel_btn" onClick={() => setShowAddForm(false)}>
+              Close Form
             </button>
           </div>
         </form>

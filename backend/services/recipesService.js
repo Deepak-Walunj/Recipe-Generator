@@ -90,6 +90,14 @@ class RecipesService{
         }
         return recipe;
     }
+
+    async updateRecipe(recipeId, payload) {
+        const recipe = await this.recipesRepository.getRecipeById(recipeId);
+        if (!recipe){
+            throw new ValidationError(`Recipe with ID ${recipeId} does not exist`, 404, 'NOT_FOUND', {"recipeID": recipeId});
+        }
+        return await this.recipesRepository.updateRecipeByRecipeId(recipeId, payload)
+    }
 }
 
 module.exports = RecipesService;

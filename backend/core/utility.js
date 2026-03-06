@@ -4,7 +4,7 @@ import { setupLogging, getLogger } from './logger.js';
 setupLogging();
 const logger = getLogger('utility');
 
-export function buildRecipeStepsPayload(recipeId, instruction) {
+export async function buildRecipeStepsPayload(recipeId, instruction) {
     if (!recipeId || isNaN(recipeId)) {
         throw new ValidationError("Invalid recipeId", 400, "VALIDATION_ERROR");
     }

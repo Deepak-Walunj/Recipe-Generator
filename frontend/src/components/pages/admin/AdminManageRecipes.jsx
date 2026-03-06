@@ -30,6 +30,7 @@ export default function AdminManageRecipes() {
     });
     const [submitting, setSubmitting] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const token = user?.access_token
 
     const fetchRecipe = async(recipeId) => {

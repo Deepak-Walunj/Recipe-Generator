@@ -17,8 +17,6 @@ const recipeInputSchema = Joi.object({
 const recipeUpdateSchema = Joi.object({
   instruction : Joi.string().optional(),
   prep_time : Joi.number().integer().optional().allow(null, 0),
-  cuisine_name : Joi.string().optional(),
-  ingredients : Joi.array().items(ingredientItemSchema).min(1).optional(),
 })
 
 const recipeSchema = Joi.object({
@@ -36,5 +34,6 @@ const recipesArraySchema = Joi.array().items(recipeSchema).required();
 module.exports = {
     recipeSchema,
     recipesArraySchema,
-    recipeInputSchema
+    recipeInputSchema,
+    recipeUpdateSchema,
 }

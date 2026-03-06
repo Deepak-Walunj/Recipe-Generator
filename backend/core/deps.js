@@ -19,6 +19,7 @@ const IngredientsService = require('../services/ingredientsService');
 const CuisinesService = require('../services/cuisinesService.js')
 const RecipesService = require('../services/recipesService')
 const RecipeStepsService = require('../services/recipeStepsService.js');
+const RecipeIngredientsService = require('../services/recipeIngredientsService.js');
 
 setupLogging();
 const logger = getLogger("deps");
@@ -61,6 +62,7 @@ class DependencyStorage{
         this.cuisinesService = new CuisinesService( { cuisinesRepository: this.cusinesRepo })
         this.recipesService = new RecipesService( { recipesRepository: this.recipesRepo, recipeIngredientsRepository: this.recipeIngredientsRepo } )
         this.recipeStepsService = new RecipeStepsService( { recipeStepsRepository: this.recipeStepsRepo } )
+        this.recipeIngredientsService = new RecipeIngredientsService( { recipeIngredientsRepository: this.recipeIngredientsRepo } )
         }
     getAuthRepository() {
         return this.authRepo;
@@ -103,6 +105,9 @@ class DependencyStorage{
     }
     getRecipeStepsService(){
       return this.recipeStepsService
+    }
+    getRecipeIngredientsService(){
+      return this.recipeIngredientsService
     }
     getCache() {
         return this._cache;
@@ -174,6 +179,10 @@ function getRecipeStepsService(){
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getRecipeStepsService();
 }
+function getRecipeIngredientsService(){
+  if (!dependencyStorage) throw new Error('Dependencies not initialized');
+  return dependencyStorage.getRecipeIngredientsService();
+}
 function getCache() {
   if (!dependencyStorage) throw new Error('Dependencies not initialized');
   return dependencyStorage.getCache();
@@ -194,5 +203,6 @@ module.exports = {
   getCuisinesService,
   getRecipesService,
   getRecipeStepsService,
+  getRecipeIngredientsService,
   getCache
 };
