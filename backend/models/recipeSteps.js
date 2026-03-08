@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 
-const recipeIngredientFields = Object.freeze({
+const recipeStepsFields = Object.freeze({
   STEP_ID: 'step_id',
   RECIPE_ID: 'recipe_id',
   STEP_NUMBER: 'step_number',
@@ -10,5 +10,5 @@ const recipeIngredientFields = Object.freeze({
 })
 
 module.exports = {
-    recipeIngredientFields
+    recipeStepsFields
 }

@@ -5,7 +5,7 @@ import { logOut } from "@utils/AuthUtils";
 import usePermission from "@utils/UsePermissions.js";
 
 export default function UserDashboard() {
-    const { user, isDemo, canSuggestRecipe } = usePermission();
+    const { isDemo, canSuggestRecipe } = usePermission();
     // console.log("Inside user dashboard"+JSON.stringify({user, isDemo, canSuggestRecipe}))
     const handleLogout = () => {
         logOut(false, []);

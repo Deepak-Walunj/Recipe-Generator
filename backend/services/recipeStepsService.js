@@ -15,6 +15,11 @@ class RecipeStepsService{
         return await this.recipeStepsRepository.addRecipeSteps(recipe_steps_payload)
     }
 
+    async getRecipeStepsByRecipeId(recipe_id){
+        logger.info(`Getting recipe steps for recipe ID: ${recipe_id}`)
+        return await this.recipeStepsRepository.getRecipeStepsByRecipeId(recipe_id)
+    }
+
     async updateRecipeSteps(recipe_id, instruction){
         const recipe_steps_payload = await buildRecipeStepsPayload(recipe_id, instruction);
         logger.info(`Deleting recipe steps with recip ID: ${recipe_id}`);

@@ -3,6 +3,7 @@ import { getAllUsers, adminRegistrationApi, deleteEntityApi, updateEntityApi, ge
 import { userRegistrationApi } from "@repositories/UserRepo.jsx";
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
+import useDebounce from "@utils/useDebounce";
 import '@components/pages/css/Table.css';
 import '@components/pages/css/Modal.css';
 
@@ -41,6 +42,7 @@ export default function AdminManageUsers() {
   const [submitting, setSubmitting] = useState(false);
 
   const token = user?.access_token;
+  const debouncedSearch = useDebounce(search, 500);
 
   const fetchUser = async(entity_id, entity_type) => {
     if (!entity_id || !entity_type) return ;
@@ -70,7 +72,7 @@ export default function AdminManageUsers() {
     try {
       const response = await getAllUsers({
         token: token,
-        search: search || null,
+        search: debouncedSearch || null,
         page: page || 1,
         limit: limit || 10,
       });
@@ -81,8 +83,8 @@ export default function AdminManageUsers() {
         // console.log(usersList)
         setUsers(usersList);
         setTotalFetched(usersList.length);
-        setHasMore(Number(payload.limit) ? usersList.length === Number(payload.limit) : usersList.length === l);
-        setPage(Number(payload.page) || p);
+        setHasMore(Number(payload.limit) ? usersList.length === Number(payload.limit) : usersList.length === limit);
+        setPage(Number(payload.page) || page);
       } else {
         showToast(response?.message || "Failed to fetch users", "error");
       }
@@ -96,7 +98,7 @@ export default function AdminManageUsers() {
 
   useEffect(() => {
     fetchUsers();
-  }, [token, page, search, limit]);
+  }, [token, page, debouncedSearch, limit]);
 
   useEffect(() => {
     if (showUpdateModal && entity) {
@@ -443,6 +445,7 @@ export default function AdminManageUsers() {
                 <input 
                   type="text" 
                   value={newUsername}
+                  style={{textAlign:"center"}}
                   placeholder={entity.username || "username"}
                   onChange={(e) => setNewUsername(e.target.value)}
                 />
@@ -450,9 +453,10 @@ export default function AdminManageUsers() {
               <div className="field editable">
                 <label >Password</label>
                 <input 
-                  type="text" 
+                  type="password" 
                   value={newPassword}
-                  placeholder={entity.password || "password"}
+                  style={{textAlign:"center"}}
+                  placeholder="Enter new password"
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
@@ -498,10 +502,6 @@ export default function AdminManageUsers() {
               <div className="field readonly">
                 <label >Username</label>
                 <span>{entity.username}</span>
-              </div>
-              <div className="field readonly">
-                <label >Password</label>
-                <span>{entity.password}</span>
               </div>
             </div>
             <div className="modal_actions">

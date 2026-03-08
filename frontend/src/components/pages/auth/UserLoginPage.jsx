@@ -1,4 +1,4 @@
-import React, {use, useState} from "react";
+import React, { useState } from "react";
 import login_bg from "@assets/backgrounds/login_bg.jpeg";
 import "@components/pages/css/LoginPage.css";
 import { useNavigate } from "react-router-dom";

@@ -15,6 +15,8 @@ const ENDPOINTS = {
     GET_RECIPE: `${URL}/recipe/:recipe_id`,
     DELETE_ENTITY: `${URL}/entity`,
     UPDATE_ENTITY: `${URL}/entity`,
+    GET_RECIPE_STEPS: `${URL}/recipe-steps/:recipe_id`,
+    UPDATE_RECIPE: `${URL}/recipe/:recipe_id`
 }
 
 export const adminRegistrationApi = async (data) => {
@@ -277,6 +279,55 @@ export const deleteRecipe = async (token='', recipeId) => {
         const backendMessage = response?.data?.message;
         const detailsMessage = response?.data?.details?.[0]?.message;
         throw new Error(backendMessage || detailsMessage || "Unable to fetch users");
+    }
+    return response.data
+}
+
+export const getRecipeSteps = async (token='', recipe_id) => {
+    let response = {}
+    let headers = {}
+    if (!!token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url: ENDPOINTS.GET_RECIPE_STEPS.replace(":recipe_id", recipe_id),
+            method: "GET",
+            headers: headers,
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if (response.status != 200){
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to fetch response")
+    }
+    return response.data
+} 
+
+export const updateRecipe = async (token=' ', recipe_id, data) => {
+    let response= {}
+    let headers = {}
+    if (!!token){
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    try{
+        response = await MakeApiCall({
+            url : ENDPOINTS.UPDATE_RECIPE.replace(":recipe_id", recipe_id),
+            method : "PUT",
+            headers : headers,
+            data: data
+        })
+    }catch(error){
+        console.error(error)
+        throw new Error(error?.response?.data?.message || "Something went wrong.")
+    }
+    if (response.status != 200) {
+        const backendMessage = response?.data?.message;
+        const detailsMessage = response?.data?.details?.[0]?.message;
+        throw new Error(backendMessage || detailsMessage || "Unable to update user");
     }
     return response.data
 }

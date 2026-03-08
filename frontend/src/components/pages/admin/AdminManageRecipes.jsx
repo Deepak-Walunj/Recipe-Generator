@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import {addRecipe, deleteRecipe, getAllRecipes, getRecipe} from "@repositories/AdminRepo.jsx"
+import {addRecipe, deleteRecipe, getAllRecipes, getRecipe, getRecipeSteps, updateRecipe} from "@repositories/AdminRepo.jsx"
 import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx"; 
+import useDebounce from "@utils/useDebounce";
+import { sanitizeInput } from "@utils/ApiUtils";
 import '@components/pages/css/Table.css';
 import '@components/pages/css/Modal.css';
 
@@ -10,6 +12,9 @@ export default function AdminManageRecipes() {
     const {showToast} = useToast();
     const [recipe, setRecipe] = useState(null);
     const [recipes, setRecipes] = useState([]);
+    const [recipeSteps, setRecipeSteps] = useState([]);
+    const [newPrepTime, setNewPrepTime] = useState("");
+    const [newInstruction, setNewInstruction] = useState([])
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [search, setSearch] = useState("");
@@ -19,6 +24,7 @@ export default function AdminManageRecipes() {
     const [deletingRecipeId, setDeletingRecipeId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const addFormRef = useRef(null);
     const [showAddForm, setShowAddForm] = useState(false);
     const [form, setForm] = useState({
@@ -32,6 +38,7 @@ export default function AdminManageRecipes() {
     const [showViewModal, setShowViewModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const token = user?.access_token
+    const debouncedSearch = useDebounce(search, 500);
 
     const fetchRecipe = async(recipeId) => {
       if (!recipeId) return 
@@ -51,7 +58,7 @@ export default function AdminManageRecipes() {
         setLoading(true);
         try {
             const response = await getAllRecipes({
-                search: search || null,
+                search: debouncedSearch || null,
                 page: page || 1,
                 limit: limit || 10
             });
@@ -71,9 +78,27 @@ export default function AdminManageRecipes() {
         } finally {
             setLoading(false);
         }
-    }, [page, search, limit]);
+    }, [page, debouncedSearch, limit]);
 
     useEffect(() => { fetchRecipes(); }, [fetchRecipes]);
+
+    const fetchRecipeSteps = async(recipeId) => {
+      if (!recipeId) return;
+      try{
+        const response = await getRecipeSteps(
+          token, recipeId
+        )
+        if (response.success){
+          showToast("Instruction fetched successfully.", "success")
+          setRecipeSteps(response?.data?.recipe_steps)
+        } else{
+          showToast(response.message || "Failed to fetch recipe steps.", "error")
+        }
+      } catch(error) {
+        console.error("Failed to fetch recipe steps:", error)
+        showToast(error.message || "Failed to fetch recipe steps.", "error")
+      }
+    }
 
     const goPrev = () => {
         if (page <= 1) return;
@@ -115,6 +140,68 @@ export default function AdminManageRecipes() {
         }
     };
 
+    const buildInstructionString = () => {
+      return newInstruction
+        .map(step => step.instruction.trim())
+        .filter(Boolean)
+        .join("\n");
+    };
+
+    const performRecipeUpdate = async () => {
+        if (!recipe.recipe_id) return;
+        const instructionString = buildInstructionString();
+        setIsUpdating(true);
+        try{
+      const response = await updateRecipe(
+        token,
+        recipe.recipe_id,
+        {
+          prep_time: newPrepTime ? newPrepTime : undefined,
+          instruction: instructionString? instructionString.trim() : undefined
+        }
+      );
+      if (response.success){
+          showToast("Recipe updated successfully.", "success");
+      }else{
+          showToast(response.message || "Failed to update recipe.", "error");
+      }
+    }catch(error){
+      console.error("Update failed:", error);
+      showToast(error.message || "Failed to update recipe.", "error");
+    }finally{
+        setShowUpdateModal(false);
+        setIsUpdating(false);
+        setNewPrepTime(null);
+        setNewInstruction([]);
+        await fetchRecipes();
+    }
+    }
+
+    useEffect(() =>{
+      if (showUpdateModal && recipe && recipeSteps.length){
+        const prep = recipe.prep_time
+          ? parseInt(recipe.prep_time)
+          : "";
+
+        setNewPrepTime(prep);
+        const formattedSteps = recipeSteps
+          .sort((a,b) => a.step_number - b.step_number)
+          .map((s) => ({
+            id: s.step_id,
+            step_number: s.step_number,
+            instruction: s.instruction
+          }))
+        setNewInstruction(formattedSteps)
+      }
+    }, [showUpdateModal, recipe, recipeSteps])
+    const openUpdateModal  = async(recipeId) => {
+      await Promise.all([
+        fetchRecipe(recipeId),
+        fetchRecipeSteps(recipeId)]
+      )
+      setShowUpdateModal(true);
+    }
+
     // add recipe form handlers
     const updateFormField = (key, value) => {
         setForm(prev => ({ ...prev, [key]: value }));
@@ -144,18 +231,44 @@ export default function AdminManageRecipes() {
         showToast("Title is required", "error");
         return false;
         }
+        if (form.title.trim().length > 100) {
+        showToast("Title must not exceed 100 characters", "error");
+        return false;
+        }
         if (!form.instruction.trim()) {
         showToast("Instruction is required", "error");
+        return false;
+        }
+        if (form.instruction.trim().length > 5000) {
+        showToast("Instruction must not exceed 5000 characters", "error");
         return false;
         }
         if (!form.cuisine_name.trim()) {
         showToast("Cuisine name is required", "error");
         return false;
         }
+        if (form.cuisine_name.trim().length > 50) {
+        showToast("Cuisine name must not exceed 50 characters", "error");
+        return false;
+        }
+        if (form.prep_time && isNaN(Number(form.prep_time))) {
+        showToast("Prep time must be a valid number", "error");
+        return false;
+        }
         const cleanedIngredients = form.ingredients.filter(i => i.name && i.name.trim());
         if (!cleanedIngredients.length) {
         showToast("At least one ingredient (name) is required", "error");
         return false;
+        }
+        for (const ingredient of cleanedIngredients) {
+            if (ingredient.name.length > 100) {
+                showToast("Ingredient name must not exceed 100 characters", "error");
+                return false;
+            }
+            if (ingredient.quantity && ingredient.quantity.length > 50) {
+                showToast("Ingredient quantity must not exceed 50 characters", "error");
+                return false;
+            }
         }
         return true;
     };
@@ -164,12 +277,16 @@ export default function AdminManageRecipes() {
         e.preventDefault();
         if (!validateForm()) return;
         const payload = {
-        title: form.title.trim(),
-        instruction: form.instruction.trim(),
+        title: sanitizeInput(form.title.trim()),
+        instruction: sanitizeInput(form.instruction.trim()),
         prep_time: form.prep_time === "" ? null : parseInt(form.prep_time, 10) || null,
-        cuisine_name: form.cuisine_name.trim(),
+        cuisine_name: sanitizeInput(form.cuisine_name.trim()),
         ingredients: form.ingredients.filter(i => i.name && i.name.trim()).map(i => {
-            return { name: i.name.trim(), quantity: i.quantity ? String(i.quantity).trim() : undefined, unit: i.unit.trim() };
+            return { 
+                name: sanitizeInput(i.name.trim()), 
+                quantity: i.quantity ? String(i.quantity).trim() : undefined, 
+                unit: sanitizeInput(i.unit.trim()) 
+            };
             }),
         };
         setSubmitting(true);
@@ -202,7 +319,48 @@ export default function AdminManageRecipes() {
           return `${index+1}. ${capitalized}`;
         }).join('\n');
     }
-  return (
+    const updateStepInstruction = ( index, value ) => {
+      setNewInstruction(prev => {
+        const updated = [...prev];
+        updated[index] = {...updated[index], instruction: value};
+        console.log("Updated instruction:", updated)
+        return updated;
+      })
+    }
+
+    const originalInstructionString = recipeSteps
+      .sort((a,b)=>a.step_number-b.step_number)
+      .map(s => s.instruction.trim())
+      .join("\n");
+    const editedInstructionString = Array.isArray(newInstruction)
+      ? buildInstructionString()
+      : "";
+    const nothingChanged = editedInstructionString === originalInstructionString && parseInt(newPrepTime) === parseInt(recipe?.prep_time);
+
+  const moveStepUp = (index) => {
+    if (index === 0) return;
+    setNewInstruction((items) => {
+      const newItems = [...items];
+      [newItems[index - 1], newItems[index]] = [newItems[index], newItems[index - 1]];
+      return newItems.map((step, idx) => ({
+        ...step,
+        step_number: idx + 1
+      }));
+    });
+  };
+
+  const moveStepDown = (index) => {
+    if (index === newInstruction.length - 1) return;
+    setNewInstruction((items) => {
+      const newItems = [...items];
+      [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
+      return newItems.map((step, idx) => ({
+        ...step,
+        step_number: idx + 1
+      }));
+    });
+  };   
+    return (
     <div className="table_main">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
         <div>
@@ -272,18 +430,26 @@ export default function AdminManageRecipes() {
                     <td>
                       <div style={{ display: "flex", gap: 8 }}>
                         <button
-                          className="table_action_btn table_btn_delete"
-                          onClick={() => confirmDelete(Number(r.recipe_id))}
-                        >
-                          Delete
-                        </button>
-                        <button
                          className="table_action_btn table_btn_view"
                          onClick={() => {
                             viewRecipe(Number(r.recipe_id));
                          }}
                         >
                           View
+                        </button>
+                        <button
+                          className="table_action_btn table_btn_delete"
+                          onClick={() => confirmDelete(Number(r.recipe_id))}
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="table_action_btn table_btn_update"
+                          onClick={() => {
+                            openUpdateModal (Number(r.recipe_id));
+                          }}
+                        >
+                          Update
                         </button>
                       </div>
                     </td>
@@ -485,6 +651,110 @@ export default function AdminManageRecipes() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showUpdateModal && recipe && recipeSteps.length && (
+        <div className="modal_overlay" role="dialog" aria-modal="true">
+          <div className="modal_box">
+            <h3>{capitalize(recipe.title)}</h3>
+            <div className="user_fields">
+              <div className="field readonly">
+                <label >Id: </label>
+                <span>{recipe.recipe_id}</span>
+                <span className="lock"></span>
+              </div>
+              <div className="field readonly">
+                <label >Cuisine</label>
+                <span>{capitalize(recipe.cuisine_name) || "-"}</span>
+              </div>
+              <div className="field editable">
+                <label >Preparation Time: </label>
+                <input 
+                  type="text" 
+                  value={newPrepTime}
+                  style={{textAlign:"center"}}
+                  placeholder={recipe.prep_time || "N/A"}
+                  onChange={(e) => setNewPrepTime(e.target.value)}
+                />
+              </div>
+              <div className="field editable">
+                <label >Instructions:</label>
+                <table className="table_table" style={{marginTop:10}}>
+                  <thead>
+                    <tr>
+                      <th style={{ width: 80 }}>Step</th>
+                      <th>Instruction</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {newInstruction.map((step, index) => (
+                      <tr key={step.id}>
+                        
+                        {/* Step number column */}
+                        <td style={{fontWeight:600, textAlign:"center"}}>
+                          {index + 1}
+                        </td>
+
+                        {/* Instruction column */}
+                        <td>
+                          <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+                            
+                            <textarea
+                              className="manage_recipe_textarea manage_recipe_input"
+                              value={capitalize(step.instruction)}
+                              style={{height:80, flex:1}}
+                              onChange={(e) => updateStepInstruction(index, e.target.value)}
+                            />
+
+                            {/* arrows on right */}
+                            <div style={{display:"flex", flexDirection:"column", gap:"4px"}}>
+                              <button
+                                type="button"
+                                onClick={() => moveStepUp(index)}
+                                disabled={index === 0}
+                                className="step_move_btn"
+                              >
+                                ↑
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => moveStepDown(index)}
+                                disabled={index === newInstruction.length - 1}
+                                className="step_move_btn"
+                              >
+                                ↓
+                              </button>
+                            </div>
+
+                          </div>
+                        </td>
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <div className="modal_actions">
+            <button
+            className="modal_cancel"
+            onClick={() => setShowUpdateModal(false)}
+            disabled={isUpdating}
+            >
+              Cancel
+            </button>
+            <button
+            className="modal_confirm"
+            onClick={performRecipeUpdate}
+            disabled={isUpdating || nothingChanged}
+            >
+              {isUpdating ? "Updating…": "Update"}
+            </button>
+          </div>
           </div>
         </div>
       )}

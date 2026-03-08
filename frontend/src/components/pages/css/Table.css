@@ -14,7 +14,7 @@
 .table_subtitle {
     font-size: 15px;
     margin-bottom: 28px;
-    color: #252c36;
+    color: #010203;
 }
 
 .table_actions {
@@ -71,12 +71,13 @@
     border: 1px solid rgba(255,255,255,0.28);
     box-shadow: 0 4px 15px rgba(0,0,0,0.35);
     backdrop-filter: blur(8px);
-    overflow-y: auto
+    overflow-x: auto; /* Allow horizontal scroll on small screens */
 }
 
 .table_table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px; /* Ensure minimum width for readability */
 }
 
 .table_table thead {
@@ -297,3 +298,53 @@
     border-color: rgba(255, 255, 255, 0.15);
 }
 
+
+.step_move_btn{
+  padding:3px 6px;
+  font-size:13px;
+  border:none;
+  border-radius:4px;
+  background:#2563eb;
+  color:white;
+  cursor:pointer;
+}
+
+.step_move_btn:disabled{
+  background:#9ca3af;
+  cursor:not-allowed;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .table_actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .table_search {
+        width: 100%;
+    }
+
+    .table_limit {
+        width: 100%;
+    }
+
+    .table_table th,
+    .table_table td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .table_title {
+        font-size: 24px;
+    }
+
+    .table_subtitle {
+        font-size: 14px;
+    }
+
+    .manage_recipe_form {
+        padding: 16px;
+    }
+}

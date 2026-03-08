@@ -5,9 +5,11 @@ const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
+  const [toastIdCounter, setToastIdCounter] = useState(0);
 
   const showToast = useCallback((message, type = "success") => {
-    const id = Date.now();
+    const id = toastIdCounter;
+    setToastIdCounter(prev => prev + 1);
     const newToast = { id, message, type };
 
     setToasts((prev) => [...prev, newToast]);
@@ -16,7 +18,7 @@ export const ToastProvider = ({ children }) => {
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 1000);
-  }, []);
+  }, [toastIdCounter]);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

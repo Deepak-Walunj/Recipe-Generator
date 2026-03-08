@@ -205,6 +205,20 @@ router.get('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, 
   }
 })
 
+router.get('/recipe-steps/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
+  try{
+    const recipeStepsService = getRecipeStepsService();
+    const recipe_id = Number(req.params.recipe_id);
+    if (!recipe_id || isNaN(recipe_id)) {
+      return next(new ValidationError("Invalid recipe id", 400, "VALIDATION_ERROR"))
+    }
+    const recipe_steps = await recipeStepsService.getRecipeStepsByRecipeId(recipe_id)
+    return res.json(new StandardResponse(true, "Recipe steps fetched successfully", {"recipe_steps": recipe_steps}))
+  }catch(err) {
+    next(err)
+  }
+})
+
 router.put('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (req, resp, next) => {
   try{
     const recipeService = getRecipesService();

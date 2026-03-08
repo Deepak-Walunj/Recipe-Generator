@@ -1,5 +1,5 @@
 const { setupLogging, getLogger } = require('../core/logger')
-const {recipeIngredientFields} = require('../models/recipeSteps.js')
+const {recipeStepsFields} = require('../models/recipeSteps.js')
 setupLogging();
 const logger = getLogger('recipeSteps-Repo')
 
@@ -16,9 +16,18 @@ class RecipeStepsRepository{
         return { ...stepsPayload, insertedCount: result };
     }
 
+    async getRecipeStepsByRecipeId(recipe_id){
+        const steps = await this.collection.findMany({ [recipeStepsFields.RECIPE_ID]: recipe_id});
+        if (!steps || steps.length === 0){
+            logger.warn(`No recipe steps found for recipe ID : ${recipe_id}`)
+            return [];
+        }
+        return steps;
+    }
+
     async deleteByRecipeId(recipeId){
-        const result = await this.collection.deleteMany({ [recipeIngredientFields.RECIPE_ID]: recipeId });
-        logger.info(`Deleted ${result.deletedCount} recipe ingredients for recipe ID: ${recipeId}`);
+        const result = await this.collection.deleteMany({ [recipeStepsFields.RECIPE_ID]: recipeId });
+        logger.info(`Deleted ${result.deletedCount} recipe steps for recipe ID: ${recipeId}`);
         return result;
     }
 

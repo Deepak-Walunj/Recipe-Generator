@@ -31,7 +31,7 @@ axiosInstance.interceptors.request.use(
  */
 
 async function MakeApiCall (options = {}, retry=false, retries=3, delay=500, errorCodesToNotRetry=[400, 401]){
-    const { redirect_on_unauthorized = true, ...axiosOptions } = options;
+    const { redirect_on_unauthorized = true } = options;
     // if (options.redirect_on_unauthorized !== undefined) {
     //     const { redirect_on_unauthorized, ...restOptions } = options;
     //     options = restOptions;
@@ -81,5 +81,15 @@ async function MakeApiCall (options = {}, retry=false, retries=3, delay=500, err
     }
     return { data, status };
 }
+
+// Input sanitization utility
+export const sanitizeInput = (input) => {
+    if (typeof input !== 'string') return input;
+    return input
+        .replace(/[<>]/g, '') // Remove potential HTML tags
+        .replace(/javascript:/gi, '') // Remove javascript: protocol
+        .replace(/on\w+=/gi, '') // Remove event handlers
+        .trim();
+};
 
 export default MakeApiCall;

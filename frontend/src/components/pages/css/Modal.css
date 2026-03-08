@@ -16,10 +16,31 @@
 .modal_box{
     background: #fff;
     padding: 24px;
-    width: 380px;
+    width: fit-content;        /* grows with content */
+    max-width: 90vw;           /* never exceed screen */
+    min-width: 320px;          /* prevent too small modal */
+    max-height: 90vh;          /* increased to prevent overflow */
+    overflow-y: auto;
     border-radius: 10px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    text-align: center;
+    /* Ensure centered even if content overflows */
+    margin: auto;
+}
+
+/* Size variants */
+.modal_box.modal--small {
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.modal_box.modal--medium {
+    min-width: 500px;
+    max-width: 700px;
+}
+
+.modal_box.modal--large {
+    min-width: 800px;
+    max-width: 90vw;
 }
 
 .modal_box h3 {
@@ -96,7 +117,6 @@
 }
 
 .modal_confirm:disabled:hover::after {
-  content: "❌ Nothing to update";
   position: absolute;
   top: -35px;
   background: #1f2937;
