@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { getMeApi, deleteUserApi } from "@repositories/UserRepo";
-import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
 import { logOut } from "@/utils/AuthUtils";
 import {useNavigate} from "react-router-dom";
@@ -9,10 +8,8 @@ import '@components/pages/css/Modal.css';
 
 export default function UserMePage(){
     const navigate = useNavigate()
-    const {user} = useUser()
     // console.log(JSON.stringify(user.userType))
     const isDemo = user?.userType === "demo";
-    const token = user?.access_token || null
     const {showToast} = useToast()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
@@ -32,7 +29,7 @@ export default function UserMePage(){
         }
         const getProfile = async () => {
             try{
-                const resp = await getMeApi(token)
+                const resp = await getMeApi()
                 // console.log(resp)
                 if(resp.success){
                     setProfile(resp.data)
@@ -47,7 +44,7 @@ export default function UserMePage(){
             }
         }
         getProfile()
-    }, [isDemo, token])
+    }, [isDemo])
 
     const handleDeleteUser = async () => {
         if (isDemo){
@@ -55,7 +52,7 @@ export default function UserMePage(){
             return;
         }
         try{
-            const response = await deleteUserApi(user?.access_token)
+            const response = await deleteUserApi()
             console.log(response)
             if (response.success){
                 logOut(true, [])

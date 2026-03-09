@@ -40,17 +40,12 @@ export const adminRegistrationApi = async (data) => {
     return response.data
 }
 
-export const getMeApi = async (token='') => {
+export const getMeApi = async () => {
     let response = {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.GET_ME,
-            method : "GET",
-            headers : headers
+            method : "GET"
         })
     }catch(error){
         console.error(error);
@@ -64,17 +59,12 @@ export const getMeApi = async (token='') => {
     return response.data
 }
 
-export const deleteAdminApi = async (token=' ') => {
+export const deleteAdminApi = async () => {
     let response= {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.DELETE_ME,
-            method : "DELETE",
-            headers : headers
+            method : "DELETE"
         })
     }catch(error){
         console.error(error)
@@ -88,17 +78,12 @@ export const deleteAdminApi = async (token=' ') => {
     return response.data
 }
 
-export const deleteEntityApi = async (token=' ', data) => {
+export const deleteEntityApi = async (data) => {
     let response= {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.DELETE_ENTITY,
             method : "DELETE",
-            headers : headers,
             data: data
         })
     }catch(error){
@@ -113,17 +98,12 @@ export const deleteEntityApi = async (token=' ', data) => {
     return response.data
 }
 
-export const updateEntityApi = async (token=' ', data) => {
+export const updateEntityApi = async (data) => {
     let response= {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.UPDATE_ENTITY,
             method : "PUT",
-            headers : headers,
             data: data
         })
     }catch(error){
@@ -138,17 +118,12 @@ export const updateEntityApi = async (token=' ', data) => {
     return response.data
 }
 
-export const getEntity = async (token=' ', data) => {
+export const getEntity = async (data) => {
     let response = {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.GET_USER,
             method : "GET",
-            headers : headers,
             params: data
         })
     }catch(error){
@@ -163,17 +138,12 @@ export const getEntity = async (token=' ', data) => {
     return response.data
 }
 
-export const getAllUsers = async ({token='', search=null, page=1, limit=10}) => {
+export const getAllUsers = async ({search=null, page=1, limit=10}) => {
     let response = {}
-    let headers = {}
-    if (!!token) {
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.GET_USERS,
             method : "GET",
-            headers : headers,
             params: { search, page, limit }
         })
     }catch(error){
@@ -188,17 +158,12 @@ export const getAllUsers = async ({token='', search=null, page=1, limit=10}) => 
     return response.data
 }
 
-export const addRecipe = async (token='', data) => {
+export const addRecipe = async (data) => {
     let response = {}
-    let headers = {}
-    if (!!token) {
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.ADD_RECIPE,
             method : "POST",
-            headers : headers,
             data : data, 
         })
     }catch(error){
@@ -233,17 +198,12 @@ export const getAllRecipes = async({ search=null, page=1, limit=10 }) =>{
     return response.data
 }
 
-export const getRecipe = async (token='', recipeId) => {
+export const getRecipe = async (recipeId) => {
     let response = {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.GET_RECIPE.replace(":recipe_id", recipeId),
             method : "GET",
-            headers : headers,
             params: { recipeId}
         })
     }catch (error){
@@ -258,17 +218,12 @@ export const getRecipe = async (token='', recipeId) => {
     return response.data
 }
 
-export const deleteRecipe = async (token='', recipeId) => {
+export const deleteRecipe = async (recipeId) => {
     let response = {}
-    let headers = {}
-    if (!!token) {
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.DELETE_RECIPE.replace(":recipe_id", recipeId),
             method : "DELETE",
-            headers : headers,
             params: { recipeId }
         })
     }catch(error){
@@ -283,17 +238,12 @@ export const deleteRecipe = async (token='', recipeId) => {
     return response.data
 }
 
-export const getRecipeSteps = async (token='', recipe_id) => {
+export const getRecipeSteps = async (recipe_id) => {
     let response = {}
-    let headers = {}
-    if (!!token) {
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url: ENDPOINTS.GET_RECIPE_STEPS.replace(":recipe_id", recipe_id),
             method: "GET",
-            headers: headers,
         })
     }catch(error){
         console.error(error)
@@ -307,17 +257,12 @@ export const getRecipeSteps = async (token='', recipe_id) => {
     return response.data
 } 
 
-export const updateRecipe = async (token=' ', recipe_id, data) => {
+export const updateRecipe = async (recipe_id, data) => {
     let response= {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.UPDATE_RECIPE.replace(":recipe_id", recipe_id),
             method : "PUT",
-            headers : headers,
             data: data
         })
     }catch(error){

@@ -28,17 +28,12 @@ export const userRegistrationApi = async (data) => {
     return response.data
 }
 
-export const getMeApi = async (token='') => {
+export const getMeApi = async () => {
     let response = {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.GET_ME,
             method : "GET",
-            headers : headers
         })
     }catch(error){
         console.error(`[UserRepo] Error : ${JSON.stringify(error)}`);
@@ -54,15 +49,10 @@ export const getMeApi = async (token='') => {
 
 export const deleteUserApi = async (token=' ') => {
     let response= {}
-    let headers = {}
-    if (!!token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
     try{
         response = await MakeApiCall({
             url : ENDPOINTS.DELETE_ME,
             method : "DELETE",
-            headers : headers
         })
     }catch(error){
         console.error(error)

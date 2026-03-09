@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import {addRecipe, deleteRecipe, getAllRecipes, getRecipe, getRecipeSteps, updateRecipe} from "@repositories/AdminRepo.jsx"
-import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx"; 
 import useDebounce from "@utils/useDebounce";
 import { sanitizeInput } from "@utils/ApiUtils";
@@ -8,7 +7,6 @@ import '@components/pages/css/Table.css';
 import '@components/pages/css/Modal.css';
 
 export default function AdminManageRecipes() {
-    const {user} = useUser();
     const {showToast} = useToast();
     const [recipe, setRecipe] = useState(null);
     const [recipes, setRecipes] = useState([]);
@@ -37,13 +35,12 @@ export default function AdminManageRecipes() {
     const [submitting, setSubmitting] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const token = user?.access_token
     const debouncedSearch = useDebounce(search, 500);
 
     const fetchRecipe = async(recipeId) => {
       if (!recipeId) return 
       try{
-        const response = await getRecipe(token, recipeId)
+        const response = await getRecipe(recipeId)
         if (response.success){
           showToast("Recipe fetched successfully.", "success");
           setRecipe(response?.data?.Recipe)
@@ -86,7 +83,7 @@ export default function AdminManageRecipes() {
       if (!recipeId) return;
       try{
         const response = await getRecipeSteps(
-          token, recipeId
+          recipeId
         )
         if (response.success){
           showToast("Instruction fetched successfully.", "success")
@@ -123,7 +120,7 @@ export default function AdminManageRecipes() {
         if (!deletingRecipeId) return;
         setIsDeleting(true);
         try {
-            const response = await deleteRecipe(token, deletingRecipeId)
+            const response = await deleteRecipe(deletingRecipeId)
             if (response.success){
                 await fetchRecipes();
                 showToast("Recipe deleted successfully.", "success");
@@ -153,7 +150,6 @@ export default function AdminManageRecipes() {
         setIsUpdating(true);
         try{
       const response = await updateRecipe(
-        token,
         recipe.recipe_id,
         {
           prep_time: newPrepTime ? newPrepTime : undefined,
@@ -291,7 +287,7 @@ export default function AdminManageRecipes() {
         };
         setSubmitting(true);
         try {
-            const response = await addRecipe(token, payload) 
+            const response = await addRecipe(payload) 
             if (response.success){
                 showToast("Recipe added successfully.", "success");
                 await fetchRecipes();

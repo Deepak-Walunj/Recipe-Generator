@@ -1,14 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { getAllUsers, adminRegistrationApi, deleteEntityApi, updateEntityApi, getEntity } from "@repositories/AdminRepo.jsx";
 import { userRegistrationApi } from "@repositories/UserRepo.jsx";
-import { useUser } from "@components/contexts/UserContext";
 import { useToast } from "@predefined/Toast.jsx";
 import useDebounce from "@utils/useDebounce";
 import '@components/pages/css/Table.css';
 import '@components/pages/css/Modal.css';
 
 export default function AdminManageUsers() {
-  const { user } = useUser();
   const { showToast } = useToast();
 
   const [entity, setEntity] = useState(null);
@@ -41,14 +39,12 @@ export default function AdminManageUsers() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const token = user?.access_token;
   const debouncedSearch = useDebounce(search, 500);
 
   const fetchUser = async(entity_id, entity_type) => {
     if (!entity_id || !entity_type) return ;
     try{
       const response = await getEntity(
-        token,
         {
           entity_id: entity_id,
           entity_type: entity_type
@@ -71,7 +67,6 @@ export default function AdminManageUsers() {
     setLoading(true);
     try {
       const response = await getAllUsers({
-        token: token,
         search: debouncedSearch || null,
         page: page || 1,
         limit: limit || 10,
@@ -98,7 +93,7 @@ export default function AdminManageUsers() {
 
   useEffect(() => {
     fetchUsers();
-  }, [token, page, debouncedSearch, limit]);
+  }, [page, debouncedSearch, limit]);
 
   useEffect(() => {
     if (showUpdateModal && entity) {
@@ -174,7 +169,6 @@ export default function AdminManageUsers() {
     setIsUpdating(true);
     try{
       const response = await updateEntityApi(
-        token,
         {
           updated_password: newPassword? newPassword.trim() : undefined,
           updated_name: newUsername? newUsername.trim() : undefined,
@@ -203,7 +197,6 @@ export default function AdminManageUsers() {
     setIsDeleting(true)
     try{
       const response = await deleteEntityApi(
-        token,
         {
           entity_id: deletingUserId,
           entity_type: deletingEntityType
