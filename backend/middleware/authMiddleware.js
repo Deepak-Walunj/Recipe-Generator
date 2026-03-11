@@ -35,7 +35,7 @@ function allowedEntities(entity_type=null){
             if (!email) {
                 return next(new UnauthorizedError("Invalid token payload", 401, "INVALID_TOKEN_PAYLOAD"));
             }
-            const user = await authService.get_user_by_email(email)
+            const user = await authService.get_user_by_email_in_cache(email)
             if (!user) {
                 return next(new UnauthorizedError("User not found", 401, "USER_NOT_FOUND", userId));
             }
@@ -54,4 +54,32 @@ function allowedEntities(entity_type=null){
     }
 }
 
-module.exports = allowedEntities;
+
+async function verify_refresh_token(refresh_token){
+    try{
+        const authService = getAuthService()
+        const payload = jwt.verify(refresh_token, SECRET_KEY);
+        logger.info(`[Middleware] payload after refresh token verification : ${JSON.stringify(payload)}`)
+        const tokey_type = payload.type;
+        if (tokey_type !== 'refresh') {
+            logger.warn(`Invalid token type: ${tokey_type}, expected: refresh`);
+            throw new UnauthorizedError("Invalid token type", 401, "INVALID_TOKEN_TYPE");
+        }
+        const email = payload.email;
+        if (!email) {
+            throw new UnauthorizedError("Invalid token payload", 401, "INVALID_TOKEN_PAYLOAD");
+        }
+        const user = await authService.get_user_by_email(email)
+        if (!user) {
+            throw new UnauthorizedError("User not found", 401, "USER_NOT_FOUND", user);
+        }
+        return payload
+    } catch(err) {
+        if (err.name === "TokenExpiredError") {
+            throw new UnauthorizedError("Token expired", 401, "TOKEN_EXPIRED");
+        }
+        throw new UnauthorizedError("Invalid token", 401, "INVALID_TOKEN", err.message);
+    }
+}
+
+module.exports = {allowedEntities, verify_refresh_token};

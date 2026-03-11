@@ -1,5 +1,6 @@
 // index.js
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { PORT, ALLOWED_ORIGINS } = require('./core/settings');
 const {disconnectDB } = require('./core/database');
@@ -35,6 +36,7 @@ const publicRouter = require('./routes/publicRoutes');
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization']
     }));
+    app.use(cookieParser())
 
     // Routes
     app.use(`/auth`, authRouter);

@@ -5,7 +5,7 @@ const { getUserService } = require('../core/deps');
 const { ValidationError } = require('../core/exception.js')
 const { registerUserSchema } = require('../schemas/userSchema');
 const { StandardResponse } = require('../schemas/adminSchema');
-const allowedEntities = require('../middleware/authMiddleware')
+const { allowedEntities } = require('../middleware/authMiddleware')
 const { EntityType } = require('../core/enum')
 
 setupLogging();

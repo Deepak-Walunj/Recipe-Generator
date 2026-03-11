@@ -10,9 +10,10 @@ axiosInstance.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
             console.debug("[ApiUtils] Auth token added to request");
-        }else{
-            console.warn("[ApiUtils] No auth token found in localStorage");
         }
+        // else{
+        //     console.warn("[ApiUtils] No auth token found in localStorage");
+        // }
         return config;
     },
     (error) => {

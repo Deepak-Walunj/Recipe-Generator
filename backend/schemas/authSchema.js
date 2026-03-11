@@ -23,9 +23,10 @@ class BaseResponse {
 }
 
 class TokenData {
-    constructor(access_token, token_type="Bearer") {
+    constructor(access_token, refresh_token) {
         this.access_token = access_token;
-        this.token_type = token_type;
+        this.refresh_token = refresh_token;
+        this.token_type = 'Bearer';
     }
 }
 

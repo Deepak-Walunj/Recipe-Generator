@@ -6,7 +6,7 @@ const { getAdminService, getCuisinesService, getIngredientsService, getRecipesSe
 const { ValidationError, NotFoundError } = require('../core/exception')
 const { EntityType } = require('../core/enum')
 
-const allowedEntities = require('../middleware/authMiddleware')
+const { allowedEntities } = require('../middleware/authMiddleware')
 
 const { registerAdminSchema, deleteEntitySchema, StandardResponse } = require('../schemas/adminSchema')
 const {recipeInputSchema, recipeUpdateSchema} = require('../schemas/recipes')

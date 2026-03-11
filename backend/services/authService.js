@@ -64,7 +64,7 @@ class AuthService {
             throw new InvalidCredentialsError('Invalid user data', 400, 'INVALID_USER', auth_entity.error.details);
         }
         const data = {
-            userId: user.userId,
+            userId: user.user_id,
             email: user.email,
             entity_type: user.entity_type
         }
@@ -73,7 +73,7 @@ class AuthService {
         return { access_token, refresh_token  };
     }
 
-    async get_user_by_email(email) {
+    async get_user_by_email_in_cache(email) {
         let user = await this.cache.get(email)
         if (user) {
             return JSON.parse(user)
@@ -83,6 +83,10 @@ class AuthService {
             await this.cache.set(email, JSON.stringify(user),{ EX: 60*5 }) // Cache for 1 hour
         }
         return user;
+    }
+
+    async get_user_by_email(email){
+        return await this.authRepository.findByEmail(email);
     }
 
     async deleteEntityByEmail(email) {
