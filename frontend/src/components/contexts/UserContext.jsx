@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect, useCallback, } from "react";
 import Constants from "@utils/Constants";
 import React from "react";
+import { registerLogoutHandler } from "@utils/AuthUtils";
 
 const UserContext = createContext();
 
@@ -46,13 +47,30 @@ export const UserProvider = ({ children }) => {
         }
     }, [userState])
 
+    // context API exposed to consumers
+    const logout = useCallback(() => {
+        // setting userState to null triggers the effect that
+        // clears localStorage.  This is the call external
+        // modules can use instead of juggling setUser directly.
+        setUserState(null);
+    }, []);
+
     const contextValue = React.useMemo (() => ({
         user: userState,
-        userState, 
-        setUser, 
+        userState,
+        setUser,
+        logout,
         isAuthenticated: !!userState?.access_token && userState?.userType === "logged",
         isDemo: userState?.userType === "demo",
-    }), [userState, setUser]);
+    }), [userState, setUser, logout]);
+
+
+
+    // register the logout handler so non‑React modules can trigger it
+    // (e.g. the Axios interceptor in ApiUtils).
+    useEffect(() => {
+        registerLogoutHandler(logout);
+    }, [logout]);
 
     return (
         <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>

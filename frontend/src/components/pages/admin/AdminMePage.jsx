@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { getMeApi, deleteAdminApi } from "@repositories/AdminRepo";
 import { useToast } from "@predefined/Toast.jsx";
-import { logOut } from "@/utils/AuthUtils";
 import {useNavigate} from "react-router-dom";
 import '@components/pages/css/EntityMePage.css';
 import '@components/pages/css/Modal.css';
+import { useUser } from "@components/contexts/UserContext";
 
 export default function AdminMePage(){
     const navigate = useNavigate();
+    const { logout } = useUser();
     const {showToast} = useToast();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -43,7 +44,8 @@ export default function AdminMePage(){
             const response = await deleteAdminApi();
             // console.log(response);
             if (response.success){
-                logOut(true, []);
+                // remove context state + storage
+                logout();
                 showToast("Admin deleted successfully.", "success");
                 setError("");
                 setProfile(null);

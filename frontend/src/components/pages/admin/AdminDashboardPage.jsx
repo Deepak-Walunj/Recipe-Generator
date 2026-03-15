@@ -1,11 +1,14 @@
 import { NavLink, Outlet } from "react-router-dom";
 import '@components/pages/css/EntityDashboardPage.css';
 import admin_dashboard_bg from "@assets/backgrounds/admin_dashboard_bg.jpeg";
-import { logOut } from "@/utils/AuthUtils";
+import { useUser } from "@components/contexts/UserContext"; // logout provided by context
+
 
 export default function AdminDashboard() {
+    const { logout } = useUser();
     const handleLogOut = () => {
-        logOut(true, []);
+        logout();
+        // redirect after clearing state/storage
         window.location.href = "/";
     }
     return (

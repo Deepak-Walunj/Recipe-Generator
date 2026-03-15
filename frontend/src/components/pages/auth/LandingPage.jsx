@@ -2,21 +2,22 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "@components/pages/css/LandingPage.css";
 import landingBg from "@assets/backgrounds/landing_bg.jpg";
-import { logOut, handleLoginSuccess } from "@utils/AuthUtils";
+import { handleLoginSuccess } from "@utils/AuthUtils";
 import { useUser } from "@components/contexts/UserContext";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const {setUser} = useUser()
+  const { logout, setUser } = useUser();
   useEffect(() => {
-    logOut(true, []);
+    logout();
   }, []);
 
   const goUserLogin = () => navigate("/ulogin");
   const goUserRegister = () => navigate("/uregister");
   const goGuestLogin = () => {
-    handleLoginSuccess("user", null, setUser, "demo")
-    navigate("/user/dashboard")
+    // this will update context with demo user info
+    handleLoginSuccess("user", null, setUser, "demo");
+    navigate("/user/dashboard");
   };
   const goAdminLogin = () => navigate("/alogin");
 return (

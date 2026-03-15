@@ -4,8 +4,7 @@ const { SECURE } = require('../core/settings');
 const { setupLogging, getLogger } = require('../core/logger')
 const { getAuthService } = require('../core/deps');
 const { MissingRequiredFields, ValidationError } = require('../core/exception')
-const { LoginEntitySchema } = require('../schemas/authSchema');
-const { TokenResponse, TokenData } = require('../schemas/authSchema');
+const { LoginEntitySchema, TokenResponse, TokenData } = require('../schemas/authSchema');
 const { verify_refresh_token } = require('../middleware/authMiddleware')
 const { create_access_token } = require('../middleware/security');
 
@@ -21,12 +20,17 @@ router.post('/login', async (req, res, next) => {
     }
     const user = await authService.loginEntity(value)
     const {access_token, refresh_token} = await authService.generateTokens(user)
-    res.cookie('refresh_token', refresh_token,{
+    // if the front end is hosted on a different host/port (different "site")
+    // the browser will not send a lax cookie on XHR/fetch.  use `none` when
+    // we expect cross‑site requests.  `secure` must be true when sameSite is
+    // none, so in development we fall back to lax to avoid requiring https.
+    const cookieOpts = {
         httpOnly: true,
         secure: SECURE,
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    })
+    };
+    res.cookie('refresh_token', refresh_token, cookieOpts);
     logger.info(`User ${user.user_id} logged in as ${value.entity_type}`);
     return res.json(new TokenResponse(true, "Login successful", new TokenData(access_token, refresh_token)));
 });

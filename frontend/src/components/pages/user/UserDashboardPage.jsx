@@ -1,14 +1,15 @@
 import { NavLink, Outlet } from "react-router-dom";
 import '@components/pages/css/EntityDashboardPage.css';
 import user_dashboard_bg from "@assets/backgrounds/user_dashboard_bg.jpg";
-import { logOut } from "@utils/AuthUtils";
 import usePermission from "@utils/UsePermissions.js";
+import { useUser } from "@components/contexts/UserContext";
 
 export default function UserDashboard() {
     const { isDemo, canSuggestRecipe } = usePermission();
+    const { logout } = useUser();
     // console.log("Inside user dashboard"+JSON.stringify({user, isDemo, canSuggestRecipe}))
     const handleLogout = () => {
-        logOut(false, []);
+        logout();
         window.location.href = "/";
     }
     return(

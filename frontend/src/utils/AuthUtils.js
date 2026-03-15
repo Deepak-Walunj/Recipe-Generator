@@ -1,5 +1,17 @@
 import Constants from "./Constants";
 
+let logoutHandler = null;
+
+export const registerLogoutHandler = (fn) => {
+    logoutHandler = fn;
+};
+
+export const triggerLogoutHandler = () => {
+    if (typeof logoutHandler === "function") {
+        logoutHandler();
+    }
+};
+
 export const isAuthenticated = () => {
     const token = localStorage.getItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY);
     return !!token
@@ -11,7 +23,17 @@ export const isEntityAuthorized = (allowedEntity) => {
     return !!signedInEntity && allowedEntity === signedInEntity;
 }
 
-export const logOut = (clearAll = false, additional_keys = []) => {
+export const logOut = (setUser, clearAll = false, additional_keys = []) => {
+    // prefer context logout if available
+    if (typeof setUser === "function") {
+        setUser(null);
+    } else if (logoutHandler) {
+        // caller didn't provide setUser (maybe they passed true/false)
+        // but we still want to clear the React context
+        logoutHandler();
+    }
+
+    // clear storage keys regardless
     localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY);
     localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_USER_INFO);
     localStorage.removeItem(Constants.LOCAL_STORAGE_ACCESS_ENTITY_KEY);

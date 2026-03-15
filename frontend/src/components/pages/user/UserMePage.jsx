@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { getMeApi, deleteUserApi } from "@repositories/UserRepo";
 import { useToast } from "@predefined/Toast.jsx";
-import { logOut } from "@/utils/AuthUtils";
 import {useNavigate} from "react-router-dom";
 import '@components/pages/css/EntityMePage.css';
 import '@components/pages/css/Modal.css';
+import { useUser } from "@components/contexts/UserContext";
 
 export default function UserMePage(){
     const navigate = useNavigate()
+    const { logout, user } = useUser();
     // console.log(JSON.stringify(user.userType))
     const isDemo = user?.userType === "demo";
     const {showToast} = useToast()
@@ -55,7 +56,7 @@ export default function UserMePage(){
             const response = await deleteUserApi()
             console.log(response)
             if (response.success){
-                logOut(true, [])
+                logout();
                 showToast("User deleted successfully.", "success")
                 setError("")
                 setProfile(null)

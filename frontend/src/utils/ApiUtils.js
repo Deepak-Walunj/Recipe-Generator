@@ -1,10 +1,17 @@
 import axios from 'axios';
 import Constants from './Constants'
 import { logOut } from './AuthUtils';
+const BASE_URL = import.meta.env.VITE_PORT_URL
+const URL = `${BASE_URL}/auth`
 
-const axiosInstance = axios.create()
+let isRefreshing = false;
+let failedQueue = []
 
-axiosInstance.interceptors.request.use(
+const axiosInstance = axios.create({
+    withCredentials: true
+})
+
+axiosInstance.interceptors.request.use( //while requesting to server
     (config) => {
         const token = localStorage.getItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY);
         if (token) {
@@ -20,6 +27,79 @@ axiosInstance.interceptors.request.use(
         return Promise.reject(error);
     }
 )
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach(prom => {
+        if(error){
+            prom.reject(error)
+        }else {
+            prom.resolve(token)
+        }
+    })
+    failedQueue = []
+}
+
+axiosInstance.interceptors.response.use( //while responding back from server
+    (response) => response, //successHandler
+    async(error) => {       //errorhandler
+        const originalRequest = error.config;
+        if (originalRequest?.url?.includes("/auth/refresh")) {
+            return Promise.reject(error);
+        }
+        if (error.response?.status === 401 && !originalRequest._retry){
+            console.log("[ApiUtils] 401 Unauthorized response received. Attempting to refresh access token...")
+            if (isRefreshing) { //if already refreshing for a api and another comes then executes this block
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject })
+                }).then((token) => {
+                    originalRequest.headers.Authorization = `Bearer ${token}`
+                    return axiosInstance(originalRequest)
+                })
+            }
+            originalRequest._retry = true
+            isRefreshing = true
+
+            try {
+                const newToken = await refreshAccessToken()
+                if (!newToken){
+                    // no valid token returned - clear everything and update context
+                    logOut(); // handler will clear context if registered
+                    window.location.href = "/";
+                    return Promise.reject(error);
+                }
+                processQueue(null, newToken)
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                return axiosInstance(originalRequest);
+            } catch (err) {
+                processQueue(err, null);
+                // refresh failed entirely
+                logOut();
+                window.location.href = "/";
+                return Promise.reject(err);
+            } finally {
+                isRefreshing = false;
+            }
+        }
+        return Promise.reject(error);
+    }
+)
+
+async function refreshAccessToken() {
+    try {
+        // use the same axios instance so the request carries any default
+        // headers and withCredentials setting.
+        const response = await axiosInstance.post(`${URL}/refresh`, {});
+        const newToken = response?.data?.data?.access_token;
+        if (newToken) {
+            localStorage.setItem(Constants.LOCAL_STORAGE_ACCESS_TOKEN_KEY, newToken);
+            return newToken;
+        }
+        return null;
+    } catch (err) {
+        console.error("Failed to refresh access token:", err);
+        return null;
+    }
+}
 
 /**
  * Make an API call with retry and error handling
@@ -58,13 +138,7 @@ async function MakeApiCall (options = {}, retry=false, retries=3, delay=500, err
                     status: 200 
                 };
             }
-            if (statusCode === 401 || statusCode === 403) {
-                console.warn("[ApiUtils] Unauthorized or Forbidden - logging out");
-                logOut(true);
-                if (redirect_on_unauthorized && typeof window !== "undefined")
-                    window.location.href = "/";
-                throw new Error("Your session has expired. Please log in again.");
-            }else if (statusCode === 500) {
+            if (statusCode === 500) {
                 throw new Error(`Server error (status ${error.response.status}): ${error.response.statusText}`);
             }else if (statusCode && errorCodesToNotRetry.includes(statusCode)) {
                 status = statusCode;
