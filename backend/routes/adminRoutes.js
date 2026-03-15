@@ -24,13 +24,12 @@ router.post('/register', async (req, res, next) => {
     if (error) {
         return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details))
     }
-    const admin = await adminService.registerAdmin(value)
-    return res.json (new StandardResponse(true, 'Admin registered successfully', admin))
+    const verification_link = await adminService.registerAdmin(value)
+    return res.json (new StandardResponse(true, 'Verification link sent successfully', {"verification_link": verification_link}))
 })
 
 router.get('/me', allowedEntities(EntityType.ADMIN), async (req, res, next) => {
   const adminService = getAdminService();
-  // logger.info(req.user)
   const email = req.user.email;
   const profile = await adminService.getAdminProfile(email)
   logger.info(`Fetched profile for user: ${JSON.stringify(profile)}`);

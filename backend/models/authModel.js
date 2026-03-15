@@ -5,7 +5,8 @@ const AuthEntityFields = Object.freeze({
   USER_ID: 'user_id',
   EMAIL: 'email',
   ENTITY_TYPE: 'entity_type',
-  PASSWORD: 'password'
+  PASSWORD: 'password',
+  IS_VERIFIED: 'is_verified'
 })
 
 const AuthEntityModel  = Joi.object({
@@ -23,6 +24,7 @@ const AuthEntityModel  = Joi.object({
       "any.only": `Entity type must be one of: ${Object.values(EntityType).join(', ')}`,
       "string.empty": "Entity type is required"
     }),
+  [AuthEntityFields.IS_VERIFIED]: Joi.boolean().truthy(1).falsy(0).default(false)
 });
 
 const EntityProfileSchema = Joi.object({

@@ -36,9 +36,9 @@ class AdminService {
             password: value.password,
             entity_type: data.entity_type   // keep entity_type naming for auth table
         };
-        const admin = await this.auth_service.registerEntity(authPayload)
+        const verification_link = await this.auth_service.registerEntity(authPayload)
         logger.info(`Creating admin profile with data: ${JSON.stringify(value)}`);
-        return admin
+        return verification_link
     }
 
     async getAdminProfile(email) {

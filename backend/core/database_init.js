@@ -56,6 +56,7 @@ async function createTable(db, table) {
           email VARCHAR(255)  NOT NULL,
           password VARCHAR(255) NOT NULL,
           entity_type VARCHAR(50) NOT NULL,
+          is_verified BOOLEAN DEFAULT FALSE,
           UNIQUE (user_id)
         );
       `;
@@ -109,7 +110,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.RECIPE_INGREDIENTs:
+    case collections.RECIPE_INGREDIENTS:
       sql = `
         CREATE TABLE recipe_ingredients (
           id INT AUTO_INCREMENT PRIMARY KEY,

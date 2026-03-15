@@ -10,8 +10,7 @@ class AuthRepository {
     }
 
     async findByEmail(email) {
-        const result = this.collection.findOne({[AuthEntityFields.EMAIL]: email});
-        return result;
+        return this.collection.findOne({[AuthEntityFields.EMAIL]: email});
     }
 
     async createAuthEntity(data){
@@ -29,6 +28,16 @@ class AuthRepository {
                 throw new DuplicateRequestException('User with this email already exists', 409, 'DUPLICATE_USER', err.keyValue);
             }
             throw err;
+        }
+    }
+
+    async updateVerificationStatus(email, is_verified) {
+        const result = await this.collection.updateOne(
+            {[AuthEntityFields.EMAIL]: email},
+            { [AuthEntityFields.IS_VERIFIED]: is_verified }
+        );
+        if (result.affectedRows === 0){
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {user_id});
         }
     }
 

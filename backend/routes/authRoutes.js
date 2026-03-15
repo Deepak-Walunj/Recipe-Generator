@@ -5,9 +5,7 @@ const { setupLogging, getLogger } = require('../core/logger')
 const { getAuthService } = require('../core/deps');
 const { MissingRequiredFields, ValidationError } = require('../core/exception')
 const { LoginEntitySchema, TokenResponse, TokenData } = require('../schemas/authSchema');
-const { verify_refresh_token } = require('../middleware/authMiddleware')
-const { create_access_token } = require('../middleware/security');
-
+const {StandardResponse} = require('../schemas/adminSchema')
 
 setupLogging();
 const logger = getLogger("auth-router");
@@ -41,16 +39,26 @@ router.post("/refresh", async (req, res, next) => {
         return next(new MissingRequiredFields("Refresh token is required in cookies", 400, 'MISSING_FIELDS', [{message: "Refresh token is required in cookies", field: "refresh_token"}]));
     }
     try{
-        const payload = await verify_refresh_token(refreshToken)
-        const access_token = create_access_token({
-            userId: payload.userId,
-            email: payload.email,
-            entity_type: payload.entity_type
-        });
+        const authService = getAuthService()
+        const access_token = await authService.validateRefreshTokenAndCreateAccessTokens(refreshToken)
         return res.json(new TokenResponse(true, "Login successful", new TokenData(access_token)));
     }catch(err){
-        return next(new ValidationError("Invalid refresh token type", 401, 'INVALID_TOKEN_TYPE', {error: err.message}));
+        return next(new ValidationError("Something went wrong", 401, 'INVALID_TOKEN_TYPE', {error: err.message}));
     }
 });
+
+router.get("/verify-email", async (req, res, next) => {
+    const authService = getAuthService()
+    const { token } = req.query
+    if (!token) {
+        return next(new MissingRequiredFields("Verification token is required", 400, 'MISSING_FIELDS', [{message: "Verification token is required", field: "token"}]));
+    }
+    try{
+        const respMessage = await authService.verifyEmailByToken(token)
+        return res.json(new StandardResponse(true, respMessage.message))
+    } catch (error) {
+        return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR',{error: error.details}))
+    }
+})
 
 module.exports = router;

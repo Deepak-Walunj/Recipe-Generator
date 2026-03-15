@@ -4,6 +4,7 @@ module.exports = {
     APP_NAME: process.env.APP_NAME || 'Express Backend',
   	ENV: process.env.NODE_ENV || 'development',
   	DEBUG: process.env.DEBUG === 'true',
+	FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
 
     SQL_HOST: process.env.SQL_HOST || 'localhost',
 	SQL_USER: process.env.SQL_USER || 'root',
@@ -30,4 +31,9 @@ module.exports = {
 	ELASTIC_APM_SERVER_URL: process.env.ELASTIC_APM_SERVER_URL, 
 	ELASTIC_APM_SERVICE_NAME: process.env.ELASTIC_APM_SERVICE_NAME,
 	ELASTIC_APM_ENVIRONMENT: process.env.ELASTIC_APM_ENVIRONMENT,
+
+	EMAIL_SECRET_KEY: process.env.EMAIL_SECRET_KEY,
+	EMAIL_TOKEN_EXPIRE_IN_MINUTES: parseInt(process.env.EMAIL_TOKEN_EXPIRE_IN_MINUTES || '10'),
+	RESEND_API_KEY: process.env.RESEND_API_KEY,
+	DEVELOPER_EMAIL: process.env.DEVELOPER_EMAIL
 }
