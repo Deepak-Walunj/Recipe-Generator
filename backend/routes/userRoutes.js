@@ -17,8 +17,8 @@ router.post('/register', async (req, res, next) => {
   if (error){
     return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR', error.details));
   }
-  const email_verification_token = await userService.registerUser(value);
-  return res.json(new StandardResponse(true, 'User registered successfully', {"email_verification_token": email_verification_token}))
+  const resp = await userService.registerUser(value);
+  return res.json(new StandardResponse(true, resp.message, {"email_verification_token": resp.email_verification_token}))
 });
 
 router.get('/me', allowedEntities(EntityType.USER), async (req, res, next) => {

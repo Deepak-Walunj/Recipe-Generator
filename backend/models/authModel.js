@@ -3,6 +3,7 @@ const { EntityType } = require('../core/enum');
 
 const AuthEntityFields = Object.freeze({
   USER_ID: 'user_id',
+  USERNAME: 'username',
   EMAIL: 'email',
   ENTITY_TYPE: 'entity_type',
   PASSWORD: 'password',
@@ -10,7 +11,7 @@ const AuthEntityFields = Object.freeze({
 })
 
 const AuthEntityModel  = Joi.object({
-  [AuthEntityFields.USER_ID]: Joi.number().optional(),
+  [AuthEntityFields.USERNAME]: Joi.string().required(),
   [AuthEntityFields.EMAIL]: Joi.string().email().required().messages({
     "string.email": "Valid email is required",
     "string.empty": "Email is required"
@@ -28,7 +29,6 @@ const AuthEntityModel  = Joi.object({
 });
 
 const EntityProfileSchema = Joi.object({
-  user_id: Joi.number().optional(),
   username: Joi.string().min(2).required().messages({
     "string.empty": "Full name is required"
   }),
@@ -36,7 +36,6 @@ const EntityProfileSchema = Joi.object({
     "string.email": "Valid email is required",
     "string.empty": "Email is required"
   }),
-  password: Joi.string().min(6).required(),
   users_type: Joi.string().valid(...Object.values(EntityType)).required()
 });
 

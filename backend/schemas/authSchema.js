@@ -1,13 +1,6 @@
 const Joi = require('joi');
 const { EntityType } = require('../core/enum');
 
-const AuthRegisterSchema = Joi.object({
-    user_id: Joi.number().optional(),
-    email: Joi.string().email().required().messages({"string.email": "Valid email is required"}),
-    password: Joi.string().min(6).required().messages({"string.min": "Password must be at least 6 characters long", "string.empty": "Password is required"}),
-    entity_type: Joi.string().valid(EntityType.USER, EntityType.ADMIN).required().messages({"any.only": "Entity type must be USER or ADMIN", "string.empty": "Entity type is required"}),
-});
-
 const LoginEntitySchema = Joi.object({
     email: Joi.string().email().required().messages({"string.email": "Valide email is required"}),
     password: Joi.string().min(6).required().messages({"string.min": "Password must be at least 6 characters long", "string.empty": "Password is required"}),
@@ -37,7 +30,6 @@ class TokenResponse extends BaseResponse {
 }
 
 module.exports = {
-    AuthRegisterSchema,
     LoginEntitySchema,
     BaseResponse,
     TokenData,

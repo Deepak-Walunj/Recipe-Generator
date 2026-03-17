@@ -33,9 +33,10 @@ export default function UserRegistrationPage() {
                 entity_type: Constants.ENTITY.USER
             };
             const response = await userRegistrationApi(payload);
+            console.log(response)
             if (response.success) {
                 setEntityType(Constants.ENTITY.USER)
-                showToast("Verification email sent!", "success");
+                showToast(response.message, "success");
                 setView("verify");
             } else {
                 showToast(response.message || "Registration failed", "error");

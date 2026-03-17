@@ -1,6 +1,5 @@
-const {InvalidCredentialsError, ValidationError, UnauthorizedError, NotFoundError} = require('../core/exception');
-const { AuthRegisterSchema } = require('../schemas/authSchema');
-const { AuthEntityModel, AuthEntityFields } = require('../models/authModel');
+const {InvalidCredentialsError, ValidationError, UnauthorizedError, NotFoundError, DuplicateRequestException} = require('../core/exception');
+const { AuthEntityModel, AuthEntityFields, EntityProfileSchema } = require('../models/authModel');
 const { create_access_token, create_refresh_token, verify_refresh_token, hash_password, verify_password, generate_verification_token, verifyEmail } = require('../middleware/security');
 const { setupLogging, getLogger } = require('../core/logger');
 const { sendVerificationEmail } = require('../client/resendMailer')
@@ -8,38 +7,32 @@ const { sendVerificationEmail } = require('../client/resendMailer')
 setupLogging();
 const logger = getLogger("auth-service");
 class AuthService {
-    constructor({ authRepository, cacheClient }) {
+    constructor({ authRepository, cacheClient, userRepository }) {
         this.authRepository = authRepository;
+        this.userRepository = userRepository;
         this.cache = cacheClient;
     }
     async registerEntity(data) {
-        const { error, value } = AuthRegisterSchema.validate({
-            user_id: data.user_id,
-            email: data.email,
-            password: data.password,
-            entity_type: data.entity_type
-        });
-        if (error) {
-            throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
+        const existingUser = await this.authRepository.findByEmail(data.email);
+        if (existingUser) {
+            if (!existingUser.is_verified) {
+                await this.resendVerificationToken(existingUser.email, existingUser.entity_type)
+                return { email_verification_token: null, message: "User already exists but not verified. Verification email resent."}
+            }
+            throw new DuplicateRequestException("User already exists")
         }
-        let existingUser = null;
-        try {
-            existingUser = await this.authRepository.findByEmail(value.email);
-        } catch (err) {
-            if (err.name !== 'NotFoundError') throw err;
-        }
-        const password = await hash_password(value.password);
+        const password = await hash_password(data.password);
         const auth_user = AuthEntityModel.validate({
-            user_id: value.user_id,
-            email: value.email,
+            username: data.username,
+            email: data.email,
             password: password, 
-            entity_type: value.entity_type,
+            entity_type: data.entity_type,
             is_verified: false
         }, { stripUnknown: true, convert: true });
         const newUser = await this.authRepository.createAuthEntity(auth_user.value);
         const email_verification_token = generate_verification_token({ entity_type: newUser.entity_type, email: newUser.email})
         await sendVerificationEmail(newUser.email, email_verification_token)
-        return email_verification_token
+        return {email_verification_token: email_verification_token, message: "Verification email sent"}
     }
 
     async resendVerificationToken(email, entity_type) {
@@ -58,7 +51,7 @@ class AuthService {
     async verifyEmailByToken(token) {
         try{
             const decoded = verifyEmail(token)
-            logger.info(`Decoded token after verification: ${decoded}`)
+            logger.info(`Decoded token after verification: ${JSON.stringify(decoded)}`)
             const user = await this.authRepository.findByEmail(decoded.email)
             if (!user) {
                 throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {email: decoded.email});
@@ -70,8 +63,25 @@ class AuthService {
             if (user.entity_type !== decoded.entity_type){
                 throw new ValidationError("Entity type missmatch", 400, 'VALIDATION_ERROR')
             }
+            const {error, value} = EntityProfileSchema.validate({
+                username: user.username,
+                email: user.email,
+                users_type: user.entity_type
+            }, { stripUnknown: true });
+            if (error) {
+                throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
+            }
+            let entity = await this.userRepository.findUserByEmailAndEntityType(value.email, value.users_type);
+            // if (entity){
+            //     throw new DuplicateRequestException("User already exists", 409, "DUPLICATE_REQUEST", value.email)
+            // }
+            if (!entity) {
+                const profile = await this.userRepository.createUserProfile(value);
+                logger.info(`Created user profile = ${JSON.stringify(profile)}`);
+                entity = profile
+            }
             await this.authRepository.updateVerificationStatus(decoded.email, true)
-            return {email: decoded.email, entity_type: decoded.entity_type, already_verified:false, message: "User verified successfully", status: "success"}
+            return {email: entity.email, entity_type: entity.users_type, already_verified:false, message: "User verified successfully", status: "success"}
         } catch (error) {
             logger.error(error)
             throw new ValidationError(error.message, 400, 'VALIDATION_ERROR')
@@ -85,6 +95,9 @@ class AuthService {
         }
         if (user.entity_type !== data.entity_type) {
            throw new UnauthorizedError(`Invalid entity type, expected: ${user.entity_type}1`, 400, 'VALIDATION_ERROR', data.entity_type)
+        }
+        if (!user.is_verified) {
+            throw new ValidationError("Please verify your email before logging in", 403, "EMAIL_NOT_VERIFIED")
         }
         const isPasswordValid = await verify_password(data.password, user.password);
         if (!isPasswordValid) {

@@ -14,7 +14,6 @@ class UserRepository {
             const payload = {
                 username: userData.username,
                 email: userData.email,
-                password: userData.password,
                 users_type: userData.users_type   
             };
             const result = await this.collection.insertOne(payload);

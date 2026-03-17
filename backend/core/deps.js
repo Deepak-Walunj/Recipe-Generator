@@ -55,7 +55,7 @@ class DependencyStorage{
         this.recipeStepsRepo = new RecipeStepsRepository(new MySQLCollection(db, collections.RECIPE_STEPS))
         this.recipeIngredientsRepo = new RecipeIngredientsRepository(new MySQLCollection(db, collections.RECIPE_INGREDIENTS))
         
-        this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache });
+        this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache, userRepository: this.userRepo });
         this.userService = new UserService({ userRepository: this.userRepo, auth_service: this.authService });
         this.adminService = new AdminService({ userRepository: this.userRepo, auth_service: this.authService, user_service: this.userService });
         this.ingredientsService = new IngredientsService( { ingredientsRepository: this.ingredientsRepo })
