@@ -19,13 +19,12 @@ class AdminService {
             password: data.password,
             users_type: data.entity_type
         }, { stripUnknown: true });
-        logger.info("Verification successfull")
         if (error) {
             throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
         }
-        const entity = await this.userRepository.findUserByEmail(value.email);
+        const entity = await this.userRepository.findUserByEmailAndEntityType(value.email, value.users_type);
         if (entity){
-            throw new DuplicateRequestException("Duplicate entry", 409, "DUPLICATE_REQUEST", value.email)
+            throw new DuplicateRequestException("Admin already exists", 409, "DUPLICATE_REQUEST", value.email)
         }
         const profile = await this.userRepository.createUserProfile(value);
         const userId = profile.user_id
@@ -36,9 +35,9 @@ class AdminService {
             password: value.password,
             entity_type: data.entity_type   // keep entity_type naming for auth table
         };
-        const verification_link = await this.auth_service.registerEntity(authPayload)
+        const email_verification_token = await this.auth_service.registerEntity(authPayload)
         logger.info(`Creating admin profile with data: ${JSON.stringify(value)}`);
-        return verification_link
+        return email_verification_token
     }
 
     async getAdminProfile(email) {

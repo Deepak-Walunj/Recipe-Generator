@@ -37,26 +37,44 @@ class AuthService {
             is_verified: false
         }, { stripUnknown: true, convert: true });
         const newUser = await this.authRepository.createAuthEntity(auth_user.value);
-        const email_verification_token = generate_verification_token({ user_id: newUser.user_id, email: newUser.email})
-        await sendVerificationEmail(data.email, email_verification_token)
+        const email_verification_token = generate_verification_token({ entity_type: newUser.entity_type, email: newUser.email})
+        await sendVerificationEmail(newUser.email, email_verification_token)
         return email_verification_token
+    }
+
+    async resendVerificationToken(email, entity_type) {
+        const user = await this.authRepository.findByEmail(email)
+        if (!user) {
+            throw new Error("User not found")
+        }
+        if (user.is_verified) {
+            return {email_verification_token: null, message: "Email already verified, try to login", already_verified: true}
+        }
+        const email_verification_token = generate_verification_token({entity_type: entity_type, email: email})
+        await sendVerificationEmail(email, email_verification_token, entity_type)
+        return {email_verification_token: email_verification_token, message: "Verification token sent successfully", already_verified: false}
     }
 
     async verifyEmailByToken(token) {
         try{
             const decoded = verifyEmail(token)
-            logger.info(decoded)
+            logger.info(`Decoded token after verification: ${decoded}`)
             const user = await this.authRepository.findByEmail(decoded.email)
             if (!user) {
                 throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {email: decoded.email});
             }
             if (user.is_verified) {
-                return {message: "Email already verified"}
+                logger.info("User already verified")
+                return {email: decoded.email, entity_type: decoded.entity_type, already_verified: true, message: "User already verified", status: "verified"}
+            }
+            if (user.entity_type !== decoded.entity_type){
+                throw new ValidationError("Entity type missmatch", 400, 'VALIDATION_ERROR')
             }
             await this.authRepository.updateVerificationStatus(decoded.email, true)
-            return {message: "Email verified successfully"}
+            return {email: decoded.email, entity_type: decoded.entity_type, already_verified:false, message: "User verified successfully", status: "success"}
         } catch (error) {
-            throw new ValidationError("Something went wrong", 400, 'VALIDATION_ERROR', error.message)
+            logger.error(error)
+            throw new ValidationError(error.message, 400, 'VALIDATION_ERROR')
         }
     }
     

@@ -131,3 +131,51 @@
 .register_footer a:hover {
   text-decoration: underline;
 }
+
+.verify_card{
+    text-align:center;
+}
+
+.verify_title{
+    font-size:1.7rem;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.verify_email{
+    font-weight:700;
+    margin:6px 0 16px 0;
+    color:var(--color-primary);
+}
+
+.verify_text{
+    color:rgba(255,255,255,0.85);
+}
+
+.verify_actions{
+    margin-top:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.register_btn_secondary{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.register_btn_secondary:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+.verify_hint{
+    margin-top:20px;
+    font-size:13px;
+    color:rgba(255,255,255,0.6);
+}

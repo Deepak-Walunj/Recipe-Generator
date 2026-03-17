@@ -54,8 +54,23 @@ router.get("/verify-email", async (req, res, next) => {
         return next(new MissingRequiredFields("Verification token is required", 400, 'MISSING_FIELDS', [{message: "Verification token is required", field: "token"}]));
     }
     try{
-        const respMessage = await authService.verifyEmailByToken(token)
-        return res.json(new StandardResponse(true, respMessage.message))
+        const resp = await authService.verifyEmailByToken(token)
+        logger.info(resp)
+        return res.json(new StandardResponse(true, resp.message, {email: resp.email,entity_type: resp.entity_type, is_verified: resp.already_verified, status: resp.status}))
+    } catch (error) {
+        return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR',{error: error.details}))
+    }
+})
+
+router.get("/resend-verification", async (req, res, next) => {
+    const authService = getAuthService()
+    const { email, entity_type } = req.query
+    if (!email) {
+        return next(new MissingRequiredFields("Email is required", 400, 'MISSING_FIELDS', [{message: "Email is required", field: "email"}]));
+    }
+    try{
+        const resp = await authService.resendVerificationToken(email, entity_type)
+        return res.json(new StandardResponse(true, resp.message, { email_verification_token: resp.email_verification_token, already_verified: resp.already_verified }))
     } catch (error) {
         return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR',{error: error.details}))
     }

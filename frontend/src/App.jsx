@@ -7,6 +7,7 @@ import RegistrationPage from "@components/pages/user/UserRegistrationPage.jsx";
 import LandingPage from "@components/pages/auth/LandingPage";
 import AdminLoginPage from "@components/pages/auth/AdminLoginPage";
 import UserLoginPage from "@components/pages/auth/UserLoginPage";
+import VerifyEmail from "@components/pages/auth/EmailVerificationPage";
 import AdminDashboard from "./components/pages/admin/AdminDashboardPage";
 import AdminMePage from "./components/pages/admin/AdminMePage";
 import UserDashboard from "./components/pages/user/UserDashboardPage";
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: "/alogin", element: <AdminLoginPage />},
       { path: "/ulogin", element: <UserLoginPage />},
       { path: "/uregister", element: <RegistrationPage /> },
+      { path: "/verify-email", element: <VerifyEmail />},
       { 
         path: "/admin/dashboard", 
         element: <AdminDashboard />,

@@ -60,6 +60,15 @@ class UserRepository {
         return result
     }
 
+    async findUserByEmailAndEntityType(email, entity_type) {
+        const result = await this.collection.findOne({ 
+            [UserProfileFields.EMAIL]: email,
+            [UserProfileFields.USERS_TYPE]: entity_type
+            });
+        logger.info(`[UserRepo] found user ${JSON.stringify(result)} with email: ${email} and entity_type: ${entity_type}`)
+        return result
+    }
+
     async findUserbyId(id, entity_type) {
         const result = await this.collection.findOne({ 
             [UserProfileFields.USER_ID]: id,

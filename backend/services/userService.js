@@ -21,9 +21,9 @@ class UserService {
         if (error) {
             throw new InvalidCredentialsError(error.message, 400, 'VALIDATION_ERROR', error.details);
         }
-        const entity = await this.userRepository.findUserByEmail(value.email);
+        const entity = await this.userRepository.findUserByEmailAndEntityType(value.email, value.users_type);
         if (entity){
-            throw new DuplicateRequestException("Duplicate entry", 409, "DUPLICATE_REQUEST", value.email)
+            throw new DuplicateRequestException("User already exists", 409, "DUPLICATE_REQUEST", value.email)
         }
         const profile = await this.userRepository.createUserProfile(value);
         const userId = profile.user_id
@@ -34,9 +34,9 @@ class UserService {
             password: value.password,
             entity_type: data.entity_type 
         };
-        const user = await this.auth_service.registerEntity(authPayload);
+        const email_verification_token = await this.auth_service.registerEntity(authPayload)
         logger.info(`Creating user profile with data: ${JSON.stringify(value)}`);
-        return user
+        return email_verification_token
     }
 
     async getUserProfile(email) {
