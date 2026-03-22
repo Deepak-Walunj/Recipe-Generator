@@ -40,10 +40,11 @@ async function createTable(db, table) {
     case collections.USERS:
       sql = `
         CREATE TABLE users (
-          user_id INT AUTO_INCREMENT PRIMARY KEY,
-          email VARCHAR(255)  NOT NULL,
+          user_id INT PRIMARY KEY,
+          email VARCHAR(255) NULL,
           username VARCHAR(255) NOT NULL,
-          users_type VARCHAR(50) NOT NULL
+          users_type VARCHAR(50) NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES auth_users(user_id) ON DELETE CASCADE
         );
       `;
       break;
@@ -52,11 +53,12 @@ async function createTable(db, table) {
       sql = `
         CREATE TABLE auth_users (
           user_id INT AUTO_INCREMENT PRIMARY KEY,
-          email VARCHAR(255)  NOT NULL,
-          password VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NULL,
+          password VARCHAR(255) NULL,
           entity_type VARCHAR(50) NOT NULL,
           is_verified BOOLEAN DEFAULT FALSE,
-          UNIQUE (user_id)
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          expires_at TIMESTAMP NULL
         );
       `;
       break;
