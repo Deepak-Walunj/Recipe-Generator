@@ -1,7 +1,8 @@
 
 const EntityType = Object.freeze({
   USER: "user",
-  ADMIN: "admin"
+  ADMIN: "admin",
+  DEMO_USER: "demo"
 });
 
 

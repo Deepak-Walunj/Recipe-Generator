@@ -1,3 +1,4 @@
+const { EntityType } = require("../core/enum");
 const { DuplicateRequestException, MissingRequiredFields, NotFoundError } = require("../core/exception");
 const { setupLogging, getLogger } = require('../core/logger');
 const { AuthEntityFields } = require("../models/authModel");
@@ -9,25 +10,30 @@ class AuthRepository {
         this.collection = collection;
     }
 
+    async getUserByName(name) {
+        return this.collection.findOne({[AuthEntityFields.USERNAME]: name})
+    }
+
     async findByEmail(email) {
         return this.collection.findOne({[AuthEntityFields.EMAIL]: email});
     }
 
     async createAuthEntity(data){
-        const required_fields = ['password', 'entity_type']
-        const missing_fields = required_fields.filter(field => !(field in data));
-        if (missing_fields.length > 0) {
-            throw new MissingRequiredFields('Missing required fields', 400, 'MISSING_FIELDS', missing_fields);
-        }
-        try{
-        const result = await this.collection.insertOne(data);
-        return { ...data};
-        }catch(err){
-            if (err.code === 11000) {
-                logger.error({ err }, "Duplicate email error");
-                throw new DuplicateRequestException('User with this email already exists', 409, 'DUPLICATE_USER', err.keyValue);
+        if (data.entity_type !== EntityType.DEMO_USER){
+            const required_fields = ['password', 'entity_type']
+            const missing_fields = required_fields.filter(field => !(field in data));
+            if (missing_fields.length > 0) {
+                throw new MissingRequiredFields('Missing required fields', 400, 'MISSING_FIELDS', missing_fields);
             }
-            throw err;
+            try{
+            const result = await this.collection.insertOne(data);
+            return { ...data};
+            }catch(err){
+                throw err;
+            }
+        }else if (data.entity_type === EntityType.DEMO_USER){
+            const result = await this.collection.insertOne(data);
+            return {...data, demo_id: result.insertedId}
         }
     }
 

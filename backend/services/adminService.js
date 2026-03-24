@@ -1,5 +1,4 @@
 const { setupLogging, getLogger } = require('../core/logger')
-const { EntityProfileSchema } = require('../models/authModel');
 const { InvalidCredentialsError,  DuplicateRequestException, NotFoundError } = require('../core/exception')
 
 setupLogging();

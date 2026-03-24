@@ -1,8 +1,10 @@
 const {InvalidCredentialsError, ValidationError, UnauthorizedError, NotFoundError, DuplicateRequestException} = require('../core/exception');
-const { AuthEntityModel, AuthEntityFields, EntityProfileSchema } = require('../models/authModel');
+const { AuthEntityModel, AuthEntityFields } = require('../models/authModel');
+const { UserProfileModel } = require('../models/userModel')
 const { create_access_token, create_refresh_token, verify_refresh_token, hash_password, verify_password, generate_verification_token, verifyEmail } = require('../middleware/security');
 const { setupLogging, getLogger } = require('../core/logger');
 const { sendVerificationEmail } = require('../client/resendMailer')
+const { EntityType } = require('../core/enum');
 
 setupLogging();
 const logger = getLogger("auth-service");
@@ -12,27 +14,54 @@ class AuthService {
         this.userRepository = userRepository;
         this.cache = cacheClient;
     }
-    async registerEntity(data) {
-        const existingUser = await this.authRepository.findByEmail(data.email);
-        if (existingUser) {
-            if (!existingUser.is_verified) {
-                await this.resendVerificationToken(existingUser.email, existingUser.entity_type)
-                return { email_verification_token: null, message: "User already exists but not verified. Verification email resent."}
-            }
-            throw new DuplicateRequestException("User already exists")
+
+    async generateUniqueDemoUsername(){
+        let username
+        let exists = true
+        while(exists){
+            const random = Math.random().toString(36).substring(2,8)
+            username = `User_${random}`
+            const user = await this.authRepository.getUserByName()
+            logger.info(user)
+            if (!user) exists = false
         }
-        const password = await hash_password(data.password);
-        const auth_user = AuthEntityModel.validate({
-            username: data.username,
-            email: data.email,
-            password: password, 
-            entity_type: data.entity_type,
-            is_verified: false
-        }, { stripUnknown: true, convert: true });
-        const newUser = await this.authRepository.createAuthEntity(auth_user.value);
-        const email_verification_token = generate_verification_token({ entity_type: newUser.entity_type, email: newUser.email})
-        await sendVerificationEmail(newUser.email, email_verification_token)
-        return {email_verification_token: email_verification_token, message: "Verification email sent"}
+        return username
+    }
+
+    async registerEntity(data) {
+        if (data.entity_type !== EntityType.DEMO_USER){
+            const existingUser = await this.authRepository.findByEmail(data.email);
+            if (existingUser) {
+                if (!existingUser.is_verified) {
+                    await this.resendVerificationToken(existingUser.email, existingUser.entity_type)
+                    return { email_verification_token: null, message: "User already exists but not verified. Verification email resent."}
+                }
+                throw new DuplicateRequestException("User already exists")
+            }
+            const password = await hash_password(data.password);
+            const auth_user = AuthEntityModel.validate({
+                username: data.username,
+                email: data.email,
+                password: password, 
+                entity_type: data.entity_type,
+                is_verified: false
+            }, { stripUnknown: true, convert: true });
+            const newUser = await this.authRepository.createAuthEntity(auth_user.value);
+            const email_verification_token = generate_verification_token({ entity_type: newUser.entity_type, email: newUser.email})
+            await sendVerificationEmail(newUser.email, email_verification_token)
+            return {email_verification_token: email_verification_token, message: "Verification email sent"}
+        }else if (data.entity_type === EntityType.DEMO_USER){
+            const username = await this.generateUniqueDemoUsername()
+            const auth_user = AuthEntityModel.validate({
+                username: username,
+                entity_type: data.entity_type,
+                is_verified: false,
+                expires_at: new Date(Date.now() + 24*60*60*1000)
+            })
+            logger.info(`Creating demo entity in auth table with username: ${JSON.stringify(username)}`)
+            const newUser = await this.authRepository.createAuthEntity(auth_user.value);
+            return {email_verification_token: null, message: "Demo user registered in auth repo", data: newUser}
+        }
     }
 
     async resendVerificationToken(email, entity_type) {
@@ -63,7 +92,7 @@ class AuthService {
             if (user.entity_type !== decoded.entity_type){
                 throw new ValidationError("Entity type missmatch", 400, 'VALIDATION_ERROR')
             }
-            const {error, value} = EntityProfileSchema.validate({
+            const {error, value} = UserProfileModel.validate({
                 username: user.username,
                 email: user.email,
                 users_type: user.entity_type

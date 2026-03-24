@@ -14,8 +14,8 @@ const UserProfileFields = Object.freeze({
 const UserProfileModel = Joi.object({
   [UserProfileFields.USER_ID]: Joi.number().optional(),
   [UserProfileFields.USERNAME]: Joi.string().required(),
-  [UserProfileFields.EMAIL]: Joi.string().email().required(),
-  [UserProfileFields.PASSWORD]: Joi.string().min(6).required().messages({
+  [UserProfileFields.EMAIL]: Joi.string().email().optional(),
+  [UserProfileFields.PASSWORD]: Joi.string().min(6).optional().messages({
     "string.min": "Password must be at least 6 characters long",
     "string.empty": "Password is required"
   }),

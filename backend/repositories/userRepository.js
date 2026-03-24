@@ -1,6 +1,8 @@
 const { setupLogging, getLogger } = require('../core/logger');
 const { UserProfileFields } = require('../models/userModel');
-const { NotFoundError } = require('../core/exception');
+const { NotFoundError, MissingRequiredFields } = require('../core/exception');
+const { EntityType } = require('../core/enum');
+
 setupLogging();
 const logger = getLogger("user-repo");
 
@@ -9,19 +11,34 @@ class UserRepository {
         this.collection = collection;
     }
 
-    async createUserProfile(userData){
-        try{
+    async createUserProfile(data){
+        if (data.users_type !== EntityType.DEMO_USER){
+            try{
+                const required_fields = ['email', 'users_type']
+                const missing_fields = required_fields.filter(field => !(field in data));
+                if (missing_fields.length > 0) {
+                    throw new MissingRequiredFields('Missing required fields', 400, 'MISSING_FIELDS', missing_fields);
+                }
+                const payload = {
+                    username: data.username,
+                    email: data.email,
+                    users_type: data.users_type   
+                };
+                const result = await this.collection.insertOne(payload);
+                logger.info(`[UserRepo] Created user profile with ID: ${result.insertedId}`);
+                return { ...payload, user_id: result.insertedId };
+            } catch (err){
+                logger.error(`Error creating user profile: ${err.message}`);
+                throw err;
+            }
+        }else if (data.users_type === EntityType.DEMO_USER){
             const payload = {
-                username: userData.username,
-                email: userData.email,
-                users_type: userData.users_type   
-            };
+                user_id: data.user_id,
+                username: data.username,
+                users_type: data.users_type  
+            }
             const result = await this.collection.insertOne(payload);
-            logger.info(`[UserRepo] Created user profile with ID: ${result.insertedId}`);
-            return { ...payload, user_id: result.insertedId };
-        } catch (err){
-            logger.error(`Error creating user profile: ${err.message}`);
-            throw err;
+            return {...data, demo_id: result.insertedId}
         }
     }
 
