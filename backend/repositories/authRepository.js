@@ -27,7 +27,7 @@ class AuthRepository {
             }
             try{
             const result = await this.collection.insertOne(data);
-            return { ...data};
+            return { ...data, entity_id: result.insertedId};
             }catch(err){
                 throw err;
             }

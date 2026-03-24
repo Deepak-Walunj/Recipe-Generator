@@ -56,6 +56,7 @@ async function verify_refresh_token(refresh_token){
 }
 
 function generate_verification_token(data){
+    logger.info(`Generating token with data: ${JSON.stringify(data)}`)
     return jwt.sign(
         data,
         EMAIL_SECRET_KEY,

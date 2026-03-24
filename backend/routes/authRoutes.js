@@ -55,7 +55,6 @@ router.get("/verify-email", async (req, res, next) => {
     }
     try{
         const resp = await authService.verifyEmailByToken(token)
-        logger.info(resp)
         return res.json(new StandardResponse(true, resp.message, {email: resp.email,entity_type: resp.entity_type, is_verified: resp.already_verified, status: resp.status}))
     } catch (error) {
         return next(new ValidationError(error.message, 400, 'VALIDATION_ERROR',{error: error.details}))
