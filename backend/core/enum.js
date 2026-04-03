@@ -5,5 +5,10 @@ const EntityType = Object.freeze({
   DEMO_USER: "demo"
 });
 
+const AuthProvider = Object.freeze({
+  GOOGLE: "google",
+  EMAIL: "email",
+  DEMO_USER: "demo"
+})
 
-export {EntityType,};
+export { EntityType, AuthProvider };

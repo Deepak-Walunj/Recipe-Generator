@@ -26,5 +26,7 @@ const UserProfileModel = Joi.object({
     }),
 });
 
-export {UserProfileFields,
-    UserProfileModel,};
+export {
+  UserProfileFields,
+  UserProfileModel,
+};

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { EntityType } from '../core/enum.js';
+import { EntityType, AuthProvider } from '../core/enum.js';
 
 const AuthEntityFields = Object.freeze({
   USER_ID: 'user_id',
@@ -9,16 +9,17 @@ const AuthEntityFields = Object.freeze({
   PASSWORD: 'password',
   IS_VERIFIED: 'is_verified',
   CREATED_AT: 'created_at',
-  EXPIRES_AT: 'expires_at'
+  EXPIRES_AT: 'expires_at',
+  AUTH_PROVIDER: 'auth_provider'
 })
 
-const AuthEntityModel  = Joi.object({
+const AuthEntityModel = Joi.object({
   [AuthEntityFields.USERNAME]: Joi.string().required(),
   [AuthEntityFields.EMAIL]: Joi.string().email().allow(null).messages({
     "string.email": "Valid email is required",
     "string.empty": "Email is required"
   }),
-  [AuthEntityFields.PASSWORD]: Joi.string().min(6).allow(null).messages({
+  [AuthEntityFields.PASSWORD]: Joi.string().min(6).allow(null).default(null).messages({
     "string.min": "Password must be at least 6 characters long",
     "string.empty": "Password is required"
   }),
@@ -33,8 +34,11 @@ const AuthEntityModel  = Joi.object({
     is: EntityType.DEMO_USER,
     then: Joi.date().required(),
     otherwise: Joi.forbidden()
-  })
+  }),
+  [AuthEntityFields.AUTH_PROVIDER]: Joi.string().valid(AuthProvider.EMAIL, AuthProvider.GOOGLE, AuthProvider.DEMO_USER).default(AuthProvider.DEMO_USER)
 }).options({ stripUnknown: true });
 
-export {AuthEntityFields,
-  AuthEntityModel,};
+export {
+  AuthEntityFields,
+  AuthEntityModel,
+};

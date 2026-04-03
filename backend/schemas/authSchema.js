@@ -1,14 +1,15 @@
 import Joi from 'joi';
-import { EntityType } from '../core/enum.js';
+import { EntityType, AuthProvider } from '../core/enum.js';
 
 const LoginEntitySchema = Joi.object({
-    email: Joi.string().email().required().messages({"string.email": "Valide email is required"}),
-    password: Joi.string().min(6).required().messages({"string.min": "Password must be at least 6 characters long", "string.empty": "Password is required"}),
-    entity_type: Joi.string().valid(EntityType.USER, EntityType.ADMIN).required().messages({"any.only": "Entity type must be USER or ADMIN", "string.empty": "Entity type is required"}),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).optional().allow(null).when("auth_provider", { is: AuthProvider.EMAIL, then: Joi.required(), otherwise: Joi.optional() }),
+    entity_type: Joi.string().valid(EntityType.USER, EntityType.ADMIN).required(),
+    auth_provider: Joi.string().valid(AuthProvider.EMAIL, AuthProvider.GOOGLE).required()
 })
 
 class BaseResponse {
-    constructor(success=true, message=null, data=null) {
+    constructor(success = true, message = null, data = null) {
         this.success = success;
         this.message = message;
         this.data = data;
@@ -29,7 +30,9 @@ class TokenResponse extends BaseResponse {
     }
 }
 
-export {LoginEntitySchema,
+export {
+    LoginEntitySchema,
     BaseResponse,
     TokenData,
-    TokenResponse};
+    TokenResponse
+};

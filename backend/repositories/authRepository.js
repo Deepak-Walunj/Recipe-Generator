@@ -5,52 +5,53 @@ import { AuthEntityFields } from '../models/authModel.js';
 
 setupLogging();
 const logger = getLogger("auth-repo");
+
 class AuthRepository {
     constructor(collection) {
         this.collection = collection;
     }
 
     async getUserByName(name) {
-        return this.collection.findOne({[AuthEntityFields.USERNAME]: name})
+        return this.collection.findOne({ [AuthEntityFields.USERNAME]: name })
     }
 
     async findByEmail(email) {
-        return this.collection.findOne({[AuthEntityFields.EMAIL]: email});
+        return this.collection.findOne({ [AuthEntityFields.EMAIL]: email });
     }
 
-    async createAuthEntity(data){
-        if (data.entity_type !== EntityType.DEMO_USER){
+    async createAuthEntity(data) {
+        if (data.entity_type !== EntityType.DEMO_USER) {
             const required_fields = ['password', 'entity_type']
             const missing_fields = required_fields.filter(field => !(field in data));
             if (missing_fields.length > 0) {
                 throw new MissingRequiredFields('Missing required fields', 400, 'MISSING_FIELDS', missing_fields);
             }
-            try{
-            const result = await this.collection.insertOne(data);
-            return { ...data, entity_id: result.insertedId};
-            }catch(err){
+            try {
+                const result = await this.collection.insertOne(data);
+                return { ...data, entity_id: result.insertedId };
+            } catch (err) {
                 throw err;
             }
-        }else if (data.entity_type === EntityType.DEMO_USER){
+        } else if (data.entity_type === EntityType.DEMO_USER) {
             const result = await this.collection.insertOne(data);
-            return {...data, demo_id: result.insertedId}
+            return { ...data, demo_id: result.insertedId }
         }
     }
 
     async updateVerificationStatus(email, is_verified) {
         const result = await this.collection.updateOne(
-            {[AuthEntityFields.EMAIL]: email},
+            { [AuthEntityFields.EMAIL]: email },
             { [AuthEntityFields.IS_VERIFIED]: is_verified }
         );
-        if (result.affectedRows === 0){
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {user_id});
+        if (result.affectedRows === 0) {
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { email });
         }
     }
 
     async findById(userId) {
-        const result = await this.collection.findOne({[AuthEntityFields.userId] : userId }) // lean() for plain object
+        const result = await this.collection.findOne({ [AuthEntityFields.USER_ID]: userId })
         if (!result) {
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {userId});
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { userId });
         }
         return result;
     }
@@ -70,15 +71,15 @@ class AuthRepository {
         return true;
     }
 
-    async updateEntityDetails(user_id, entity_type, payload){
+    async updateEntityDetails(user_id, entity_type, payload) {
         const result = await this.collection.updateOne({
             [AuthEntityFields.USER_ID]: user_id,
             [AuthEntityFields.ENTITY_TYPE]: entity_type
         },
-        payload
+            payload
         )
-        if (result.affectedRows === 0){
-            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', {user_id});
+        if (result.affectedRows === 0) {
+            throw new NotFoundError('User not found', 404, 'USER_NOT_FOUND', { user_id });
         }
     }
 }
