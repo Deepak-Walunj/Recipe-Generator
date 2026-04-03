@@ -3,15 +3,18 @@ import UnderConstruction from "@/components/error/UnderConstruction";
 import UnknownPage from "./components/error/UnknownPage";
 import RootLayout from "@/layouts/RootLayout";
 
-import RegistrationPage from "@components/pages/user/UserRegistrationPage.jsx";
 import LandingPage from "@components/pages/auth/LandingPage";
 import AdminLoginPage from "@components/pages/auth/AdminLoginPage";
 import UserLoginPage from "@components/pages/auth/UserLoginPage";
 import VerifyEmail from "@components/pages/auth/EmailVerificationPage";
-import AdminDashboard from "./components/pages/admin/AdminDashboardPage";
-import AdminMePage from "./components/pages/admin/AdminMePage";
+import SSOCallback from "@components/pages/auth/SSOCallback"
+
+import RegistrationPage from "@components/pages/user/UserRegistrationPage.jsx";
 import UserDashboard from "./components/pages/user/UserDashboardPage";
 import UserMePage from "./components/pages/user/UserMePage";
+
+import AdminDashboard from "./components/pages/admin/AdminDashboardPage";
+import AdminMePage from "./components/pages/admin/AdminMePage";
 import AdminManageRecipes from "@components/pages/admin/AdminManageRecipes.jsx"
 import AdminManageUsers from "@components/pages/admin/AdminManageUser";
 
@@ -21,23 +24,24 @@ const router = createBrowserRouter([
     errorElement: <UnderConstruction />,   // route-level failure
     children: [
       { path: "/", element: <LandingPage /> },
-      { path: "/alogin", element: <AdminLoginPage />},
-      { path: "/ulogin", element: <UserLoginPage />},
+      { path: "/alogin", element: <AdminLoginPage /> },
+      { path: "/ulogin", element: <UserLoginPage /> },
       { path: "/uregister", element: <RegistrationPage /> },
-      { path: "/verify-email", element: <VerifyEmail />},
-      { 
-        path: "/admin/dashboard", 
+      { path: "/verify-email", element: <VerifyEmail /> },
+      { path: "/sso-callback", element: <SSOCallback /> },
+      {
+        path: "/admin/dashboard",
         element: <AdminDashboard />,
         children: [
-          { index: true, element: <AdminMePage />},
-          { path: "/admin/dashboard/me", element: <AdminMePage />},
-          { path: "/admin/dashboard/recipes", element: <AdminManageRecipes />},
-          { path: "/admin/dashboard/users", element: <AdminManageUsers />},
+          { index: true, element: <AdminMePage /> },
+          { path: "/admin/dashboard/me", element: <AdminMePage /> },
+          { path: "/admin/dashboard/recipes", element: <AdminManageRecipes /> },
+          { path: "/admin/dashboard/users", element: <AdminManageUsers /> },
         ]
       },
       {
         path: "/user/dashboard",
-        element: <UserDashboard/>,
+        element: <UserDashboard />,
         children: [
           { index: true, element: <UserMePage /> },
           { path: "/user/dashboard/me", element: <UserMePage /> },

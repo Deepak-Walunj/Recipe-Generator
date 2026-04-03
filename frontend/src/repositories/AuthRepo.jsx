@@ -1,27 +1,27 @@
-import Constants  from '@utils/Constants';
+import Constants from '@utils/Constants';
 import MakeApiCall from "@utils/ApiUtils";
 const BASE_URL = import.meta.env.VITE_PORT_URL
 const URL = `${BASE_URL}/auth`
 const ENDPOINTS = {
-    LOGIN : `${URL}/login`,
+    LOGIN: `${URL}/login`,
     VERIFY_EMAIL: `${URL}/verify-email`,
     RESEND_EMAIL: `${URL}/resend-verification`
 }
 
-export const loginApi = async (email, password, entity_type) => {
+export const loginApi = async (email, password, entity_type, auth_provider) => {
     let response = {}
-    try{
+    try {
         response = await MakeApiCall({
-            url : ENDPOINTS.LOGIN,
+            url: ENDPOINTS.LOGIN,
             method: "POST",
-            data : {email, password, entity_type},
-            redirect_on_unauthorized : false,
+            data: { email, password, entity_type, auth_provider },
+            redirect_on_unauthorized: false,
         })
-    }catch(error){
+    } catch (error) {
         console.error(error);
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
-    if(response.status != 200) {
+    if (response.status != 200) {
         const backendMessage = response?.data?.message;
         const detailsMessage = response?.data?.details?.[0]?.message;
         throw new Error(backendMessage || detailsMessage || "Login failed");
@@ -29,12 +29,12 @@ export const loginApi = async (email, password, entity_type) => {
     return response.data
 }
 
-export const adminLoginApi = async (email, password) => {
-    return loginApi(email, password, Constants.ENTITY.ADMIN)
+export const adminLoginApi = async (email, password, auth_provider) => {
+    return loginApi(email, password, Constants.ENTITY.ADMIN, auth_provider)
 }
 
-export const userLoginApi = async (email, password) => {
-    return loginApi(email, password, Constants.ENTITY.USER)
+export const userLoginApi = async (email, password, auth_provider) => {
+    return loginApi(email, password, Constants.ENTITY.USER, auth_provider)
 }
 
 export const verifyEmailApi = async (token, entity_type) => {
@@ -49,7 +49,7 @@ export const verifyEmailApi = async (token, entity_type) => {
         console.error(error);
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
-    if (response.status != 200){
+    if (response.status != 200) {
         const backendMessage = response?.data?.message;
         const detailsMessage = response?.data?.details?.[0]?.message;
         throw new Error(backendMessage || detailsMessage || "Email verification failed");
@@ -69,7 +69,7 @@ export const resendVerificationApi = async (email, entity_type) => {
         console.error(error);
         throw new Error(error?.response?.data?.message || "Something went wrong.")
     }
-    if (response.status != 200){
+    if (response.status != 200) {
         const backendMessage = response?.data?.message;
         const detailsMessage = response?.data?.details?.[0]?.message;
         throw new Error(backendMessage || detailsMessage || "Email verification failed");
