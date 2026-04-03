@@ -1,6 +1,6 @@
 
-const Joi = require('joi');
-const { EntityType } = require('../core/enum');
+import Joi from 'joi';
+import { EntityType } from '../core/enum.js';
 
 const registerUserSchema = Joi.object({
     username: Joi.string().required().messages({"string.empty": "Full name is required"}),
@@ -9,6 +9,4 @@ const registerUserSchema = Joi.object({
     entity_type: Joi.string().valid(EntityType.USER).required().messages({"any.only": "Entity type must be USER", "string.empty": "Entity type is required"}),
 })
 
-module.exports = {
-    registerUserSchema
-}
+export {registerUserSchema};

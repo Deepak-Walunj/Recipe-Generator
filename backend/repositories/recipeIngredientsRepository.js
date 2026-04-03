@@ -1,5 +1,5 @@
-const { setupLogging, getLogger } = require('../core/logger');
-const { recipeIngredientFields } = require('../models/recipeIngredient.js');
+import { setupLogging, getLogger } from '../core/logger.js';
+import { recipeIngredientFields } from '../models/recipeIngredient.js';
 setupLogging();
 const logger = getLogger("recipe_ingredients-repo");
 
@@ -25,4 +25,4 @@ class RecipeIngredientsRepository{
     }
 }
 
-module.exports = RecipeIngredientsRepository
+export default RecipeIngredientsRepository;

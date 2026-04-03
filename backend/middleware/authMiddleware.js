@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
-const { SECRET_KEY, ALGORITHM } = require('../core/settings');
-const { UnauthorizedError, ForbiddenError } = require('../core/exception');
-const { setupLogging, getLogger } = require('../core/logger');
-const { getAuthService } = require('../core/deps');
+import jwt from 'jsonwebtoken';
+import { SECRET_KEY, ALGORITHM } from '../core/settings.js';
+import { UnauthorizedError, ForbiddenError } from '../core/exception.js';
+import { setupLogging, getLogger } from '../core/logger.js';
+import { getAuthService } from '../core/deps.js';
 
 setupLogging();
 
@@ -54,4 +54,4 @@ function allowedEntities(entity_type=null){
     }
 }
 
-module.exports = {allowedEntities};
+export {allowedEntities};

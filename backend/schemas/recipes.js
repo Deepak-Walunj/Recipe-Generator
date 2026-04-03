@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const ingredientItemSchema = Joi.object({
   name: Joi.string().required(),
@@ -31,9 +31,7 @@ const recipeSchema = Joi.object({
 
 const recipesArraySchema = Joi.array().items(recipeSchema).required();
 
-module.exports = {
-    recipeSchema,
+export {recipeSchema,
     recipesArraySchema,
     recipeInputSchema,
-    recipeUpdateSchema,
-}
+    recipeUpdateSchema,};

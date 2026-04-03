@@ -1,21 +1,6 @@
-const express = require('express')
-const router = express.Router()
+import express from 'express';const router = express.Router()
 
-const { setupLogging, getLogger } = require('../core/logger')
-const { getAdminService, getCuisinesService, getIngredientsService, getRecipesService, getRecipeStepsService, getRecipeIngredientsService } = require('../core/deps')
-const { ValidationError, NotFoundError } = require('../core/exception')
-const { EntityType } = require('../core/enum')
-
-const { allowedEntities } = require('../middleware/authMiddleware')
-
-const { registerAdminSchema, deleteEntitySchema, StandardResponse } = require('../schemas/adminSchema')
-const {recipeInputSchema, recipeUpdateSchema} = require('../schemas/recipes')
-const {updateEntitySchema, getEntitySchema} = require('../schemas/adminSchema')
-
-const {cuisineModel} = require('../models/cuisines')
-const {ingredientModel} = require('../models/ingredients')
-
-setupLogging()
+import { setupLogging, getLogger } from '../core/logger.js';import { getAdminService, getCuisinesService, getIngredientsService, getRecipesService, getRecipeStepsService, getRecipeIngredientsService } from '../core/deps.js';import { ValidationError, NotFoundError } from '../core/exception.js';import { EntityType } from '../core/enum.js';import { allowedEntities } from '../middleware/authMiddleware.js';import { registerAdminSchema, deleteEntitySchema, StandardResponse } from '../schemas/adminSchema.js';import { recipeInputSchema, recipeUpdateSchema } from '../schemas/recipes.js';import { updateEntitySchema, getEntitySchema } from '../schemas/adminSchema.js';import { cuisineModel } from '../models/cuisines.js';import { ingredientModel } from '../models/ingredients.js';setupLogging()
 const logger = getLogger('admin-routes')
 
 router.post('/register', async (req, res, next) => {
@@ -278,4 +263,4 @@ router.delete('/recipe/:recipe_id', allowedEntities(EntityType.ADMIN), async (re
   }
 });
 
-module.exports = router
+export default router;

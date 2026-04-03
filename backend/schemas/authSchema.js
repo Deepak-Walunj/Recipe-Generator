@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { EntityType } = require('../core/enum');
+import Joi from 'joi';
+import { EntityType } from '../core/enum.js';
 
 const LoginEntitySchema = Joi.object({
     email: Joi.string().email().required().messages({"string.email": "Valide email is required"}),
@@ -29,9 +29,7 @@ class TokenResponse extends BaseResponse {
     }
 }
 
-module.exports = {
-    LoginEntitySchema,
+export {LoginEntitySchema,
     BaseResponse,
     TokenData,
-    TokenResponse
-}
+    TokenResponse};

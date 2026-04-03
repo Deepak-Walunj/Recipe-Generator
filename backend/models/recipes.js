@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const recipeFields = Object.freeze({
     RECIPE_ID: 'recipe_id',
@@ -19,7 +19,5 @@ const recipeModel = Joi.object({
     [recipeFields.NO_OF_BOOKMARKS]: Joi.number().integer().min(0).default(0)
 })
 
-module.exports = {
-    recipeFields,
-    recipeModel
-}
+export {recipeFields,
+    recipeModel};

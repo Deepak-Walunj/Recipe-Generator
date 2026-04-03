@@ -1,7 +1,7 @@
-const { setupLogging, getLogger } = require('../core/logger');
-const { UserProfileFields } = require('../models/userModel');
-const { NotFoundError, MissingRequiredFields } = require('../core/exception');
-const { EntityType } = require('../core/enum');
+import { setupLogging, getLogger } from '../core/logger.js';
+import { UserProfileFields } from '../models/userModel.js';
+import { NotFoundError, MissingRequiredFields } from '../core/exception.js';
+import { EntityType } from '../core/enum.js';
 
 setupLogging();
 const logger = getLogger("user-repo");
@@ -136,4 +136,4 @@ class UserRepository {
 
 }
 
-module.exports = UserRepository;
+export default UserRepository;

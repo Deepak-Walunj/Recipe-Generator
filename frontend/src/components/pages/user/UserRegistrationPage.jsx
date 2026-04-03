@@ -6,12 +6,16 @@ import { resendVerificationApi } from "@repositories/AuthRepo"
 import { useToast } from "@predefined/Toast.jsx";
 import Constants from "@utils/Constants";
 import "@components/pages/css/RegistrationPage.css";
+import { useUser, useClerk } from "@clerk/react";
 
 export default function UserRegistrationPage() {
 
     const navigate = useNavigate();
     const { showToast } = useToast();
 
+    const { user } = useUser();
+    const { openSignIn } = useClerk();
+    
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

@@ -1,6 +1,4 @@
-const { setupLogging, getLogger } = require('../core/logger')
-const {recipeStepsFields} = require('../models/recipeSteps.js')
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';import { recipeStepsFields } from '../models/recipeSteps.js';setupLogging();
 const logger = getLogger('recipeSteps-Repo')
 
 class RecipeStepsRepository{
@@ -40,4 +38,4 @@ class RecipeStepsRepository{
     }
 }
 
-module.exports = RecipeStepsRepository
+export default RecipeStepsRepository;

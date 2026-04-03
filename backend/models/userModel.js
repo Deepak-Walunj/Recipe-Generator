@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const { EntityType } = require('../core/enum');
+import Joi from 'joi';
+import { EntityType } from '../core/enum.js';
 
 const now = () => new Date().toISOString();
 
@@ -26,7 +26,5 @@ const UserProfileModel = Joi.object({
     }),
 });
 
-module.exports = {
-    UserProfileFields,
-    UserProfileModel,
-};
+export {UserProfileFields,
+    UserProfileModel,};

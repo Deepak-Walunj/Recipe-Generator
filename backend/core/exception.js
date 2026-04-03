@@ -56,8 +56,7 @@ class NotFoundError extends AppError {
     }
 }
 
-module.exports = {
-    AppError,
+export {AppError,
     InvalidCredentialsError,
     UnauthorizedError,
     DuplicateRequestException,
@@ -65,5 +64,4 @@ module.exports = {
     MissingRequiredFields,
     ForbiddenError,
     UnprocessableEntityError,
-    NotFoundError
-};
+    NotFoundError};

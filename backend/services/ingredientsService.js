@@ -1,6 +1,4 @@
-const { setupLogging, getLogger } = require('../core/logger')
-
-const { ingredientIdQuantityUnitSchemaArraySchema } = require('../schemas/recipeIngredient.js');
+import { setupLogging, getLogger } from '../core/logger.js';import { ingredientIdQuantityUnitSchemaArraySchema } from '../schemas/recipeIngredient.js';
 
 setupLogging();
 const logger = getLogger('ingredients-service')
@@ -45,4 +43,4 @@ class IngredientsService{
     }
 }
 
-module.exports = IngredientsService;
+export default IngredientsService;

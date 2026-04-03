@@ -1,11 +1,9 @@
-const { 
-    SECRET_KEY, ALGORITHM, REFRESH_TOKEN_EXPIRE_DAYS, ACCESS_TOKEN_EXPIRE_MINUTES, 
-    EMAIL_SECRET_KEY, EMAIL_TOKEN_EXPIRE_IN_MINUTES
-    } = require('../core/settings');
-const jwt = require("jsonwebtoken");
-const bcrypt = require('bcrypt');
-const { UnauthorizedError } = require('../core/exception');
-const { setupLogging, getLogger } = require('../core/logger');
+import { SECRET_KEY, ALGORITHM, REFRESH_TOKEN_EXPIRE_DAYS, ACCESS_TOKEN_EXPIRE_MINUTES, 
+    EMAIL_SECRET_KEY, EMAIL_TOKEN_EXPIRE_IN_MINUTES } from '../core/settings.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { UnauthorizedError } from '../core/exception.js';
+import { setupLogging, getLogger } from '../core/logger.js';
 
 setupLogging();
 const logger = getLogger('security-middleware');
@@ -71,12 +69,10 @@ function verifyEmail(token) {
     return decode
     } 
 
-module.exports = {
-    hash_password,
+export {hash_password,
     verify_password,
     create_access_token,
     create_refresh_token,
     generate_verification_token,
     verifyEmail,
-    verify_refresh_token
-}
+    verify_refresh_token};

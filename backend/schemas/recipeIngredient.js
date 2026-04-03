@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const ingredientIdQuantityUnitSchema = Joi.object({
   ingredient_id: Joi.number().integer().required(),
@@ -7,7 +7,5 @@ const ingredientIdQuantityUnitSchema = Joi.object({
 });
 
 const ingredientIdQuantityUnitSchemaArraySchema = Joi.array().items(ingredientIdQuantityUnitSchema).min(1).required();
-module.exports = {
-    ingredientIdQuantityUnitSchema,
-    ingredientIdQuantityUnitSchemaArraySchema
-}
+export {ingredientIdQuantityUnitSchema,
+    ingredientIdQuantityUnitSchemaArraySchema};

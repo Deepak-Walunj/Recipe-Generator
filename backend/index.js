@@ -1,20 +1,20 @@
 // index.js
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const { PORT, ALLOWED_ORIGINS } = require('./core/settings');
-const {disconnectDB } = require('./core/database');
-const { initializeDependencies } = require('./core/deps');
-const { appExceptionHandler, validationExceptionHandler, genericExceptionHandler} = require('./middleware/errorHandler');
-const requestId = require('./middleware/requestId');
-const { setupLogging, getLogger } = require('./core/logger');
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { PORT, ALLOWED_ORIGINS } from './core/settings.js';
+import { disconnectDB } from './core/database.js';
+import { initializeDependencies } from './core/deps.js';
+import { appExceptionHandler, validationExceptionHandler, genericExceptionHandler } from './middleware/errorHandler.js';
+import requestId from './middleware/requestId.js';
+import { setupLogging, getLogger } from './core/logger.js';
 
 // Routes
-const authRouter = require('./routes/authRoutes');
-const userRouter = require('./routes/userRoutes');
-const adminRouter = require('./routes/adminRoutes');
-const publicRouter = require('./routes/publicRoutes');
-// const dashboardRouter = require('./routes/dashboardRoutes');
+import authRouter from './routes/authRoutes.js';
+import userRouter from './routes/userRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
+import publicRouter from './routes/publicRoutes.js';
+// import dashboardRouter from './routes/dashboardRoutes.js';
 
 (async function main() {
   const app = express();

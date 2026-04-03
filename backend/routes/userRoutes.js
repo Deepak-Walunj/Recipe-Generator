@@ -1,14 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { setupLogging, getLogger } = require('../core/logger');
-const { getUserService } = require('../core/deps');
-const { ValidationError } = require('../core/exception.js')
-const { registerUserSchema } = require('../schemas/userSchema');
-const { StandardResponse } = require('../schemas/adminSchema');
-const { allowedEntities } = require('../middleware/authMiddleware')
-const { EntityType } = require('../core/enum')
-
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';
+import { getUserService } from '../core/deps.js';
+import { ValidationError } from '../core/exception.js';import { registerUserSchema } from '../schemas/userSchema.js';
+import { StandardResponse } from '../schemas/adminSchema.js';
+import { allowedEntities } from '../middleware/authMiddleware.js';import { EntityType } from '../core/enum.js';setupLogging();
 const logger = getLogger("user-router");
 
 router.post('/register', async (req, res, next) => {
@@ -40,4 +36,4 @@ router.delete('/me', allowedEntities(EntityType.USER), async (req, res, next) =>
   return res.json(new StandardResponse(true, 'User deleted successfully', {"email": email}))
 })
 
-module.exports = router;
+export default router;

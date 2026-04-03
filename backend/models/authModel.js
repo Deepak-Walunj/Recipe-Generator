@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { EntityType } = require('../core/enum');
+import Joi from 'joi';
+import { EntityType } from '../core/enum.js';
 
 const AuthEntityFields = Object.freeze({
   USER_ID: 'user_id',
@@ -36,7 +36,5 @@ const AuthEntityModel  = Joi.object({
   })
 }).options({ stripUnknown: true });
 
-module.exports = {
-  AuthEntityFields,
-  AuthEntityModel,
-};
+export {AuthEntityFields,
+  AuthEntityModel,};

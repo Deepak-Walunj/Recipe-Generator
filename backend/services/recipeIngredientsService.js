@@ -1,6 +1,4 @@
-const { setupLogging, getLogger } = require('../core/logger')
-
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';setupLogging();
 const logger = getLogger('recipeIngredientsService-service')
 
 class RecipeIngredientsService {
@@ -13,4 +11,4 @@ class RecipeIngredientsService {
     }
 }
 
-module.exports = RecipeIngredientsService;
+export default RecipeIngredientsService;

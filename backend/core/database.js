@@ -1,7 +1,7 @@
-const mysql = require('mysql2/promise');
-const { SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DATABASE, SQL_PORT } = require('./settings');
-const { initializeCollections, checkCollectionHealth } = require('./database_init');
-const { setupLogging, getLogger } = require('./logger');
+import mysql from 'mysql2/promise';
+import { SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DATABASE, SQL_PORT } from './settings.js';
+import { initializeCollections, checkCollectionHealth } from './database_init.js';
+import { setupLogging, getLogger } from './logger.js';
 
 let client
 let db
@@ -18,8 +18,8 @@ function sleep(ms){
 
 async function connectDB(retryCount = 0){
     try{
-        logger.info(`Attempting MySQL connection (attempt ${retryCount + 1})`);
-        pool = mysql.createPool({
+        logger.info(`Attempting MySQL connection (attempt ${retryCount + 1}) to ${SQL_HOST}:${SQL_PORT}/${SQL_DATABASE} as ${SQL_USER}`);
+        const pool = mysql.createPool({
             host: SQL_HOST,
             user: SQL_USER,
             password: SQL_PASSWORD,
@@ -57,7 +57,7 @@ async function connectDB(retryCount = 0){
 
 async function disconnectDB() {
     if (db) {
-        await db.close();
+        await db.end();
         client = null;
         db = null;
         logger.info('Disconnected from MySQL');
@@ -69,4 +69,4 @@ function getDB() {
     return db;
 }
 
-module.exports = { connectDB, disconnectDB, getDB };
+export {connectDB, disconnectDB, getDB};

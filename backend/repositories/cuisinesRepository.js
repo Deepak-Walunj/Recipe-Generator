@@ -1,7 +1,5 @@
-const { setupLogging, getLogger } = require('../core/logger');
-const {cuisinesArraySchema} = require(`../schemas/cuisines`)
-const {cuisineFields} = require('../models/cuisines.js')
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';
+import { cuisinesArraySchema } from '../schemas/cuisines.js';import { cuisineFields } from '../models/cuisines.js';setupLogging();
 const logger = getLogger("cuisines-repo");
 
 class CuisinesRepository{
@@ -34,4 +32,4 @@ class CuisinesRepository{
     }
 }
 
-module.exports = CuisinesRepository
+export default CuisinesRepository;

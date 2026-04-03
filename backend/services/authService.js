@@ -1,10 +1,8 @@
-const {InvalidCredentialsError, ValidationError, UnauthorizedError, NotFoundError, DuplicateRequestException} = require('../core/exception');
-const { AuthEntityModel, AuthEntityFields } = require('../models/authModel');
-const { UserProfileModel } = require('../models/userModel')
-const { create_access_token, create_refresh_token, verify_refresh_token, hash_password, verify_password, generate_verification_token, verifyEmail } = require('../middleware/security');
-const { setupLogging, getLogger } = require('../core/logger');
-const { sendVerificationEmail } = require('../client/resendMailer')
-const { EntityType } = require('../core/enum');
+import { InvalidCredentialsError, ValidationError, UnauthorizedError, NotFoundError, DuplicateRequestException } from '../core/exception.js';
+import { AuthEntityModel, AuthEntityFields } from '../models/authModel.js';
+import { UserProfileModel } from '../models/userModel.js';import { create_access_token, create_refresh_token, verify_refresh_token, hash_password, verify_password, generate_verification_token, verifyEmail } from '../middleware/security.js';
+import { setupLogging, getLogger } from '../core/logger.js';
+import { sendVerificationEmail } from '../client/resendMailer.js';import { EntityType } from '../core/enum.js';
 
 setupLogging();
 const logger = getLogger("auth-service");
@@ -213,4 +211,4 @@ class AuthService {
     }
 }
 
-module.exports = AuthService;
+export default AuthService;

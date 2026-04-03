@@ -1,5 +1,6 @@
-const { AppError } = require('../core/exception');
-const { setupLogging, getLogger } = require('../core/logger');
+import path from "path";
+import { AppError } from '../core/exception.js';
+import { setupLogging, getLogger } from '../core/logger.js';
 
 setupLogging();
 const logger = getLogger("errorHandler");
@@ -55,8 +56,6 @@ function genericExceptionHandler(err, req, res, next) {
 }
 
 
-module.exports = {
-  appExceptionHandler,
+export {appExceptionHandler,
   validationExceptionHandler,
-  genericExceptionHandler,
-};
+  genericExceptionHandler,};

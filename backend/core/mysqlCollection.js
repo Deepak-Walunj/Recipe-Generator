@@ -91,4 +91,4 @@ class MySQLCollection {
     }
 }
 
-module.exports = MySQLCollection;
+export default MySQLCollection;

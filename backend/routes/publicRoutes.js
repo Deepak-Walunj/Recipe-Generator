@@ -1,9 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { setupLogging, getLogger } = require('../core/logger');
-const { getUserService, getIngredientsService, getCuisinesService, getRecipesService } = require('../core/deps')
-const { StandardResponse } = require('../schemas/adminSchema')
-const { EntityType } = require('../core/enum');
+import { setupLogging, getLogger } from '../core/logger.js';
+import { getUserService, getIngredientsService, getCuisinesService, getRecipesService } from '../core/deps.js';import { StandardResponse } from '../schemas/adminSchema.js';import { EntityType } from '../core/enum.js';
 
 setupLogging();
 const logger = getLogger("public-router");
@@ -49,5 +47,4 @@ router.get('/recipes', async (req, resp, next) => {
     return resp.json(new StandardResponse(true, 'All recipes fetched successfully', {page, limit, recipes}))  
 })
 
-module.exports = router
-
+export default router;

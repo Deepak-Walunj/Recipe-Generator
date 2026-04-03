@@ -1,7 +1,7 @@
-const { EntityType } = require("../core/enum");
-const { DuplicateRequestException, MissingRequiredFields, NotFoundError } = require("../core/exception");
-const { setupLogging, getLogger } = require('../core/logger');
-const { AuthEntityFields } = require("../models/authModel");
+import { EntityType } from '../core/enum.js';
+import { DuplicateRequestException, MissingRequiredFields, NotFoundError } from '../core/exception.js';
+import { setupLogging, getLogger } from '../core/logger.js';
+import { AuthEntityFields } from '../models/authModel.js';
 
 setupLogging();
 const logger = getLogger("auth-repo");
@@ -83,4 +83,4 @@ class AuthRepository {
     }
 }
 
-module.exports = AuthRepository;
+export default AuthRepository;

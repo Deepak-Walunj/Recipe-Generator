@@ -1,7 +1,7 @@
-const { v4: uuidv4 } = require('uuid');
-const { withRequestId } = require("../core/logger");
+import { v4 as uuidv4 } from 'uuid';
+import { withRequestId } from '../core/logger.js';
 
-module.exports = function requestId(req, res, next) {
+export default function requestId(req, res, next) {
   const id = uuidv4();
   withRequestId(id, () => {
     req.request_id = id;

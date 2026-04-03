@@ -1,13 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { SECURE } = require('../core/settings');
-const { setupLogging, getLogger } = require('../core/logger')
-const { getAuthService } = require('../core/deps');
-const { MissingRequiredFields, ValidationError } = require('../core/exception')
-const { LoginEntitySchema, TokenResponse, TokenData } = require('../schemas/authSchema');
-const {StandardResponse} = require('../schemas/adminSchema')
-
-setupLogging();
+import { SECURE } from '../core/settings.js';
+import { setupLogging, getLogger } from '../core/logger.js';import { getAuthService } from '../core/deps.js';
+import { MissingRequiredFields, ValidationError } from '../core/exception.js';import { LoginEntitySchema, TokenResponse, TokenData } from '../schemas/authSchema.js';
+import { StandardResponse } from '../schemas/adminSchema.js';setupLogging();
 const logger = getLogger("auth-router");
 
 router.post('/login', async (req, res, next) => {
@@ -75,4 +71,4 @@ router.get("/resend-verification", async (req, res, next) => {
     }
 })
 
-module.exports = router;
+export default router;

@@ -1,7 +1,4 @@
-const { setupLogging, getLogger } = require('../core/logger')
-const { InvalidCredentialsError,  DuplicateRequestException, NotFoundError } = require('../core/exception')
-
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';import { InvalidCredentialsError,  DuplicateRequestException, NotFoundError } from '../core/exception.js';setupLogging();
 const logger = getLogger('admin-service')
 
 class AdminService {
@@ -80,4 +77,4 @@ class AdminService {
     }
 }
 
-module.exports = AdminService;
+export default AdminService;

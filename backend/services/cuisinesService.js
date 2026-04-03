@@ -1,6 +1,4 @@
-const { setupLogging, getLogger } = require('../core/logger')
-
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';setupLogging();
 const logger = getLogger('cuisines-service')
 
 class CuisinesService{
@@ -30,4 +28,4 @@ class CuisinesService{
     }
 }
 
-module.exports = CuisinesService
+export default CuisinesService;

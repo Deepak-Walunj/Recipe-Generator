@@ -1,7 +1,7 @@
-const { InvalidCredentialsError } = require('../core/exception');
-const { setupLogging, getLogger } = require('../core/logger');
-const { EntityType } = require('../core/enum');
-const { UserProfileModel } = require('../models/userModel');
+import { InvalidCredentialsError } from '../core/exception.js';
+import { setupLogging, getLogger } from '../core/logger.js';
+import { EntityType } from '../core/enum.js';
+import { UserProfileModel } from '../models/userModel.js';
 
 setupLogging();
 const logger = getLogger("user-service");
@@ -53,4 +53,4 @@ class UserService {
     }
 }
 
-module.exports = UserService;
+export default UserService;

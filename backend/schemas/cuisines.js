@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const cuisineSchema = Joi.object({
   cuisine_id: Joi.number().integer().required(),
@@ -7,7 +7,5 @@ const cuisineSchema = Joi.object({
 
 const cuisinesArraySchema = Joi.array().items(cuisineSchema).required();
 
-module.exports = {
-    cuisineSchema,
-    cuisinesArraySchema
-}
+export {cuisineSchema,
+    cuisinesArraySchema};

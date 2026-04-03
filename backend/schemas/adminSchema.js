@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { EntityType } = require('../core/enum');
+import Joi from 'joi';
+import { EntityType } from '../core/enum.js';
 
 const registerAdminSchema = Joi.object({
     username: Joi.string().required().messages({"string.empty": "Full name is required"}),
@@ -32,10 +32,8 @@ class StandardResponse {
     }
 }
 
-module.exports = {
-    registerAdminSchema,
+export {registerAdminSchema,
     deleteEntitySchema,
     updateEntitySchema,
     getEntitySchema,
-    StandardResponse
-}
+    StandardResponse};

@@ -1,9 +1,7 @@
-const { setupLogging, getLogger } = require('../core/logger');
+import { setupLogging, getLogger } from '../core/logger.js';
 setupLogging();
 const logger = getLogger("ingredient-repo");
-const { ingredientsArraySchema } = require('../schemas/ingredients.js')
-
-class IngredientsRepository{
+import { ingredientsArraySchema } from '../schemas/ingredients.js';class IngredientsRepository{
     constructor(collection) {
         this.collection=collection
     }
@@ -35,4 +33,4 @@ class IngredientsRepository{
 
 }
 
-module.exports = IngredientsRepository
+export default IngredientsRepository;

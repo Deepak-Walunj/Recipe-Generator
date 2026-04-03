@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     USERS : 'users',
     ADMINS : 'admins',
     AUTH_USERS: 'auth_users',

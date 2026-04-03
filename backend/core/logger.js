@@ -1,7 +1,7 @@
-const pino = require("pino");
-const { AsyncLocalStorage } = require("async_hooks");
-const {
-  LOG_LEVEL,
+import elasticApmNode from "elastic-apm-node";
+import pino from 'pino';
+import { AsyncLocalStorage } from 'async_hooks';
+import { LOG_LEVEL,
   LOG_FORMAT,
   ENABLE_CONSOLE_LOGGING,
   ENABLE_FILE_LOGGING,
@@ -10,13 +10,12 @@ const {
   ELASTIC_APM_SERVER_URL,
   ELASTIC_APM_SERVICE_NAME,
   ELASTIC_APM_ENVIRONMENT,
-  ENV,
-} = require("./settings");
+  ENV, } from './settings.js';
 
 // Start Elastic APM if enabled
 let apm = null;
 if (ELASTIC_APM_ENABLED) {
-  apm = require("elastic-apm-node").start({
+  apm = elasticApmNode.start({
     serviceName: ELASTIC_APM_SERVICE_NAME,
     serverUrl: ELASTIC_APM_SERVER_URL,
     environment: ELASTIC_APM_ENVIRONMENT,
@@ -113,9 +112,7 @@ function getRequestId() {
   return store ? store.request_id : "unknown";
 }
 
-module.exports = {
-  setupLogging,
+export {setupLogging,
   getLogger,
   withRequestId,
-  getRequestId,
-};
+  getRequestId,};

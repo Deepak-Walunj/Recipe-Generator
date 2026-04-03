@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const recipeIngredientFields = Object.freeze({
   RECIPE_INGREDIENT_ID: 'recipe_ingredient_id',
@@ -17,8 +17,6 @@ const recipeIngredientModel = Joi.object({
 
 const recipeIngredientArrayModel = Joi.array().items(recipeIngredientModel);
 
-module.exports = {
-    recipeIngredientModel,
+export {recipeIngredientModel,
     recipeIngredientFields,
-    recipeIngredientArrayModel
-}
+    recipeIngredientArrayModel};

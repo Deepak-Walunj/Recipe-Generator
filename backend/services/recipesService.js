@@ -1,8 +1,7 @@
-const { setupLogging, getLogger } = require('../core/logger')
-const { ValidationError } = require('../core/exception');
+import { setupLogging, getLogger } from '../core/logger.js';import { ValidationError } from '../core/exception.js';
 
-const { recipeModel } = require('../models/recipes.js');
-const { recipeIngredientArrayModel } = require('../models/recipeIngredient.js');
+import { recipeModel } from '../models/recipes.js';
+import { recipeIngredientArrayModel } from '../models/recipeIngredient.js';
 setupLogging();
 const logger = getLogger('recipes-service')
 
@@ -100,4 +99,4 @@ class RecipesService{
     }
 }
 
-module.exports = RecipesService;
+export default RecipesService;

@@ -1,5 +1,5 @@
-const collections = require("./collections");
-const { setupLogging, getLogger } = require("./logger");
+import collections from './collections.js';
+import { setupLogging, getLogger } from './logger.js';
 
 setupLogging();
 const logger = getLogger("database_init");
@@ -209,4 +209,4 @@ async function checkCollectionHealth(db) {
   return REQUIRED_TABLES.every((tbl) => existing.includes(tbl));
 }
 
-module.exports = { initializeCollections, checkCollectionHealth };
+export {initializeCollections, checkCollectionHealth};

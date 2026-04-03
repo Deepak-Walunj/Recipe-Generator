@@ -1,7 +1,4 @@
-const { setupLogging, getLogger } = require('../core/logger')
-const {buildRecipeStepsPayload} = require('../core/utility')
-
-setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';import { buildRecipeStepsPayload } from '../core/utility.js';setupLogging();
 const logger = getLogger('recipeSteps-service')
 
 class RecipeStepsService{
@@ -30,4 +27,4 @@ class RecipeStepsService{
     }
 }
 
-module.exports = RecipeStepsService
+export default RecipeStepsService;

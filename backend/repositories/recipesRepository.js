@@ -1,8 +1,6 @@
-const { setupLogging, getLogger } = require('../core/logger');
+import { setupLogging, getLogger } from '../core/logger.js';
 
-const { recipesArraySchema } = require('../schemas/recipes.js')
-
-const {recipeFields} = require('../models/recipes.js');
+import { recipesArraySchema } from '../schemas/recipes.js';import { recipeFields } from '../models/recipes.js';
 
 setupLogging();
 const logger = getLogger("recipes-repo");
@@ -86,4 +84,4 @@ class RecipesRepository{
     }
 }
 
-module.exports = RecipesRepository
+export default RecipesRepository;

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 
 const recipeStepsFields = Object.freeze({
@@ -9,6 +9,4 @@ const recipeStepsFields = Object.freeze({
   CREATED_AT: 'created_at'
 })
 
-module.exports = {
-    recipeStepsFields
-}
+export {recipeStepsFields};
