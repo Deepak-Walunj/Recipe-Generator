@@ -1,4 +1,4 @@
-import collections from './collections.js';
+import { TABLES } from './collections.js';
 import { setupLogging, getLogger } from './logger.js';
 
 setupLogging();
@@ -7,14 +7,14 @@ const logger = getLogger("database_init");
 logger.info("Starting Backend (Express)");
 
 const REQUIRED_TABLES = [
-  collections.USERS,
-  collections.AUTH_USERS,
-  collections.CUISINES,
-  collections.RECIPE,
-  collections.RECIPE_INGREDIENTS,
-  collections.INGREDIENTS,
-  collections.RECIPE_RATINGS,
-  collections.BOOKMARKS
+  TABLES.USERS,
+  TABLES.AUTH_USERS,
+  TABLES.CUISINES,
+  TABLES.RECIPE,
+  TABLES.RECIPE_INGREDIENTS,
+  TABLES.INGREDIENTS,
+  TABLES.RECIPE_RATINGS,
+  TABLES.BOOKMARKS
 ];
 
 async function initializeCollections(db) {
@@ -37,7 +37,7 @@ async function createTable(db, table) {
   let sql = "";
 
   switch (table) {
-    case collections.USERS:
+    case TABLES.USERS:
       sql = `
         CREATE TABLE users (
           user_id INT PRIMARY KEY,
@@ -49,7 +49,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.AUTH_USERS:
+    case TABLES.AUTH_USERS:
       sql = `
         CREATE TABLE auth_users (
           user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,7 +63,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.CUISINES:
+    case TABLES.CUISINES:
       sql = `
         CREATE TABLE cuisines (
           cuisine_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,7 +72,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.INGREDIENTS:
+    case TABLES.INGREDIENTS:
       sql = `
         CREATE TABLE ingredients (
           ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -81,7 +81,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.RECIPE:
+    case TABLES.RECIPE:
       sql = `
         CREATE TABLE recipe (
           recipe_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -96,7 +96,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.RECIPE_STEPS:
+    case TABLES.RECIPE_STEPS:
       sql = `
         CREATE TABLE recipe_steps (
           step_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -111,7 +111,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.RECIPE_INGREDIENTS:
+    case TABLES.RECIPE_INGREDIENTS:
       sql = `
         CREATE TABLE recipe_ingredients (
           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,7 +123,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.RECIPE_RATINGS:
+    case TABLES.RECIPE_RATINGS:
       sql = `
         CREATE TABLE recipe_ratings (
           rating_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -136,7 +136,7 @@ async function createTable(db, table) {
       `;
       break;
 
-    case collections.BOOKMARKS:
+    case TABLES.BOOKMARKS:
       sql = `
         CREATE TABLE bookmarks (
           bookmark_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -173,7 +173,7 @@ async function indexExists(db, table, indexName) {
 
 async function createIndexes(db, table) {
     switch (table) {
-        case collections.AUTH_USERS:
+        case TABLES.AUTH_USERS:
             if (!(await indexExists(db, "auth_users", "idx_user_id"))) {
                 await db.query(`ALTER TABLE auth_users ADD UNIQUE INDEX idx_user_id (user_id)`);
             }
@@ -183,13 +183,13 @@ async function createIndexes(db, table) {
             }
             break;
 
-        case collections.USERS:
+        case TABLES.USERS:
             if (!(await indexExists(db, "users", "idx_email"))) {
                 await db.query(`ALTER TABLE users ADD UNIQUE INDEX idx_email (email)`);
             }
             break;
 
-        case collections.BOOKMARKS:
+        case TABLES.BOOKMARKS:
             if (!(await indexExists(db, "bookmarks", "idx_user"))) {
                 await db.query(`ALTER TABLE bookmarks ADD INDEX idx_user (user_id)`);
             }

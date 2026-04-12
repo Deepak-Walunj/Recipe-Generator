@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { setupLogging, getLogger } from '../core/logger.js';
-import { getAuthService, getIngredientsService, getCuisinesService, getRecipesService } from '../core/deps.js'; import { StandardResponse } from '../schemas/adminSchema.js'; import { EntityType } from '../core/enum.js';
+import { getAuthService, getIngredientsService, getCuisinesService, getRecipesService } from '../core/deps.js';
+import { StandardResponse } from '../schemas/adminSchema.js';
+import { EntityType } from '../core/enum.js';
 
 setupLogging();
 const logger = getLogger("public-router");

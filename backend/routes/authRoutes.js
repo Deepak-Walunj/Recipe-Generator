@@ -1,9 +1,13 @@
 import express from 'express';
 const router = express.Router();
 import { SECURE } from '../core/settings.js';
-import { setupLogging, getLogger } from '../core/logger.js';import { getAuthService } from '../core/deps.js';
-import { MissingRequiredFields, ValidationError } from '../core/exception.js';import { LoginEntitySchema, TokenResponse, TokenData } from '../schemas/authSchema.js';
-import { StandardResponse } from '../schemas/adminSchema.js';setupLogging();
+import { setupLogging, getLogger } from '../core/logger.js';
+import { getAuthService } from '../core/deps.js';
+import { MissingRequiredFields, ValidationError } from '../core/exception.js';
+import { LoginEntitySchema, TokenResponse, TokenData } from '../schemas/authSchema.js';
+import { StandardResponse } from '../schemas/adminSchema.js';
+
+setupLogging();
 const logger = getLogger("auth-router");
 
 router.post('/login', async (req, res, next) => {

@@ -1,6 +1,6 @@
 import MySQLCollection from './mysqlCollection.js';
 import { getDB, connectDB } from './database.js';
-import collections from './collections.js';
+import { TABLES } from './collections.js';
 import { setupLogging, getLogger } from './logger.js';
 
 import AuthRepository from '../repositories/authRepository.js';
@@ -45,13 +45,13 @@ class DependencyStorage {
   constructor(db, cache) {
     if (!db) logger.error('Database not initialized');
     this._cache = cache
-    this.userRepo = new UserRepository(new MySQLCollection(db, collections.USERS));
-    this.authRepo = new AuthRepository(new MySQLCollection(db, collections.AUTH_USERS));
-    this.ingredientsRepo = new IngredientsRepository(new MySQLCollection(db, collections.INGREDIENTS))
-    this.cusinesRepo = new CuisinesRepository(new MySQLCollection(db, collections.CUISINES))
-    this.recipesRepo = new RecipesRepository(new MySQLCollection(db, collections.RECIPE))
-    this.recipeStepsRepo = new RecipeStepsRepository(new MySQLCollection(db, collections.RECIPE_STEPS))
-    this.recipeIngredientsRepo = new RecipeIngredientsRepository(new MySQLCollection(db, collections.RECIPE_INGREDIENTS))
+    this.userRepo = new UserRepository(new MySQLCollection(db, TABLES.USERS));
+    this.authRepo = new AuthRepository(new MySQLCollection(db, TABLES.AUTH_USERS));
+    this.ingredientsRepo = new IngredientsRepository(new MySQLCollection(db, TABLES.INGREDIENTS))
+    this.cusinesRepo = new CuisinesRepository(new MySQLCollection(db, TABLES.CUISINES))
+    this.recipesRepo = new RecipesRepository(new MySQLCollection(db, TABLES.RECIPE))
+    this.recipeStepsRepo = new RecipeStepsRepository(new MySQLCollection(db, TABLES.RECIPE_STEPS))
+    this.recipeIngredientsRepo = new RecipeIngredientsRepository(new MySQLCollection(db, TABLES.RECIPE_INGREDIENTS))
 
     this.authService = new AuthService({ authRepository: this.authRepo, cacheClient: this._cache, userRepository: this.userRepo });
     this.userService = new UserService({ userRepository: this.userRepo, auth_service: this.authService });

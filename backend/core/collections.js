@@ -1,22 +1,22 @@
-export default {
-    USERS : 'users',
-    ADMINS : 'admins',
+export const TABLES = {
+    USERS: 'users',
+    ADMINS: 'admins',
     AUTH_USERS: 'auth_users',
     CUISINES: 'cuisines',
     RECIPE: 'recipe',
     RECIPE_STEPS: 'recipe_steps',
     RECIPE_INGREDIENTS: 'recipe_ingredients',
-    INGREDIENTS : 'ingredients',
+    INGREDIENTS: 'ingredients',
     RECIPE_RATINGS: 'recipe_ratings',
     BOOKMARKS: 'bookmarks',
+};
 
-    getAll() {
-        return Object.values(this).filter(v => typeof v === 'string')
-    },
+export function getAll() {
+    return Object.values(TABLES);
+}
 
-    getByEntityType(entityType) {
-        if (entityType === 'user') return this.USERS
-        if (entityType === 'admin') return this.ADMIN
-        throw new Error(`Unknown entity type: ${entityType}`);
-    }
+export function getByEntityType(entityType) {
+    if (entityType === 'user') return TABLES.USERS;
+    if (entityType === 'admin') return TABLES.ADMINS;
+    throw new Error(`Unknown entity type: ${entityType}`);
 }
